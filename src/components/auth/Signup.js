@@ -3,6 +3,8 @@ import { Button, Checkbox, Form, Input } from "antd";
 import Logo from "../../utils/Logo";
 import { Link, useNavigate } from "react-router";
 import useAuth from "../../hooks/useAuth";
+import { useRecoilState } from "recoil";
+import userState from "../../atoms/userState";
 const onFinish = (values) => {
   console.log("Success:", values);
 };
@@ -10,14 +12,15 @@ const onFinishFailed = (errorInfo) => {
   console.log("Failed:", errorInfo);
 };
 export default function Signup() {
+  const [user, setUser] = useRecoilState(userState);
   const navigate = useNavigate();
-  const { signup, currentUser } = useAuth();
-
+  const { signup } = useAuth();
+  console.log(user);
   useEffect(() => {
-    if (currentUser) {
+    if (user) {
       navigate("/profile");
     }
-  }, [currentUser]);
+  }, [user]);
   return (
     <div className="signin-page">
       <div className="signin-form">
@@ -62,7 +65,6 @@ export default function Signup() {
           >
             <Input placeholder="Username" />
           </Form.Item>
-
           <Form.Item
             name="password"
             rules={[
@@ -77,7 +79,7 @@ export default function Signup() {
 
           <Form.Item label={null}>
             <Button type="primary" htmlType="submit">
-              Log in
+              Sign up
             </Button>
           </Form.Item>
         </Form>

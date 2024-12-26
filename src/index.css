@@ -4,6 +4,7 @@
   --border-color-1: rgb(47, 47, 47);
   --border-color-2: rgb(139, 139, 139);
   --button-bg-color: rgb(0, 149, 246);
+  --loader-color: rgb(255, 255, 255);
 }
 * {
   box-sizing: border-box;

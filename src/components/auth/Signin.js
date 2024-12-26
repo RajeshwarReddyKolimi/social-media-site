@@ -13,18 +13,13 @@ const onFinishFailed = (errorInfo) => {
 };
 export default function Signin() {
   const [user, setUser] = useRecoilState(userState);
-  console.log(user);
   const navigate = useNavigate();
-  const { signin, currentUser } = useAuth();
-  console.log(currentUser);
+  const { signin } = useAuth();
   useEffect(() => {
     if (user) {
       navigate("/profile");
     }
   }, [user]);
-  if (user) {
-    navigate("/profile");
-  }
   return (
     <div className="signin-page">
       <div className="signin-form">
@@ -73,7 +68,7 @@ export default function Signin() {
 
           <Form.Item label={null}>
             <Button type="primary" htmlType="submit">
-              Log in
+              Sign in
             </Button>
           </Form.Item>
         </Form>

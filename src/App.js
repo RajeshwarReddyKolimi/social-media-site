@@ -10,24 +10,35 @@ import { RecoilRoot, useRecoilState } from "recoil";
 import userState from "./atoms/userState";
 import useAuth from "./hooks/useAuth";
 import { useEffect } from "react";
+import Loader from "./utils/loader/Loader";
+import loadingState from "./atoms/loadingState";
 
 function App() {
   const [user, setUser] = useRecoilState(userState);
+  const [loading, setLoading] = useRecoilState(loadingState);
   const { getCurrentUser } = useAuth();
+  async function fetchUser() {
+    await getCurrentUser();
+  }
+  console.log(user);
   useEffect(() => {
-    setUser(getCurrentUser());
+    fetchUser();
   }, []);
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Layout />}>
-          <Route index element={<Home />} />
-          <Route path="/profile" element={<Profile />} />
-        </Route>
-        <Route path="*" element={<NotFound />} />
-        <Route path="/signin" element={<Signin />} />
-        <Route path="/signup" element={<Signup />} />
-      </Routes>
+      {loading ? (
+        <Loader />
+      ) : (
+        <Routes>
+          <Route path="/" element={<Layout />}>
+            <Route index element={<Home />} />
+            <Route path="/profile" element={<Profile />} />
+          </Route>
+          <Route path="/signin" element={<Signin />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      )}
     </BrowserRouter>
   );
 }

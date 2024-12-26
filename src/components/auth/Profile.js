@@ -5,18 +5,19 @@ import Signin from "./Signin";
 import { useNavigate } from "react-router";
 import { useRecoilState } from "recoil";
 import userState from "../../atoms/userState";
+import Loader from "../../utils/loader/Loader";
+import loadingState from "../../atoms/loadingState";
 
 export default function Profile() {
   const [user, setUser] = useRecoilState(userState);
-  console.log(user);
-  const { logout, getCurrentUser, signup, signin, currentUser } = useAuth();
+  const [loading, setLoading] = useRecoilState(loadingState);
+  const { logout, getCurrentUser, signup, signin } = useAuth();
   const navigate = useNavigate();
-  console.log(user);
   useEffect(() => {
     if (!user) {
       navigate("/signin");
     }
-  }, [user]);
+  }, [user, loading]);
   return (
     <div className="profile">
       <h1>Profile</h1>

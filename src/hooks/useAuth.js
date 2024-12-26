@@ -2,6 +2,7 @@ import { createClient } from "@supabase/supabase-js";
 import React, { useState } from "react";
 import { useRecoilState } from "recoil";
 import userState from "../atoms/userState";
+import loadingState from "../atoms/loadingState";
 
 export const supabase = createClient(
   "https://bspiizmczisjkgtgcqik.supabase.co",
@@ -10,10 +11,10 @@ export const supabase = createClient(
 
 export default function useAuth() {
   const [user, setUser] = useRecoilState(userState);
-  const [currentUser, setCurrentUser] = useState(null);
-  console.log(currentUser);
+  const [loading, setLoading] = useRecoilState(loadingState);
   async function fetchUserDetails(id) {
     try {
+      setLoading((prev) => prev + 1);
       const data = await supabase
         .from("Users")
         .select("*")
@@ -22,59 +23,94 @@ export default function useAuth() {
       return data;
     } catch (e) {
       console.error(e);
+    } finally {
+      setLoading((prev) => prev - 1);
     }
   }
-  async function signup() {
+  async function putUserDetails({ id, name, image, email }) {
     try {
+      setLoading((prev) => prev + 1);
+      const data = await supabase.from("Users").insert({
+        id,
+        name,
+        image,
+        email,
+      });
+      return data;
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoading((prev) => prev - 1);
+    }
+  }
+  async function signup(values) {
+    try {
+      setLoading((prev) => prev + 1);
       const { data: signupData, error: signupError } =
         await supabase.auth.signUp({
-          email: "a@a.com",
-          password: "1",
+          email: values?.email,
+          password: values?.password,
         });
       if (signupData) {
+        const detailsAdded = await putUserDetails({
+          id: signupData?.user?.id,
+          name: values?.name,
+          image: "",
+          email: values?.email,
+        });
+        if (detailsAdded?.error) return;
         const response = await fetchUserDetails(signupData?.user?.id);
-        setCurrentUser(response?.data);
         setUser(response?.data);
       }
     } catch (e) {
       console.error(e);
+    } finally {
+      setLoading((prev) => prev - 1);
     }
   }
   async function signin(values) {
     try {
+      setLoading((prev) => prev + 1);
       const { data: signinData, error: signinError } =
         await supabase.auth.signInWithPassword(values);
       if (signinData) {
         const response = await fetchUserDetails(signinData?.user?.id);
-        setCurrentUser(response?.data);
         setUser(response?.data);
       }
     } catch (e) {
       console.error(e);
+    } finally {
+      setLoading((prev) => prev - 1);
     }
   }
   async function getCurrentUser() {
     try {
+      setLoading((prev) => prev + 1);
       const { data: currentUserData, error: currentUserError } =
         await supabase.auth.getUser();
+      console.log(currentUserData);
       if (currentUserData?.user) {
         const response = await fetchUserDetails(currentUserData?.user?.id);
-        setCurrentUser(response?.data);
+        console.log(response?.data);
         setUser(response?.data);
       }
     } catch (e) {
       console.error(e);
+    } finally {
+      setLoading((prev) => prev - 1);
     }
   }
   async function logout() {
     try {
+      setLoading((prev) => prev + 1);
       const { data: logoutData, error: logoutError } =
         await supabase.auth.signOut();
-      setCurrentUser(null);
       setUser(null);
     } catch (e) {
       console.error(e);
+    } finally {
+      setLoading((prev) => prev - 1);
     }
   }
-  return { signup, signin, getCurrentUser, logout, currentUser };
+  return { signup, signin, getCurrentUser, logout };
 }
