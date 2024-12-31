@@ -1,15 +1,28 @@
-import React, { useState } from "react";
+import React from "react";
+import { Outlet, useLocation, useNavigate } from "react-router";
 import Navbar from "./Navbar";
-import { Outlet } from "react-router";
 import "./navbar.css";
-import Loader from "../../utils/loader/Loader";
+import { useRecoilValue } from "recoil";
 import loadingState from "../../atoms/loadingState";
-import { useRecoilState } from "recoil";
+import Loader from "../../utils/loader/Loader";
+import userState from "../../atoms/userState";
+import { useEffect } from "react";
 
 export default function Layout() {
-  const [loading, setLoading] = useRecoilState(loadingState);
+  const loading = useRecoilValue(loadingState);
+  const user = useRecoilValue(userState);
+  const navigate = useNavigate();
+  const location = useLocation();
+  useEffect(() => {
+    if (!user) {
+      navigate(`/signin?redirect=${location?.pathname}`);
+    }
+  }, [user]);
+
+  if (loading !== 0) return <Loader />;
+
   return (
-    <div>
+    <div className="layout">
       <Navbar />
       <div className="outlet">
         <Outlet />

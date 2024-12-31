@@ -12,6 +12,9 @@ import useAuth from "./hooks/useAuth";
 import { useEffect } from "react";
 import Loader from "./utils/loader/Loader";
 import loadingState from "./atoms/loadingState";
+import CreatePost from "./components/posts/CreatePost";
+import Chats from "./components/messages/Chats";
+import Messages from "./components/messages/Messages";
 
 function App() {
   const [user, setUser] = useRecoilState(userState);
@@ -20,25 +23,23 @@ function App() {
   async function fetchUser() {
     await getCurrentUser();
   }
-  console.log(user);
   useEffect(() => {
     fetchUser();
   }, []);
   return (
     <BrowserRouter>
-      {loading ? (
-        <Loader />
-      ) : (
-        <Routes>
-          <Route path="/" element={<Layout />}>
-            <Route index element={<Home />} />
-            <Route path="/profile" element={<Profile />} />
-          </Route>
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<Home />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/create" element={<CreatePost />} />
           <Route path="/signin" element={<Signin />} />
           <Route path="/signup" element={<Signup />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      )}
+          <Route path="/chat" element={<Chats />} />
+          <Route path="/chat/:id" element={<Messages />} />
+        </Route>
+        <Route path="*" element={<NotFound />} />
+      </Routes>
     </BrowserRouter>
   );
 }

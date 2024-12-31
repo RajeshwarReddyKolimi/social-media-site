@@ -9,11 +9,7 @@ import Post from "./Post";
 export default function PostCard({ post }) {
   return (
     <div className="post-card">
-      <UserCardMin
-        userId={post?.userId}
-        username={post?.username}
-        userDp={post?.userDp}
-      />
+      <UserCardMin user={post?.Users} />
       <Post post={post} />
     </div>
   );

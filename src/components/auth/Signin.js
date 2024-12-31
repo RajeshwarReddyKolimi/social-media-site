@@ -1,23 +1,28 @@
 import React, { useEffect } from "react";
 import { Button, Checkbox, Form, Input } from "antd";
 import Logo from "../../utils/Logo";
-import { Link, useNavigate } from "react-router";
+import { Link, useNavigate, useSearchParams } from "react-router";
 import useAuth from "../../hooks/useAuth";
 import { useRecoilState } from "recoil";
 import userState from "../../atoms/userState";
+
 const onFinish = (values) => {
   console.log("Success:", values);
 };
+
 const onFinishFailed = (errorInfo) => {
   console.log("Failed:", errorInfo);
 };
+
 export default function Signin() {
   const [user, setUser] = useRecoilState(userState);
   const navigate = useNavigate();
   const { signin } = useAuth();
+  const [searchParams, setSearchParams] = useSearchParams();
+  console.log(searchParams.get("redirect"));
   useEffect(() => {
     if (user) {
-      navigate("/profile");
+      navigate(searchParams?.get("redirect"));
     }
   }, [user]);
   return (

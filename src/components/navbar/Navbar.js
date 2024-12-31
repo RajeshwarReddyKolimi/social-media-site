@@ -33,11 +33,11 @@ const items = [
   {
     key: "3",
     icon: <MessageOutlined />,
-    label: <a href="/messages">Messages</a>,
+    label: <a href="/chat">Chats</a>,
   },
   {
     key: "4",
-    label: <button>Create</button>,
+    label: <a href="/create">Create</a>,
     icon: <PlusCircleOutlined />,
   },
   {

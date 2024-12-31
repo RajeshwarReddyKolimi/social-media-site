@@ -3,11 +3,7 @@ import React, { useState } from "react";
 import { useRecoilState } from "recoil";
 import userState from "../atoms/userState";
 import loadingState from "../atoms/loadingState";
-
-export const supabase = createClient(
-  "https://bspiizmczisjkgtgcqik.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJzcGlpem1jemlzamtndGdjcWlrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ0MTU3MTIsImV4cCI6MjA0OTk5MTcxMn0.Pef7hj6Fy0aJHC3Y8DGswosxJvMfsJxDy6V3lwBDfqU"
-);
+import { supabase } from "../config/supabase";
 
 export default function useAuth() {
   const [user, setUser] = useRecoilState(userState);
@@ -88,7 +84,6 @@ export default function useAuth() {
       setLoading((prev) => prev + 1);
       const { data: currentUserData, error: currentUserError } =
         await supabase.auth.getUser();
-      console.log(currentUserData);
       if (currentUserData?.user) {
         const response = await fetchUserDetails(currentUserData?.user?.id);
         console.log(response?.data);

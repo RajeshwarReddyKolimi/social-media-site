@@ -1,0 +1,61 @@
+.chat-list {
+  width: 100%;
+}
+
+.chat-card {
+  padding: 0.5rem;
+  border-bottom: 1px solid var(--border-color-1);
+}
+
+.messages-page {
+  position: relative;
+}
+
+.message-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+  height: 100vh;
+  overflow: auto;
+}
+
+.message > span {
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+  background-color: rgb(133, 11, 204);
+  color: white;
+}
+
+.sent-message {
+  text-align: right;
+}
+
+.received-message {
+  text-align: left;
+}
+
+.message-input-form {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  border: 1px solid var(--border-color-1);
+}
+
+.message-input-form > input {
+  width: 100%;
+  padding: 0.5rem;
+  color: white;
+  background-color: transparent;
+  border: none;
+}
+
+.message-input-form > button {
+  background-color: white;
+  color: black;
+  padding: 0.5rem;
+}

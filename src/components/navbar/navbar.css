@@ -12,11 +12,22 @@
   z-index: 10;
   padding: 1rem 0;
   background-color: black;
-  /* border: 1px solid white; */
   border-right: 1px solid var(--border-color-1) !important;
 }
 
 .outlet {
   width: 100%;
   min-height: 100vh;
+  max-width: 500px;
+  margin: auto;
+}
+
+@media screen and (min-width: 500px) {
+  .layout {
+    display: flex;
+    flex-direction: row;
+  }
+  .menu {
+    position: unset;
+  }
 }
