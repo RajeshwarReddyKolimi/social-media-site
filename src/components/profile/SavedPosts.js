@@ -6,8 +6,17 @@ export default function SavedPosts() {
   const [savedPosts, setSavedPosts] = useState();
   const fetchSavedPosts = async () => {
     try {
-      const { data, error } = await supabase.from("SavedPosts").select();
-      console.log(data);
+      const { data, error } = await supabase.from("SavedPosts").select(
+        `*,
+        Post:postId (
+          User:userId (id, name, image),
+          id,
+          caption,
+          image
+        )`
+      );
+      console.log(data, error);
+      setSavedPosts(data);
     } catch (e) {
       console.log(e);
     }
@@ -18,7 +27,7 @@ export default function SavedPosts() {
   return (
     <div className="saved-posts">
       {savedPosts?.map((post, id) => (
-        <PostCard post={post} key={id} />
+        <PostCard post={post?.Post} key={id} />
       ))}
     </div>
   );

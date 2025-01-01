@@ -16,7 +16,7 @@ export default function usePost() {
         .from("Posts")
         .select(
           `*,
-        Users (
+        User:userId (
           id,
           name,
           image

@@ -7,9 +7,10 @@ import "./post.css";
 import Post from "./Post";
 
 export default function PostCard({ post }) {
+  console.log(post);
   return (
     <div className="post-card">
-      <UserCardMin user={post?.Users} />
+      <UserCardMin user={post?.User} />
       <Post post={post} />
     </div>
   );
