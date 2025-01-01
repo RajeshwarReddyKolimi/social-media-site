@@ -15,6 +15,7 @@ export default function Profile() {
   const { logout, getCurrentUser, signup, signin } = useAuth();
   const [showItem, setShowItem] = useState("myPosts");
   const navigate = useNavigate();
+  console.log(process.env.REACT_APP_SUPABASE_URL);
   useEffect(() => {
     if (!loading && !user) {
       navigate("/signin");
