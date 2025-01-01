@@ -11,7 +11,6 @@ export default function Messages() {
   const [messages, setMessages] = useState([]);
   const [messageInput, setMessageInput] = useState("");
   const [receiverId, setReceiverId] = useState();
-  const room1 = supabase.channel("Messages");
   const fetchChatDetails = async () => {
     try {
       const { data, error } = await supabase
@@ -35,7 +34,8 @@ export default function Messages() {
         Receiver:receiver (id, name, image)
         `
         )
-        .or(`sender.eq.${user?.id}`, `receiver.eq.${user?.id}`);
+        .or(`sender.eq.${user?.id}, receiver.eq.${user?.id}`);
+      console.log(data);
       setMessages(data);
     } catch (e) {
       console.log(e);
@@ -44,17 +44,14 @@ export default function Messages() {
   const handleSendMessage = async (e) => {
     e.preventDefault();
     try {
-      // console.log(messageInput, user?.id, receiverId);
-      // const { data, error } = await room1.send({
-      //   type: "broadcast",
-      //   event: "test",
-      //   payload: {
-      //     message: messageInput,
-      //     id: receiverId,
-      //   },
-      // });
-      // console.log(data, error);
-      // setMessages(data);
+      const { data, error } = await supabase.from("Messages").insert({
+        sender: user?.id,
+        receiver: receiverId,
+        text: messageInput,
+        chatId,
+      });
+      console.log(data, error);
+      // if (!error) setMessages((prev) => [...prev, messageInput]);
     } catch (e) {
       console.log(e);
     }
@@ -63,14 +60,23 @@ export default function Messages() {
     fetchChatDetails();
     fetchMessages();
   }, []);
-
+  console.log(messages);
   useEffect(() => {
-    const subscription = room1
-      .on("message", (event, session) => {
-        console.log("Received message:", event.payload);
-      })
+    const subscription = supabase
+      .channel("message-channel")
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "Messages" },
+        (payload) => {
+          if (
+            payload?.new?.receiver == user?.id ||
+            payload?.new?.sender == user?.id
+          )
+            setMessages((prev) => [...prev, payload?.new]);
+          console.log("Change received!", payload?.new?.text);
+        }
+      )
       .subscribe();
-
     return () => {
       subscription.unsubscribe();
     };

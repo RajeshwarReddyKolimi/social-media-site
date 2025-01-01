@@ -1,20 +1,19 @@
+import { useEffect } from "react";
 import { BrowserRouter, Route, Routes } from "react-router";
+import { useRecoilState } from "recoil";
 import "./App.css";
-import Profile from "./components/auth/Profile";
-import Layout from "./components/navbar/Layout";
-import NotFound from "./components/navbar/NotFound";
-import Home from "./pages/home/Home";
+import loadingState from "./atoms/loadingState";
+import userState from "./atoms/userState";
 import Signin from "./components/auth/Signin";
 import Signup from "./components/auth/Signup";
-import { RecoilRoot, useRecoilState } from "recoil";
-import userState from "./atoms/userState";
-import useAuth from "./hooks/useAuth";
-import { useEffect } from "react";
-import Loader from "./utils/loader/Loader";
-import loadingState from "./atoms/loadingState";
-import CreatePost from "./components/posts/CreatePost";
 import Chats from "./components/messages/Chats";
 import Messages from "./components/messages/Messages";
+import Layout from "./components/navbar/Layout";
+import NotFound from "./components/navbar/NotFound";
+import CreatePost from "./components/posts/CreatePost";
+import useAuth from "./hooks/useAuth";
+import Home from "./pages/home/Home";
+import Profile from "./components/profile/Profile";
 
 function App() {
   const [user, setUser] = useRecoilState(userState);
