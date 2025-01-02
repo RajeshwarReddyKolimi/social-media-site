@@ -86,7 +86,6 @@ export default function useAuth() {
         await supabase.auth.getUser();
       if (currentUserData?.user) {
         const response = await fetchUserDetails(currentUserData?.user?.id);
-        console.log(response?.data);
         setUser(response?.data);
       }
     } catch (e) {

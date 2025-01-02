@@ -16,18 +16,16 @@ export default function MyPosts() {
           User:userId (id, name, image)`
         )
         .eq("userId", user?.id);
-      console.log(data, error);
       setMyPosts(data);
     } catch (e) {
       console.log(e);
     }
   };
-  console.log(myPosts);
   useEffect(() => {
     fetchMyPosts();
   }, []);
   return (
-    <div className="saved-posts">
+    <div className="posts">
       {myPosts?.map((post, id) => (
         <PostCard post={post} key={id} />
       ))}

@@ -34,6 +34,7 @@ export default function usePost() {
 
   async function createAPost({ userId, image, caption }) {
     try {
+      if (!user?.id) return;
       setLoading((prev) => prev + 1);
       const imageUrl = await uploadImage(image);
       const data = await supabase

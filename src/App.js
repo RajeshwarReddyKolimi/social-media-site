@@ -1,8 +1,7 @@
 import { useEffect } from "react";
 import { BrowserRouter, Route, Routes } from "react-router";
-import { useRecoilState } from "recoil";
+import { useRecoilValue } from "recoil";
 import "./App.css";
-import loadingState from "./atoms/loadingState";
 import userState from "./atoms/userState";
 import Signin from "./components/auth/Signin";
 import Signup from "./components/auth/Signup";
@@ -11,20 +10,30 @@ import Messages from "./components/messages/Messages";
 import Layout from "./components/navbar/Layout";
 import NotFound from "./components/navbar/NotFound";
 import CreatePost from "./components/posts/CreatePost";
-import useAuth from "./hooks/useAuth";
-import Home from "./pages/home/Home";
 import Profile from "./components/profile/Profile";
+import useAuth from "./hooks/useAuth";
+import useFollows from "./hooks/useFollows";
+import useLikedPosts from "./hooks/useLikedPosts";
+import useSavedPosts from "./hooks/useSavedPosts";
+import Home from "./pages/home/Home";
 
 function App() {
-  const [user, setUser] = useRecoilState(userState);
-  const [loading, setLoading] = useRecoilState(loadingState);
+  const user = useRecoilValue(userState);
+  const { fetchSavedPosts } = useSavedPosts();
+  const { fetchLikedPosts } = useLikedPosts();
+  const { fetchFollowings, fetchFollowers } = useFollows();
   const { getCurrentUser } = useAuth();
-  async function fetchUser() {
-    await getCurrentUser();
-  }
+
   useEffect(() => {
-    fetchUser();
+    getCurrentUser();
   }, []);
+  useEffect(() => {
+    fetchSavedPosts();
+    fetchLikedPosts();
+    fetchFollowers();
+    fetchFollowings();
+  }, [user]);
+
   return (
     <BrowserRouter>
       <Routes>

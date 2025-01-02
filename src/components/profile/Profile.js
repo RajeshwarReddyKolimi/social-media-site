@@ -8,6 +8,8 @@ import "./profile.css";
 import MyPosts from "./MyPosts";
 import SavedPosts from "./SavedPosts";
 import LikedPosts from "./LikedPosts";
+import Followers from "./Followers";
+import Followings from "./Followings";
 
 export default function Profile() {
   const [user, setUser] = useRecoilState(userState);
@@ -15,7 +17,6 @@ export default function Profile() {
   const { logout, getCurrentUser, signup, signin } = useAuth();
   const [showItem, setShowItem] = useState("myPosts");
   const navigate = useNavigate();
-  console.log(process.env.REACT_APP_SUPABASE_URL);
   useEffect(() => {
     if (!loading && !user) {
       navigate("/signin");
@@ -29,10 +30,16 @@ export default function Profile() {
       </div>
       <button onClick={logout}>Logout</button>
 
+      <button onClick={() => setShowItem("followers")}>Followers</button>
+      <button onClick={() => setShowItem("following")}>Following</button>
       <button onClick={() => setShowItem("myPosts")}>My Posts</button>
       <button onClick={() => setShowItem("savedPosts")}>Saved Posts</button>
       <button onClick={() => setShowItem("likedPosts")}>Liked Posts</button>
-      {showItem === "myPosts" ? (
+      {showItem === "followers" ? (
+        <Followers />
+      ) : showItem === "following" ? (
+        <Followings />
+      ) : showItem === "myPosts" ? (
         <MyPosts />
       ) : showItem === "savedPosts" ? (
         <SavedPosts />

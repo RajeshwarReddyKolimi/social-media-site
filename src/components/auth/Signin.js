@@ -5,6 +5,7 @@ import { Link, useNavigate, useSearchParams } from "react-router";
 import useAuth from "../../hooks/useAuth";
 import { useRecoilState } from "recoil";
 import userState from "../../atoms/userState";
+import "./index.css";
 
 const onFinish = (values) => {
   console.log("Success:", values);
