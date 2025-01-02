@@ -47,5 +47,22 @@ export default function usePost() {
       setLoading((prev) => prev - 1);
     }
   }
-  return { fetchAllPosts, createAPost };
+
+  async function deletePost({ postId }) {
+    try {
+      if (!user?.id) return;
+      setLoading((prev) => prev + 1);
+      const data = await supabase
+        .from("Posts")
+        .delete()
+        .eq("id", postId)
+        .eq("userId", user?.id);
+      return data;
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoading((prev) => prev - 1);
+    }
+  }
+  return { fetchAllPosts, createAPost, deletePost };
 }

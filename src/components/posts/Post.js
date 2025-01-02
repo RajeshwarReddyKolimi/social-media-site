@@ -8,8 +8,10 @@ import savedPostsState from "../../atoms/savedPosts";
 import userState from "../../atoms/userState";
 import useLikedPosts from "../../hooks/useLikedPosts";
 import useSavedPosts from "../../hooks/useSavedPosts";
+import { MdDelete } from "react-icons/md";
+import usePost from "../../hooks/usePost";
 
-export default function Post({ post }) {
+export default function Post({ post, canDelete }) {
   const user = useRecoilValue(userState);
   const { addToSavedPosts, removeFromSavedPosts } = useSavedPosts();
   const { addToLikedPosts, removeFromLikedPosts } = useLikedPosts();
@@ -17,6 +19,8 @@ export default function Post({ post }) {
   const likedPosts = useRecoilValue(likedPostsState);
   const [isSaved, setIsSaved] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
+
+  const { deletePost } = usePost();
 
   useEffect(() => {
     setIsSaved(!!savedPosts?.find((spost) => spost?.postId === post?.id));
@@ -52,6 +56,11 @@ export default function Post({ post }) {
         ) : (
           <button onClick={addToSavedPosts}>
             <FaRegBookmark className="icon-2" />
+          </button>
+        )}
+        {canDelete && (
+          <button onClick={() => deletePost({ postId: post?.id })}>
+            <MdDelete className="icon-2" />
           </button>
         )}
       </div>

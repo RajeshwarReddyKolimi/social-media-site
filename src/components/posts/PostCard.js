@@ -6,11 +6,11 @@ import UserCardMin from "./UserCardMin";
 import "./post.css";
 import Post from "./Post";
 
-export default function PostCard({ post }) {
+export default function PostCard({ post, canDelete }) {
   return (
     <div className="post-card">
       <UserCardMin user={post?.User} />
-      <Post post={post} />
+      <Post post={post} canDelete={canDelete} />
     </div>
   );
 }

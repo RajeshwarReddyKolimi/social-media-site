@@ -21,13 +21,15 @@ export default function MyPosts() {
       console.log(e);
     }
   };
+
   useEffect(() => {
     fetchMyPosts();
   }, []);
+
   return (
     <div className="posts">
       {myPosts?.map((post, id) => (
-        <PostCard post={post} key={id} />
+        <PostCard post={post} key={id} canDelete={true} />
       ))}
     </div>
   );
