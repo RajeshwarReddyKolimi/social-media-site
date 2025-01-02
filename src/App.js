@@ -16,6 +16,7 @@ import useFollows from "./hooks/useFollows";
 import useLikedPosts from "./hooks/useLikedPosts";
 import useSavedPosts from "./hooks/useSavedPosts";
 import Home from "./pages/home/Home";
+import UserProfile from "./components/users/UserProfile";
 
 function App() {
   const user = useRecoilValue(userState);
@@ -27,6 +28,7 @@ function App() {
   useEffect(() => {
     getCurrentUser();
   }, []);
+
   useEffect(() => {
     fetchSavedPosts();
     fetchLikedPosts();
@@ -39,6 +41,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
+          <Route path="/user/:id" element={<UserProfile />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/create" element={<CreatePost />} />
           <Route path="/signin" element={<Signin />} />

@@ -35,7 +35,6 @@ export default function Messages() {
         `
         )
         .or(`sender.eq.${user?.id}, receiver.eq.${user?.id}`);
-      console.log(data);
       setMessages(data);
     } catch (e) {
       console.log(e);
@@ -50,7 +49,6 @@ export default function Messages() {
         text: messageInput,
         chatId,
       });
-      console.log(data, error);
       // if (!error) setMessages((prev) => [...prev, messageInput]);
     } catch (e) {
       console.log(e);
@@ -60,7 +58,6 @@ export default function Messages() {
     fetchChatDetails();
     fetchMessages();
   }, []);
-  console.log(messages);
   useEffect(() => {
     const subscription = supabase
       .channel("message-channel")

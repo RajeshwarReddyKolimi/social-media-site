@@ -20,7 +20,6 @@ export default function Signin() {
   const navigate = useNavigate();
   const { signin } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
-  console.log(searchParams.get("redirect"));
   useEffect(() => {
     if (user) {
       navigate(searchParams?.get("redirect"));

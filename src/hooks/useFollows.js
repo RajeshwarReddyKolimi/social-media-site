@@ -13,14 +13,13 @@ export default function useFollows() {
   const fetchFollowers = async () => {
     try {
       if (!user?.id) return;
-
       const { data, error } = await supabase
         .from("Follows")
         .select(
           `
-                *,
-                User:follower(id, name, image)
-                `
+            *,
+            User:follower(id, name, image)
+            `
         )
         .eq("following", user?.id);
       setFollowers(data);

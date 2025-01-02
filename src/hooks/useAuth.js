@@ -10,7 +10,7 @@ export default function useAuth() {
   const [loading, setLoading] = useRecoilState(loadingState);
   async function fetchUserDetails(id) {
     try {
-      setLoading((prev) => prev + 1);
+      // setLoading((prev) => prev + 1);
       const data = await supabase
         .from("Users")
         .select("*")
@@ -20,7 +20,7 @@ export default function useAuth() {
     } catch (e) {
       console.error(e);
     } finally {
-      setLoading((prev) => prev - 1);
+      // setLoading((prev) => prev - 1);
     }
   }
   async function putUserDetails({ id, name, image, email }) {
@@ -106,5 +106,5 @@ export default function useAuth() {
       setLoading((prev) => prev - 1);
     }
   }
-  return { signup, signin, getCurrentUser, logout };
+  return { signup, signin, getCurrentUser, logout, fetchUserDetails };
 }
