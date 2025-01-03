@@ -1,19 +1,20 @@
+import { SearchOutlined } from "@ant-design/icons";
+import { Button, Form, Input, Tooltip } from "antd";
 import React, { useState } from "react";
-import { supabase } from "../../config/supabase";
 import { useRecoilValue } from "recoil";
 import userState from "../../atoms/userState";
+import { supabase } from "../../config/supabase";
 
 export default function SearchInput({ setSearchResults }) {
-  const [searchInput, setSearchInput] = useState("");
   const user = useRecoilValue(userState);
 
-  const handleSearch = async (e) => {
-    e.preventDefault();
+  const handleSearch = async (values) => {
     try {
+      if (!values?.searchInput?.trim()) return;
       const { data, error } = await supabase
         .from("Users")
         .select("*")
-        .ilike("name", `%${searchInput}%`)
+        .ilike("name", `%${values?.searchInput}%`)
         .neq("id", user?.id)
         .limit(10);
       setSearchResults(data);
@@ -24,10 +25,27 @@ export default function SearchInput({ setSearchResults }) {
 
   return (
     <div>
-      <form onSubmit={handleSearch}>
-        <input type="text" onChange={(e) => setSearchInput(e.target.value)} />
-        <button typoe="submit">Search</button>
-      </form>
+      <Form
+        className="search-form"
+        name="searchForm"
+        style={{
+          maxWidth: 500,
+        }}
+        initialValues={{
+          remember: true,
+        }}
+        onFinish={(values) => handleSearch(values)}
+        onFinishFailed={(e) => console.log(e)}
+        autoComplete="off"
+      >
+        <Form.Item name="searchInput">
+          <Input placeholder="Search username" />
+        </Form.Item>
+
+        <Form.Item>
+          <Button htmlType="submit" icon={<SearchOutlined />} />
+        </Form.Item>
+      </Form>
     </div>
   );
 }

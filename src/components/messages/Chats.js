@@ -19,7 +19,6 @@ export default function Chats() {
           User2:user2Id (id, name, image)
         `
       );
-      console.log(data, error);
       setChats(data);
     } catch (e) {
       console.log(e);

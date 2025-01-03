@@ -7,15 +7,17 @@ import {
   UserOutlined,
 } from "@ant-design/icons";
 import { Menu } from "antd";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Logo from "../../assets/Logo";
 import Search from "../search/Search";
 import "./index.css";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import LogoMini from "../../assets/LogoMini";
 const Navbar = () => {
   const [showSearch, setShowSearch] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+
   const largeScreenItems = [
     {
       key: "0",
@@ -127,6 +129,9 @@ const Navbar = () => {
       onClick: () => console.log("More clicked"),
     },
   ];
+  useEffect(() => {
+    setShowSearch(false);
+  }, [location]);
   return (
     <>
       <Menu

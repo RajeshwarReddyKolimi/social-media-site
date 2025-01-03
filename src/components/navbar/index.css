@@ -53,6 +53,7 @@
   }
 
   .mid-screen-menu {
+    width: 5rem;
     padding: 0.5rem;
     border-right: 1px solid var(--border-color-1) !important;
     display: flex;
