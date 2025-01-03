@@ -4,11 +4,16 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import loadingState from "../../atoms/loadingState";
 import userState from "../../atoms/userState";
 import ChatCard from "./ChatCard";
+import "./index.css";
+import Messages from "./Messages";
+import { useParams } from "react-router";
 
 export default function Chats() {
   const [chats, setChats] = useState([]);
   const [loading, setLoading] = useRecoilState(loadingState);
   const user = useRecoilValue(userState);
+  const { id: chatId } = useParams();
+
   const getChats = async () => {
     try {
       // setLoading((prev) => prev + 1);
@@ -32,10 +37,12 @@ export default function Chats() {
     else setChats([]);
   }, [user]);
   return (
-    <div className="chat-list">
-      {chats?.map((chat, id) => (
-        <ChatCard chat={chat} key={id} />
-      ))}
-    </div>
+    <>
+      <div className="chat-list">
+        {chats?.map((chat, id) => (
+          <ChatCard chat={chat} key={id} />
+        ))}
+      </div>
+    </>
   );
 }

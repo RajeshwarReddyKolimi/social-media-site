@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { supabase } from "../../config/supabase";
-import UserCardMin from "../posts/UserCardMin";
+import UserPostCard from "../profile/UserPostCard";
 import { useRecoilState, useRecoilValue } from "recoil";
 import userState from "../../atoms/userState";
 
@@ -31,7 +31,7 @@ export default function UserFollowers({ user }) {
   return (
     <div>
       {userFollowers?.map((user, id) => (
-        <UserCardMin user={user?.User} key={id} />
+        <UserPostCard user={user?.User} key={id} />
       ))}
     </div>
   );

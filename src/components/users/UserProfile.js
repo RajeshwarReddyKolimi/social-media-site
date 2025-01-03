@@ -1,16 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router";
+import { useRecoilValue } from "recoil";
+import followingsState from "../../atoms/followings";
 import useAuth from "../../hooks/useAuth";
-import UserPosts from "./UserPosts";
-import Followers from "../profile/Followers";
-import Followings from "../profile/Followings";
-import "./../profile/profile.css";
+import useFollows from "../../hooks/useFollows";
+import "./../profile/index.css";
 import UserFollowers from "./UserFollowers";
 import UserFollowings from "./UserFollowings";
-import useFollows from "../../hooks/useFollows";
-import { useRecoilValue } from "recoil";
-import followersState from "../../atoms/followers";
-import followingsState from "../../atoms/followings";
+import UserPosts from "./UserPosts";
 
 export default function OthersProfile() {
   const { handleFollow, handleUnfollow } = useFollows();

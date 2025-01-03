@@ -59,3 +59,15 @@ input:hover {
   background-color: black !important;
   color: white !important;
 }
+
+a {
+  text-decoration: none;
+}
+
+.flex-buffer {
+  flex: 1;
+}
+
+::-webkit-scrollbar {
+  display: none;
+}

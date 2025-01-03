@@ -1,12 +1,10 @@
 .outlet {
   width: 100%;
   min-height: 100vh;
-  max-width: 500px;
-  margin: auto;
 }
 
 .menu {
-  background-color: black;
+  background-color: rgba(0, 0, 0);
   z-index: 10;
   position: fixed;
   left: 0;
@@ -26,6 +24,7 @@
   align-items: center;
   bottom: 0;
   right: 0;
+  height: 4rem;
 }
 
 .small-screen-menu > li {
@@ -40,24 +39,19 @@
 }
 
 @media screen and (min-width: 500px) {
-  .layout {
-    display: flex;
-    flex-direction: row;
-  }
-  .menu {
-    position: unset;
-  }
   .large-screen-menu,
   .small-screen-menu {
     display: none;
   }
 
   .mid-screen-menu {
+    height: 100vh;
     width: 5rem;
     padding: 0.5rem;
     border-right: 1px solid var(--border-color-1) !important;
     display: flex;
     gap: 0.5rem;
+    position: fixed;
     flex-direction: column;
     align-items: center;
     top: 0;
@@ -68,6 +62,11 @@
     display: grid !important;
     place-content: center !important;
   }
+  .outlet {
+    position: relative;
+    left: 5rem;
+    width: calc(100vw - 5rem);
+  }
 }
 
 @media screen and (min-width: 1024px) {
@@ -76,13 +75,19 @@
     display: none;
   }
   .large-screen-menu {
-    width: 100%;
-    max-width: 250px;
+    width: 250px;
     height: 100vh;
     display: flex;
+    position: fixed;
     flex-direction: column;
     gap: 0.25rem;
     padding: 1rem 0;
     border-right: 1px solid var(--border-color-1) !important;
+  }
+  .outlet {
+    position: relative;
+    left: 250px;
+    right: 0;
+    width: calc(100vw - 250px);
   }
 }

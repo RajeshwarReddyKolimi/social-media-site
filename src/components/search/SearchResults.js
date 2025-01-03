@@ -1,5 +1,5 @@
 import React from "react";
-import UserCardMin from "../posts/UserCardMin";
+import UserPostCard from "../profile/UserPostCard";
 import { Link } from "react-router";
 
 export default function SearchResults({ searchResults }) {
@@ -7,7 +7,7 @@ export default function SearchResults({ searchResults }) {
     <div>
       {searchResults?.map((user, id) => (
         <Link to={`/user/${user?.id}`} key={id}>
-          <UserCardMin user={user} />
+          <UserPostCard user={user} />
         </Link>
       ))}
     </div>

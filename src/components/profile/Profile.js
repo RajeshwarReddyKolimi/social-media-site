@@ -4,7 +4,6 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import loadingState from "../../atoms/loadingState";
 import userState from "../../atoms/userState";
 import useAuth from "../../hooks/useAuth";
-import "./profile.css";
 import MyPosts from "./MyPosts";
 import SavedPosts from "./SavedPosts";
 import LikedPosts from "./LikedPosts";
@@ -12,6 +11,7 @@ import Followers from "./Followers";
 import Followings from "./Followings";
 import followersState from "../../atoms/followers";
 import followingsState from "../../atoms/followings";
+import "./index.css";
 
 export default function Profile() {
   const [user, setUser] = useRecoilState(userState);
