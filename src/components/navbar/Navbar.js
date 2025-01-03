@@ -1,6 +1,5 @@
 import {
   HomeOutlined,
-  InstagramOutlined,
   MenuOutlined,
   MessageOutlined,
   PlusCircleOutlined,
@@ -8,13 +7,16 @@ import {
   UserOutlined,
 } from "@ant-design/icons";
 import { Menu } from "antd";
-import "./navbar.css";
 import React, { useState } from "react";
-import Logo from "../../utils/Logo";
+import Logo from "../../assets/Logo";
 import Search from "../search/Search";
+import "./index.css";
+import { useNavigate } from "react-router";
+import LogoMini from "../../assets/LogoMini";
 const Navbar = () => {
   const [showSearch, setShowSearch] = useState(false);
-  const items = [
+  const navigate = useNavigate();
+  const largeScreenItems = [
     {
       key: "0",
       label: (
@@ -56,14 +58,97 @@ const Navbar = () => {
       label: <button>More</button>,
     },
   ];
+  const midScreenItems = [
+    {
+      key: "0",
+      label: <LogoMini />,
+      onClick: () => navigate("/"),
+    },
+    {
+      key: "1",
+      icon: <HomeOutlined />,
+      onClick: () => navigate("/"),
+    },
+    {
+      key: "2",
+      icon: <SearchOutlined />,
+      onClick: () => setShowSearch((prev) => !prev),
+    },
+    {
+      key: "3",
+      icon: <MessageOutlined />,
+      onClick: () => navigate("/chat"),
+    },
+    {
+      key: "4",
+      icon: <PlusCircleOutlined />,
+      onClick: () => navigate("/create"),
+    },
+    {
+      key: "5",
+      icon: <UserOutlined />,
+      onClick: () => navigate("/profile"),
+    },
+    {
+      key: "6",
+      icon: <MenuOutlined />,
+      onClick: () => console.log("More clicked"),
+    },
+  ];
+  const smallScreenItems = [
+    {
+      key: "1",
+      icon: <HomeOutlined />,
+      onClick: () => navigate("/"),
+    },
+    {
+      key: "2",
+      icon: <SearchOutlined />,
+      onClick: () => setShowSearch((prev) => !prev),
+    },
+    {
+      key: "3",
+      icon: <MessageOutlined />,
+      onClick: () => navigate("/chat"),
+    },
+    {
+      key: "4",
+      icon: <PlusCircleOutlined />,
+      onClick: () => navigate("/create"),
+    },
+    {
+      key: "5",
+      icon: <UserOutlined />,
+      onClick: () => navigate("/profile"),
+    },
+    {
+      key: "6",
+      icon: <MenuOutlined />,
+      onClick: () => console.log("More clicked"),
+    },
+  ];
   return (
     <>
       <Menu
-        className="menu"
+        className="menu large-screen-menu"
         defaultSelectedKeys={["1"]}
         theme="dark"
         defaultOpenKeys={["sub1"]}
-        items={items}
+        items={largeScreenItems}
+      />
+      <Menu
+        className="menu mid-screen-menu"
+        defaultSelectedKeys={["1"]}
+        theme="dark"
+        defaultOpenKeys={["sub1"]}
+        items={midScreenItems}
+      />
+      <Menu
+        className="menu small-screen-menu"
+        defaultSelectedKeys={["1"]}
+        theme="dark"
+        defaultOpenKeys={["sub1"]}
+        items={smallScreenItems}
       />
       {showSearch && <Search />}
     </>

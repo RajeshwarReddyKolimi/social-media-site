@@ -1,11 +1,11 @@
 import React, { useEffect } from "react";
 import { Button, Checkbox, Form, Input } from "antd";
-import Logo from "../../utils/Logo";
 import { Link, useNavigate, useSearchParams } from "react-router";
 import useAuth from "../../hooks/useAuth";
 import { useRecoilState } from "recoil";
 import userState from "../../atoms/userState";
 import "./index.css";
+import Logo from "../../assets/Logo";
 
 const onFinish = (values) => {
   console.log("Success:", values);

@@ -1,7 +1,7 @@
 import React from "react";
 import { Outlet, useLocation, useNavigate } from "react-router";
 import Navbar from "./Navbar";
-import "./navbar.css";
+import "./index.css";
 import { useRecoilValue } from "recoil";
 import loadingState from "../../atoms/loadingState";
 import Loader from "../../utils/loader/Loader";
