@@ -13,8 +13,10 @@ export default function MyPosts() {
         .from("Posts")
         .select(
           `*,
-          User:userId (id, name, image)`
+          User:userId (id, name, image),
+          likes:LikedPosts!postId(postId)`
         )
+
         .eq("userId", user?.id);
       setMyPosts(data);
     } catch (e) {

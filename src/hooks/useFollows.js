@@ -53,6 +53,7 @@ export default function useFollows() {
       const { data, error } = await supabase
         .from("Follows")
         .insert({ follower: user?.id, following: userId });
+      console.log(data);
       fetchFollowings();
     } catch (e) {
       console.log(e);

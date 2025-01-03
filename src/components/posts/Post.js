@@ -19,7 +19,7 @@ export default function Post({ post, canDelete }) {
   const likedPosts = useRecoilValue(likedPostsState);
   const [isSaved, setIsSaved] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
-
+  const [likesCount, setLikesCount] = useState(post?.likes?.length || 0);
   const { deletePost } = usePost();
 
   useEffect(() => {
@@ -29,17 +29,27 @@ export default function Post({ post, canDelete }) {
   useEffect(() => {
     setIsLiked(!!likedPosts?.find((lpost) => lpost?.postId === post?.id));
   }, [likedPosts]);
-
   return (
     <div className="post">
       <img src={post?.image} />
       <div className="post-action-items">
         {isLiked ? (
-          <button onClick={() => removeFromLikedPosts({ postId: post?.id })}>
+          <button
+            onClick={() => {
+              removeFromLikedPosts({ postId: post?.id });
+              setLikesCount((prev) => prev - 1);
+            }}
+          >
             <FaHeart className="icon-2" style={{ fill: "#e31b23" }} />
+            {likesCount}
           </button>
         ) : (
-          <button onClick={() => addToLikedPosts({ postId: post?.id })}>
+          <button
+            onClick={() => {
+              addToLikedPosts({ postId: post?.id });
+              setLikesCount((prev) => prev + 1);
+            }}
+          >
             <FaRegHeart className="icon-2" />
           </button>
         )}

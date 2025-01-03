@@ -12,18 +12,33 @@ export default function usePost() {
     try {
       if (!user?.id) return;
       // setLoading((prev) => prev + 1);
+      // const { data, error } = await supabase
+      //   .from("Posts")
+      //   .select(
+      //     `*,
+      //   User:userId (
+      //     id,
+      //     name,
+      //     image
+      //   )`
+      //   )
+      //   .neq(`userId`, user?.id);
+      // error && console.log(error);
+
       const { data, error } = await supabase
         .from("Posts")
         .select(
           `*,
-        User:userId (
-          id,
-          name,
-          image
-        )`
+     User:userId (
+       id,
+       name,
+       image
+     ),
+     likes:LikedPosts!postId(postId)`
         )
-        .neq(`userId`, user?.id);
-      error && console.log(error);
+        .neq("userId", user?.id)
+        .order("created_at", { ascending: false });
+
       return data;
     } catch (e) {
       console.error(e);
