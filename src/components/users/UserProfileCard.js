@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from "react";
-import useFollows from "../../hooks/useFollows";
-import followingsState from "../../atoms/followings";
-import { useRecoilValue } from "recoil";
-import "./index.css";
 import { Button } from "antd";
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router";
+import { useRecoilValue } from "recoil";
+import followingsState from "../../atoms/followings";
+import useFollows from "../../hooks/useFollows";
+import "./index.css";
 
-export default function UserPostCard({ user, isMine }) {
+export default function UserProfileCard({ user, isMine }) {
   const { handleFollow, handleUnfollow } = useFollows();
   const followings = useRecoilValue(followingsState);
   const [isFollowing, setIsFollowing] = useState(false);
@@ -13,10 +14,10 @@ export default function UserPostCard({ user, isMine }) {
     setIsFollowing(
       !!followings?.find((fuser) => fuser?.following === user?.id)
     );
-  }, [followings]);
+  }, [followings, user]);
 
   return (
-    <div className="user-post-card">
+    <Link to={`/user/${user?.id}`} className="user-profile-card">
       <img src={user?.image} />
       <p>{user?.name}</p>
       <div className="flex-buffer" />
@@ -31,6 +32,6 @@ export default function UserPostCard({ user, isMine }) {
           Unfollow
         </Button>
       )}
-    </div>
+    </Link>
   );
 }

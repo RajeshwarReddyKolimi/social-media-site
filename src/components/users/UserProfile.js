@@ -9,55 +9,60 @@ import UserFollowers from "./UserFollowers";
 import UserFollowings from "./UserFollowings";
 import UserPosts from "./UserPosts";
 import { Button } from "antd";
+import userState from "../../atoms/userState";
 
-export default function OthersProfile() {
+export default function UserProfile() {
   const { handleFollow, handleUnfollow } = useFollows();
   const followings = useRecoilValue(followingsState);
   const [user, setUser] = useState();
   const { id } = useParams();
+  const currentUser = useRecoilValue(userState);
   const { fetchUserDetails } = useAuth();
   const [showItem, setShowItem] = useState("posts");
   const [isFollowing, setIsFollowing] = useState(false);
+  const [isMe, setIsMe] = useState(false);
 
   useEffect(() => {
     setIsFollowing(!!followings?.find((fuser) => fuser?.following === id));
-  }, [followings]);
+  }, [followings, id]);
 
   const fetchUser = async () => {
     const { data, error } = await fetchUserDetails(id);
     setUser(data);
   };
-
   useEffect(() => {
-    fetchUser();
-  }, []);
+    setIsMe(currentUser?.id == id);
+    if (currentUser?.id != id) fetchUser();
+    else setUser(currentUser);
+  }, [id]);
   return (
     <div className="profile">
       <div className="profile-header">
         <img src={user?.image} />
         <h1>{user?.name}</h1>
         <div className="flex-buffer" />
-        {isFollowing ? (
-          <Button
-            className="follow-button"
-            onClick={(e) => {
-              e.preventDefault();
-              handleUnfollow({ userId: user?.id });
-            }}
-          >
-            Unfollow
-          </Button>
-        ) : (
-          <Button
-            className="follow-button"
-            onClick={(e) => {
-              e.preventDefault();
-              handleFollow({ userId: user?.id });
-            }}
-          >
-            Unfollow
-          </Button>
-        )}
+        {!isMe &&
+          (isFollowing ? (
+            <Button
+              className="follow-button"
+              onClick={(e) => {
+                e.preventDefault();
+                handleUnfollow({ userId: user?.id });
+              }}
+            >
+              Unfollow
+            </Button>
+          ) : (
+            <Button
+              className="follow-button"
+              onClick={(e) => {
+                e.preventDefault();
+                handleFollow({ userId: user?.id });
+              }}
+            >
+              Unfollow
+            </Button>
+          ))}
       </div>
       <div className="profile-button-container">
         <button

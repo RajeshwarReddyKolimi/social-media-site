@@ -16,8 +16,11 @@ import "./index.css";
 import { useLocation, useNavigate } from "react-router";
 import LogoMini from "../../assets/LogoMini";
 import MoreItems from "./MoreItems";
+import { useRecoilValue } from "recoil";
+import userState from "../../atoms/userState";
 const Navbar = () => {
   const [showSearch, setShowSearch] = useState(false);
+  const user = useRecoilValue(userState);
   const navigate = useNavigate();
   const location = useLocation();
   const [showMoreItems, setShowMoreItems] = useState(false);
@@ -56,7 +59,7 @@ const Navbar = () => {
     {
       key: "5",
       icon: <UserOutlined />,
-      label: <a href="/profile">Profile</a>,
+      label: <a href={`/user/${user?.id}`}>Profile</a>,
     },
     {
       key: "6",

@@ -1,36 +1,27 @@
 import React, { useEffect, useState } from "react";
-import { supabase } from "../../config/supabase";
-import UserPostCard from "../profile/UserPostCard";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilValue } from "recoil";
+import followersState from "../../atoms/followers";
 import userState from "../../atoms/userState";
+import useFollows from "../../hooks/useFollows";
+import UserProfileCard from "./UserProfileCard";
 
 export default function UserFollowers({ user }) {
   const [userFollowers, setUserFollowers] = useState([]);
   const currentUser = useRecoilValue(userState);
+  const { fetchFollowers } = useFollows();
+  const followers = useRecoilValue(followersState);
   const fetchUserFollowers = async () => {
-    try {
-      if (!user?.id) return;
-      const { data, error } = await supabase
-        .from("Follows")
-        .select(
-          `
-                  *,
-                  User:follower(id, name, image)
-                  `
-        )
-        .eq("following", user?.id);
-      setUserFollowers(data);
-    } catch (e) {
-      console.log(e);
-    }
+    const data = await fetchFollowers(user);
+    setUserFollowers(data);
   };
   useEffect(() => {
-    fetchUserFollowers();
-  }, []);
+    if (user?.id == currentUser?.id) setUserFollowers(followers);
+    else fetchUserFollowers();
+  }, [user]);
   return (
     <div>
       {userFollowers?.map((user, id) => (
-        <UserPostCard
+        <UserProfileCard
           user={user?.User}
           key={id}
           isMine={user?.User?.id === currentUser?.id}

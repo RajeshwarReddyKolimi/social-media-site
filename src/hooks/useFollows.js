@@ -9,10 +9,10 @@ import followingsState from "../atoms/followings";
 export default function useFollows() {
   const [followers, setFollowers] = useRecoilState(followersState);
   const [followings, setFollowings] = useRecoilState(followingsState);
-  const user = useRecoilValue(userState);
-  const fetchFollowers = async () => {
+  const currentUser = useRecoilValue(userState);
+  const fetchFollowers = async (user) => {
     try {
-      if (!user?.id) return;
+      if (!currentUser?.id) return;
       const { data, error } = await supabase
         .from("Follows")
         .select(
@@ -21,18 +21,17 @@ export default function useFollows() {
             User:follower(id, name, image)
             `
         )
-        .eq("following", user?.id)
-        .neq("follower", user?.id);
-
-      setFollowers(data);
+        .eq("following", user?.id);
+      if (currentUser?.id == user?.id) setFollowers(data);
+      else return data;
     } catch (e) {
       console.log(e);
     }
   };
 
-  const fetchFollowings = async () => {
+  const fetchFollowings = async (user) => {
     try {
-      if (!user?.id) return;
+      if (!currentUser?.id) return;
 
       const { data, error } = await supabase
         .from("Follows")
@@ -42,9 +41,10 @@ export default function useFollows() {
                 User:following(id, name, image)
                 `
         )
-        .eq("follower", user?.id)
-        .neq("following", user?.id);
-      setFollowings(data);
+        .eq("follower", user?.id);
+
+      if (currentUser?.id == user?.id) setFollowings(data);
+      else return data;
     } catch (e) {
       console.log(e);
     }
@@ -52,11 +52,10 @@ export default function useFollows() {
 
   const handleFollow = async ({ userId }) => {
     try {
-      if (!user?.id) return;
+      if (!currentUser?.id) return;
       const { data, error } = await supabase
         .from("Follows")
-        .insert({ follower: user?.id, following: userId });
-      console.log(data);
+        .insert({ follower: currentUser?.id, following: userId });
       fetchFollowings();
     } catch (e) {
       console.log(e);
@@ -65,13 +64,12 @@ export default function useFollows() {
 
   const handleUnfollow = async ({ userId }) => {
     try {
-      if (!user?.id) return;
+      if (!currentUser?.id) return;
       const { data, error } = await supabase
         .from("Follows")
         .delete()
-        .eq("follower", user?.id)
+        .eq("follower", currentUser?.id)
         .eq("following", userId);
-      console.log(data, error);
       fetchFollowings();
     } catch (e) {
       console.log(e);

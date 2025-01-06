@@ -10,15 +10,14 @@ import Messages from "./components/messages/Messages";
 import Layout from "./components/navbar/Layout";
 import NotFound from "./components/navbar/NotFound";
 import CreatePost from "./components/posts/CreatePost";
-import Profile from "./components/profile/Profile";
 import useAuth from "./hooks/useAuth";
 import useFollows from "./hooks/useFollows";
 import useLikedPosts from "./hooks/useLikedPosts";
 import useSavedPosts from "./hooks/useSavedPosts";
 import Home from "./pages/home/Home";
-import UserProfile from "./components/users/UserProfile";
 import SavedPosts from "./components/profile/SavedPosts";
 import LikedPosts from "./components/profile/LikedPosts";
+import UserProfile from "./components/users/UserProfile";
 
 function App() {
   const user = useRecoilValue(userState);
@@ -32,10 +31,10 @@ function App() {
   }, []);
 
   useEffect(() => {
-    fetchSavedPosts();
-    fetchLikedPosts();
-    fetchFollowers();
-    fetchFollowings();
+    fetchSavedPosts(user);
+    fetchLikedPosts(user);
+    fetchFollowers(user);
+    fetchFollowings(user);
   }, [user]);
 
   return (
@@ -44,7 +43,6 @@ function App() {
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
           <Route path="/user/:id" element={<UserProfile />} />
-          <Route path="/profile" element={<Profile />} />
           <Route path="/create" element={<CreatePost />} />
           <Route path="/signin" element={<Signin />} />
           <Route path="/signup" element={<Signup />} />

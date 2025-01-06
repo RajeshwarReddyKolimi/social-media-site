@@ -22,25 +22,18 @@
   padding: 0.25rem;
 }
 
-.user-post-card {
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 1rem;
-  padding: 0.5rem;
+.follow-button {
+  background-color: transparent;
+  border-color: transparent;
 }
 
-.user-post-card:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+.follow-button span {
+  color: var(--button-bg-color);
 }
 
-.user-post-card > img {
-  background-color: white;
-  padding: 0.25rem;
-  width: 3rem;
-  height: 3rem;
-  border-radius: 50%;
+.follow-button:hover {
+  border-color: var(--button-bg-color);
+  background-color: transparent !important;
 }
 
 .profile-button-container {
@@ -62,23 +55,4 @@
 
 .profile-button-selected {
   border-bottom: 2px solid white;
-}
-
-.user-post-card > p {
-  font-weight: 500;
-  font-size: 1.2rem;
-}
-
-.follow-button {
-  background-color: transparent;
-  border-color: transparent;
-}
-
-.follow-button span {
-  color: var(--button-bg-color);
-}
-
-.follow-button:hover {
-  border-color: var(--button-bg-color);
-  background-color: transparent !important;
 }

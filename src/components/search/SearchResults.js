@@ -1,14 +1,13 @@
 import React from "react";
-import UserPostCard from "../profile/UserPostCard";
+import UserProfileCard from "../users/UserProfileCard";
 import { Link } from "react-router";
+import UserSearchCard from "../users/UserSearchCard";
 
 export default function SearchResults({ searchResults }) {
   return (
     <div>
       {searchResults?.map((user, id) => (
-        <Link to={`/user/${user?.id}`} key={id}>
-          <UserPostCard user={user} />
-        </Link>
+        <UserSearchCard user={user} key={id} />
       ))}
     </div>
   );

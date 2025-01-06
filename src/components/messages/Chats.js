@@ -7,6 +7,7 @@ import ChatCard from "./ChatCard";
 import "./index.css";
 import Messages from "./Messages";
 import { useParams } from "react-router";
+import UserChatCard from "../users/UserChatCard";
 
 export default function Chats() {
   const [chats, setChats] = useState([]);
@@ -40,7 +41,11 @@ export default function Chats() {
     <>
       <div className="chat-list">
         {chats?.map((chat, id) => (
-          <ChatCard chat={chat} key={id} />
+          <UserChatCard
+            key={id}
+            chat={chat}
+            user={user?.id == chat?.user1Id ? chat?.User2 : chat?.User1}
+          />
         ))}
       </div>
     </>
