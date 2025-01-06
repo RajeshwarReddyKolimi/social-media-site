@@ -19,7 +19,6 @@ export default function UserPosts({ user }) {
         )`
         )
         .eq(`userId`, user?.id);
-      console.log(data);
       setUserPosts(data);
     } catch (e) {
       console.error(e);

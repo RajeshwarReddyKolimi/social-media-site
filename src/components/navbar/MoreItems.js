@@ -17,10 +17,6 @@ export default function MoreItems() {
     },
     {
       key: "2",
-      label: <div>Theme</div>,
-    },
-    {
-      key: "3",
       label: <button onClick={logout}>Logout</button>,
     },
   ];

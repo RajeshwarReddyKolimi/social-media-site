@@ -22,6 +22,7 @@ export default function UserPostCard({ user, isMine }) {
       <div className="flex-buffer" />
       {!isFollowing && !isMine && (
         <Button
+          className="follow-button"
           onClick={(e) => {
             e.preventDefault();
             handleUnfollow({ userId: user?.id });

@@ -8,6 +8,7 @@ import "./../profile/index.css";
 import UserFollowers from "./UserFollowers";
 import UserFollowings from "./UserFollowings";
 import UserPosts from "./UserPosts";
+import { Button } from "antd";
 
 export default function OthersProfile() {
   const { handleFollow, handleUnfollow } = useFollows();
@@ -35,23 +36,61 @@ export default function OthersProfile() {
       <div className="profile-header">
         <img src={user?.image} />
         <h1>{user?.name}</h1>
+        <div className="flex-buffer" />
         {isFollowing ? (
-          <button onClick={() => handleUnfollow({ userId: user?.id })}>
+          <Button
+            className="follow-button"
+            onClick={(e) => {
+              e.preventDefault();
+              handleUnfollow({ userId: user?.id });
+            }}
+          >
             Unfollow
-          </button>
+          </Button>
         ) : (
-          <button onClick={() => handleFollow({ userId: user?.id })}>
-            Follow
-          </button>
+          <Button
+            className="follow-button"
+            onClick={(e) => {
+              e.preventDefault();
+              handleFollow({ userId: user?.id });
+            }}
+          >
+            Unfollow
+          </Button>
         )}
       </div>
-
-      <button onClick={() => setShowItem("followers")}>Followers</button>
-      <button onClick={() => setShowItem("following")}>Following</button>
-      <button onClick={() => setShowItem("userPosts")}>Posts</button>
-      {showItem === "followers" ? (
+      <div className="profile-button-container">
+        <button
+          onClick={() => setShowItem("followers")}
+          className={`profile-button ${
+            showItem === "followers" && "profile-button-selected"
+          }`}
+        >
+          <span>Followers</span>
+          <span>{user?.followers?.length}</span>
+        </button>
+        <button
+          onClick={() => setShowItem("followings")}
+          className={`profile-button ${
+            showItem == "followings" && "profile-button-selected"
+          }`}
+        >
+          <span>Following</span>
+          <span>{user?.followings?.length}</span>
+        </button>
+        <button
+          onClick={() => setShowItem("userPosts")}
+          className={`profile-button ${
+            showItem == "posts" && "profile-button-selected"
+          }`}
+        >
+          <span>Posts</span>
+          <span>{user?.posts?.length}</span>
+        </button>
+      </div>
+      {showItem == "followers" ? (
         <UserFollowers user={user} />
-      ) : showItem === "following" ? (
+      ) : showItem === "followings" ? (
         <UserFollowings user={user} />
       ) : (
         showItem === "userPosts" && <UserPosts user={user} />

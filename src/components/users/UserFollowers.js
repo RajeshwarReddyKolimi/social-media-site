@@ -18,8 +18,7 @@ export default function UserFollowers({ user }) {
                   User:follower(id, name, image)
                   `
         )
-        .eq("following", user?.id)
-        .neq("follower", currentUser?.id);
+        .eq("following", user?.id);
       setUserFollowers(data);
     } catch (e) {
       console.log(e);
@@ -31,7 +30,11 @@ export default function UserFollowers({ user }) {
   return (
     <div>
       {userFollowers?.map((user, id) => (
-        <UserPostCard user={user?.User} key={id} />
+        <UserPostCard
+          user={user?.User}
+          key={id}
+          isMine={user?.User?.id === currentUser?.id}
+        />
       ))}
     </div>
   );

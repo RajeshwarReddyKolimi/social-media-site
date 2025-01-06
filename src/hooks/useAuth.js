@@ -13,7 +13,9 @@ export default function useAuth() {
       // setLoading((prev) => prev + 1);
       const data = await supabase
         .from("Users")
-        .select("*")
+        .select(
+          `*, followers:Follows!following(following), followings:Follows!follower(follower), posts:Posts!userId(userId)`
+        )
         .eq("id", id)
         .single();
       return data;

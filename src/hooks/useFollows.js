@@ -21,7 +21,9 @@ export default function useFollows() {
             User:follower(id, name, image)
             `
         )
-        .eq("following", user?.id);
+        .eq("following", user?.id)
+        .neq("follower", user?.id);
+
       setFollowers(data);
     } catch (e) {
       console.log(e);
@@ -40,7 +42,8 @@ export default function useFollows() {
                 User:following(id, name, image)
                 `
         )
-        .eq("follower", user?.id);
+        .eq("follower", user?.id)
+        .neq("following", user?.id);
       setFollowings(data);
     } catch (e) {
       console.log(e);

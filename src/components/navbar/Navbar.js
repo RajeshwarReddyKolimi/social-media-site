@@ -144,7 +144,6 @@ const Navbar = () => {
       onClick: () => console.log("More clicked"),
     },
   ];
-  console.log(showMoreItems);
   useEffect(() => {
     setShowSearch(false);
     setShowMoreItems(false);
