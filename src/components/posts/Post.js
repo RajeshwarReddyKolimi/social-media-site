@@ -11,7 +11,7 @@ import useSavedPosts from "../../hooks/useSavedPosts";
 import { MdDelete } from "react-icons/md";
 import usePost from "../../hooks/usePost";
 
-export default function Post({ post, canDelete }) {
+export default function Post({ post, isMine }) {
   const user = useRecoilValue(userState);
   const { addToSavedPosts, removeFromSavedPosts } = useSavedPosts();
   const { addToLikedPosts, removeFromLikedPosts } = useLikedPosts();
@@ -64,11 +64,11 @@ export default function Post({ post, canDelete }) {
             <FaBookmark className="icon-2" />
           </button>
         ) : (
-          <button onClick={addToSavedPosts}>
+          <button onClick={() => addToSavedPosts({ postId: post?.id })}>
             <FaRegBookmark className="icon-2" />
           </button>
         )}
-        {canDelete && (
+        {isMine && (
           <button onClick={() => deletePost({ postId: post?.id })}>
             <MdDelete className="icon-2" />
           </button>

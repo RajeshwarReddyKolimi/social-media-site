@@ -17,6 +17,8 @@ import useLikedPosts from "./hooks/useLikedPosts";
 import useSavedPosts from "./hooks/useSavedPosts";
 import Home from "./pages/home/Home";
 import UserProfile from "./components/users/UserProfile";
+import SavedPosts from "./components/profile/SavedPosts";
+import LikedPosts from "./components/profile/LikedPosts";
 
 function App() {
   const user = useRecoilValue(userState);
@@ -48,6 +50,8 @@ function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/chat" element={<Chats />} />
           <Route path="/chat/:id" element={<Messages />} />
+          <Route path="/saved-posts" element={<SavedPosts />} />
+          <Route path="/liked-posts" element={<LikedPosts />} />
         </Route>
         <Route path="*" element={<NotFound />} />
       </Routes>

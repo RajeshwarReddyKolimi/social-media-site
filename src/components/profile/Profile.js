@@ -1,17 +1,16 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router";
+import React, { useState } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
+import followersState from "../../atoms/followers";
+import followingsState from "../../atoms/followings";
 import loadingState from "../../atoms/loadingState";
 import userState from "../../atoms/userState";
 import useAuth from "../../hooks/useAuth";
-import MyPosts from "./MyPosts";
-import SavedPosts from "./SavedPosts";
-import LikedPosts from "./LikedPosts";
 import Followers from "./Followers";
 import Followings from "./Followings";
-import followersState from "../../atoms/followers";
-import followingsState from "../../atoms/followings";
 import "./index.css";
+import LikedPosts from "./LikedPosts";
+import MyPosts from "./MyPosts";
+import SavedPosts from "./SavedPosts";
 
 export default function Profile() {
   const [user, setUser] = useRecoilState(userState);

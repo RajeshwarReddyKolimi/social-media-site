@@ -1,22 +1,26 @@
 import {
   HomeOutlined,
+  MenuFoldOutlined,
   MenuOutlined,
+  MenuUnfoldOutlined,
   MessageOutlined,
   PlusCircleOutlined,
   SearchOutlined,
   UserOutlined,
 } from "@ant-design/icons";
-import { Menu } from "antd";
+import { Button, Menu } from "antd";
 import React, { useEffect, useState } from "react";
 import Logo from "../../assets/Logo";
 import Search from "../search/Search";
 import "./index.css";
 import { useLocation, useNavigate } from "react-router";
 import LogoMini from "../../assets/LogoMini";
+import MoreItems from "./MoreItems";
 const Navbar = () => {
   const [showSearch, setShowSearch] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+  const [showMoreItems, setShowMoreItems] = useState(false);
 
   const largeScreenItems = [
     {
@@ -57,7 +61,18 @@ const Navbar = () => {
     {
       key: "6",
       icon: <MenuOutlined />,
-      label: <button>More</button>,
+      label: (
+        <button
+          onClick={() => {
+            setShowMoreItems((prev) => !prev);
+          }}
+          style={{
+            marginBottom: 16,
+          }}
+        >
+          More
+        </button>
+      ),
     },
   ];
   const midScreenItems = [
@@ -129,8 +144,10 @@ const Navbar = () => {
       onClick: () => console.log("More clicked"),
     },
   ];
+  console.log(showMoreItems);
   useEffect(() => {
     setShowSearch(false);
+    setShowMoreItems(false);
   }, [location]);
   return (
     <>
@@ -156,6 +173,7 @@ const Navbar = () => {
         items={smallScreenItems}
       />
       {showSearch && <Search />}
+      {showMoreItems && <MoreItems />}
     </>
   );
 };
