@@ -17,10 +17,9 @@ export default function Signup() {
   const [user, setUser] = useRecoilState(userState);
   const navigate = useNavigate();
   const { signup } = useAuth();
-  console.log(user);
   useEffect(() => {
     if (user) {
-      navigate("/profile");
+      navigate(`/user/${user.id}`);
     }
   }, [user]);
   return (

@@ -1,23 +1,21 @@
 import {
   HomeOutlined,
-  MenuFoldOutlined,
   MenuOutlined,
-  MenuUnfoldOutlined,
   MessageOutlined,
   PlusCircleOutlined,
   SearchOutlined,
   UserOutlined,
 } from "@ant-design/icons";
-import { Button, Menu } from "antd";
+import { Menu } from "antd";
 import React, { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router";
+import { useRecoilValue } from "recoil";
 import Logo from "../../assets/Logo";
+import LogoMini from "../../assets/LogoMini";
+import userState from "../../atoms/userState";
 import Search from "../search/Search";
 import "./index.css";
-import { useLocation, useNavigate } from "react-router";
-import LogoMini from "../../assets/LogoMini";
 import MoreItems from "./MoreItems";
-import { useRecoilValue } from "recoil";
-import userState from "../../atoms/userState";
 const Navbar = () => {
   const [showSearch, setShowSearch] = useState(false);
   const user = useRecoilValue(userState);
@@ -107,7 +105,7 @@ const Navbar = () => {
     {
       key: "5",
       icon: <UserOutlined />,
-      onClick: () => navigate("/profile"),
+      onClick: () => navigate(`/user/${user?.id}`),
     },
     {
       key: "6",
@@ -139,7 +137,7 @@ const Navbar = () => {
     {
       key: "5",
       icon: <UserOutlined />,
-      onClick: () => navigate("/profile"),
+      onClick: () => navigate(`/user/${user?.id}`),
     },
     {
       key: "6",

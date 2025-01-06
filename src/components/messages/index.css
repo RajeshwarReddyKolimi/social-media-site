@@ -1,6 +1,7 @@
 .messages-page {
   position: relative;
   height: 100vh;
+  top: 0;
 }
 
 .chat-sidebar {
@@ -25,11 +26,15 @@
   height: calc(100vh - 4rem);
 }
 
+.messages-container .user-profile-card {
+  border-bottom: 1px solid var(--border-color-1);
+}
+
 .messages {
   height: 100%;
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 7rem);
+  height: calc(100vh - 11rem);
   gap: 1.5rem;
   width: 100%;
   overflow-y: auto;
@@ -93,7 +98,7 @@
     height: calc(100vh);
   }
   .messages {
-    height: calc(100vh - 3rem);
+    height: calc(100vh - 7rem);
   }
 }
 @media screen and (min-width: 768px) {

@@ -1,4 +1,5 @@
 .user-profile-card {
+  height: 4rem;
   width: 100%;
   display: flex;
   flex-direction: row;
@@ -19,10 +20,14 @@
   padding: 0.25rem;
   width: 3rem;
   height: 3rem;
+  object-fit: cover;
+  overflow: hidden;
   border-radius: 50%;
 }
 
 .user-profile-card > p {
   font-weight: 500;
   font-size: 1.2rem;
+  text-wrap: nowrap;
+  text-overflow: ellipsis;
 }

@@ -11,11 +11,18 @@
   flex-direction: row;
   align-items: center;
   gap: 1rem;
+  padding: 0.5rem;
+  overflow-x: hidden;
+}
+
+.profile-header > h1 {
+  text-overflow: clip;
+  text-align: left;
 }
 
 .profile-header > img {
-  width: 5rem;
-  height: 5rem;
+  width: 3.5rem;
+  height: 3.5rem;
   object-fit: cover;
   border-radius: 50%;
   background-color: white;
@@ -55,4 +62,11 @@
 
 .profile-button-selected {
   border-bottom: 2px solid white;
+}
+
+@media screen and (min-width: 768px) {
+  .profile-header img {
+    width: 5rem;
+    height: 5rem;
+  }
 }

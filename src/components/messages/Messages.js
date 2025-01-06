@@ -1,63 +1,34 @@
-import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { Button, Form, Input } from "antd";
+import React, { useEffect, useRef, useState } from "react";
+import { useParams } from "react-router";
 import { useRecoilValue } from "recoil";
 import userState from "../../atoms/userState";
-import { useParams } from "react-router";
 import { supabase } from "../../config/supabase";
-import Message from "./Message";
+import useMessages from "../../hooks/useMessages";
+import UserSearchCard from "../users/UserSearchCard";
 import Chats from "./Chats";
-import { Button, Form, Input } from "antd";
+import Message from "./Message";
+import NotFound from "../navbar/NotFound";
+import useAuth from "../../hooks/useAuth";
 
 export default function Messages() {
-  const user = useRecoilValue(userState);
-  const { id: chatId } = useParams();
+  const currentUser = useRecoilValue(userState);
+  const { id: receiverId } = useParams();
   const [messages, setMessages] = useState([]);
-  const [receiverId, setReceiverId] = useState(null);
+  const [receiver, setReceiver] = useState(null);
+  const [error, setError] = useState();
   const [form] = Form.useForm();
   const messagesEndRef = useRef(null);
-
-  const fetchChatDetails = async () => {
-    try {
-      const { data, error } = await supabase
-        .from("Chats")
-        .select("*")
-        .eq("id", chatId)
-        .single();
-      if (data) {
-        setReceiverId(
-          user?.id === data?.user1Id ? data?.user2Id : data?.user1Id
-        );
-      }
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
-  const fetchMessages = async () => {
-    try {
-      const { data, error } = await supabase
-        .from("Messages")
-        .select(
-          `
-            *,
-            Sender:sender (id, name, image),
-            Receiver:receiver (id, name, image)
-          `
-        )
-        .or(`sender.eq.${user?.id}, receiver.eq.${user?.id}`);
-      setMessages(data);
-    } catch (e) {
-      console.log(e);
-    }
-  };
+  const { fetchChatDetails, fetchMessages } = useMessages();
+  const { fetchUserDetails } = useAuth();
 
   const handleSendMessage = async (values) => {
     try {
       if (!values?.message?.trim()) return;
       const { data, error } = await supabase.from("Messages").insert({
-        sender: user?.id,
-        receiver: receiverId,
+        sender: currentUser?.id,
+        receiver: receiver?.id,
         text: values?.message?.trim(),
-        chatId,
       });
       if (error) {
         console.log(error);
@@ -69,18 +40,25 @@ export default function Messages() {
     }
   };
 
+  const fetchReceiver = async () => {
+    const { data, error } = await fetchUserDetails(receiverId);
+    setError(error);
+    setReceiver(data);
+  };
+
   useEffect(() => {
-    messagesEndRef.current.scrollIntoView();
+    messagesEndRef?.current?.scrollIntoView();
   }, [messages]);
-  useEffect(() => {
-    if (chatId) {
-      fetchChatDetails();
-    }
-  }, [chatId]);
 
   useEffect(() => {
     if (receiverId) {
-      fetchMessages();
+      fetchReceiver();
+    }
+  }, [receiverId]);
+
+  useEffect(() => {
+    if (receiverId) {
+      fetchMessages({ receiverId, setMessages });
     }
   }, [receiverId]);
 
@@ -92,8 +70,8 @@ export default function Messages() {
         { event: "INSERT", schema: "public", table: "Messages" },
         (payload) => {
           if (
-            payload?.new?.receiver === user?.id ||
-            payload?.new?.sender === user?.id
+            payload?.new?.receiver === currentUser?.id ||
+            payload?.new?.sender === currentUser?.id
           ) {
             setMessages((prev) => [...prev, payload?.new]);
             messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
@@ -105,35 +83,42 @@ export default function Messages() {
     return () => {
       subscription.unsubscribe();
     };
-  }, [user?.id]);
+  }, [currentUser?.id]);
+  if (error) return <NotFound />;
 
   return (
     <div className="messages-page">
-      <div className="chat-sidebar">
+      {/* <div className="chat-sidebar">
         <Chats />
-      </div>
-      <div className="messages-container">
-        <div className="messages">
-          {messages?.map((message, id) => (
-            <Message key={id} message={message} userId={user?.id} />
-          ))}
-          <div ref={messagesEndRef} />
+      </div> */}
+      {receiverId && (
+        <div className="messages-container">
+          <UserSearchCard user={receiver} />
+          <div className="messages">
+            {messages?.map((message, id) => (
+              <Message key={id} message={message} userId={currentUser?.id} />
+            ))}
+            {messages?.length == 0 && (
+              <p className="empty-message">No messages</p>
+            )}
+            <div ref={messagesEndRef} />
+          </div>
+          <Form
+            className="message-input-form"
+            onFinish={handleSendMessage}
+            form={form}
+          >
+            <Form.Item name="message">
+              <Input placeholder="Enter a message" autoFocus />
+            </Form.Item>
+            <Form.Item>
+              <Button type="primary" htmlType="submit">
+                Send
+              </Button>
+            </Form.Item>
+          </Form>
         </div>
-        <Form
-          className="message-input-form"
-          onFinish={handleSendMessage}
-          form={form}
-        >
-          <Form.Item name="message">
-            <Input placeholder="Enter a message" autoFocus />
-          </Form.Item>
-          <Form.Item>
-            <Button type="primary" htmlType="submit">
-              Send
-            </Button>
-          </Form.Item>
-        </Form>
-      </div>
+      )}
     </div>
   );
 }
