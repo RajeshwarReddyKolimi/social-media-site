@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router";
+import { Link, useParams } from "react-router";
 import { useRecoilValue } from "recoil";
 import followingsState from "../../atoms/followings";
 import useAuth from "../../hooks/useAuth";
@@ -64,6 +64,11 @@ export default function UserProfile() {
             </Button>
           ))}
       </div>
+      {!isMe && (
+        <Link to={`/chat/${user?.id}`} className="profile-message-button">
+          Message
+        </Link>
+      )}
       <div className="profile-button-container">
         <button
           onClick={() => setShowItem("followers")}
@@ -84,7 +89,7 @@ export default function UserProfile() {
           <span>{user?.followings?.length}</span>
         </button>
         <button
-          onClick={() => setShowItem("userPosts")}
+          onClick={() => setShowItem("posts")}
           className={`profile-button ${
             showItem == "posts" && "profile-button-selected"
           }`}
@@ -93,12 +98,12 @@ export default function UserProfile() {
           <span>{user?.posts?.length}</span>
         </button>
       </div>
-      {showItem == "followers" ? (
+      {showItem === "followers" ? (
         <UserFollowers user={user} />
       ) : showItem === "followings" ? (
         <UserFollowings user={user} />
       ) : (
-        showItem === "userPosts" && <UserPosts user={user} />
+        showItem === "posts" && <UserPosts user={user} />
       )}
     </div>
   );

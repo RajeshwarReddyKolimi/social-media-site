@@ -17,3 +17,7 @@
   background-color: white;
   padding: 0.25rem;
 }
+
+.profile-message-button {
+  border: 1px solid white;
+}

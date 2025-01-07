@@ -10,6 +10,7 @@ import useLikedPosts from "../../hooks/useLikedPosts";
 import useSavedPosts from "../../hooks/useSavedPosts";
 import { MdDelete } from "react-icons/md";
 import usePost from "../../hooks/usePost";
+import Comments from "../comments/Comments";
 
 export default function Post({ post, isMine }) {
   const user = useRecoilValue(userState);
@@ -21,7 +22,7 @@ export default function Post({ post, isMine }) {
   const [isLiked, setIsLiked] = useState(false);
   const [likesCount, setLikesCount] = useState(post?.likes?.length || 0);
   const { deletePost } = usePost();
-
+  const [showComments, setShowComments] = useState(false);
   useEffect(() => {
     setIsSaved(!!savedPosts?.find((spost) => spost?.postId === post?.id));
   }, [savedPosts]);
@@ -53,9 +54,10 @@ export default function Post({ post, isMine }) {
             <FaRegHeart className="icon-2" />
           </button>
         )}
-        <button>
+        <button onClick={() => setShowComments((prev) => !prev)}>
           <FaRegComment className="icon-2" />
         </button>
+        {showComments && <Comments post={post} />}
         <button>
           <IoIosSend className="icon-2" />
         </button>

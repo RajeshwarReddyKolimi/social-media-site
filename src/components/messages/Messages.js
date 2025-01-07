@@ -14,26 +14,62 @@ import useAuth from "../../hooks/useAuth";
 export default function Messages() {
   const currentUser = useRecoilValue(userState);
   const { id: receiverId } = useParams();
+  const [chatId, setChatId] = useState();
   const [messages, setMessages] = useState([]);
   const [receiver, setReceiver] = useState(null);
   const [error, setError] = useState();
   const [form] = Form.useForm();
   const messagesEndRef = useRef(null);
-  const { fetchChatDetails, fetchMessages } = useMessages();
+  const { fetchChatDetls, fetchMessages } = useMessages();
   const { fetchUserDetails } = useAuth();
-
   const handleSendMessage = async (values) => {
     try {
+      console.log(chatId);
       if (!values?.message?.trim()) return;
+      if (!chatId) return;
       const { data, error } = await supabase.from("Messages").insert({
         sender: currentUser?.id,
         receiver: receiver?.id,
         text: values?.message?.trim(),
+        chatId,
       });
       if (error) {
         console.log(error);
       } else {
         form.resetFields();
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
+  const createNewChat = async () => {
+    try {
+      const { data, error } = await supabase.from("Chats").upsert({
+        user1Id: currentUser?.id,
+        user2Id: receiverId,
+      });
+      setChatId(data?.id);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+  const fetchChatDetails = async () => {
+    try {
+      if (!currentUser?.id || currentUser?.id == receiverId) {
+        setError("Invalid url");
+        return;
+      }
+      const { data, error } = await supabase
+        .from("Chats")
+        .select(
+          `*, user1:user1Id(id, name, image), user2:user2Id(id, name, image)`
+        )
+        .or(`user1Id.eq.${currentUser?.id}, user2Id.eq.${currentUser?.id}`)
+        .or(`user1Id.eq.${receiverId}, user2Id.eq.${receiverId}`)
+        .single();
+      if (data) setChatId(data?.id);
+      else {
+        await createNewChat();
       }
     } catch (e) {
       console.log(e);
@@ -58,9 +94,10 @@ export default function Messages() {
 
   useEffect(() => {
     if (receiverId) {
+      fetchChatDetails();
       fetchMessages({ receiverId, setMessages });
     }
-  }, [receiverId]);
+  }, [receiverId, currentUser]);
 
   useEffect(() => {
     const subscription = supabase
@@ -84,6 +121,7 @@ export default function Messages() {
       subscription.unsubscribe();
     };
   }, [currentUser?.id]);
+
   if (error) return <NotFound />;
 
   return (

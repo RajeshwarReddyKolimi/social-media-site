@@ -6,22 +6,46 @@ import NotFound from "../components/navbar/NotFound";
 
 export default function useMessages() {
   const currentUser = useRecoilValue(userState);
-  const fetchChatDetails = async ({ chatId, setReceiver, setError }) => {
+  const fetchChatDetails = async ({ chatId, receiverId }) => {
     try {
+      //   const { data, error } = await supabase
+      //     .from("Chats")
+      //     .select(
+      //       `*, user1:user1Id(id, name, image), user2:user2Id(id, name, image)`
+      //     )
+      //     .or(`user1Id.eq.${currentUser?.id}, user2Id.eq.${currentUser?.id}`)
+      //     .single();
+
+      if (currentUser?.id == receiverId) return;
       const { data, error } = await supabase
         .from("Chats")
         .select(
           `*, user1:user1Id(id, name, image), user2:user2Id(id, name, image)`
         )
-        .eq("id", chatId)
         .or(`user1Id.eq.${currentUser?.id}, user2Id.eq.${currentUser?.id}`)
+        .or(`user1Id.eq.${receiverId}, user2Id.eq.${receiverId}`)
         .single();
-      setError(error);
-      if (data) {
-        setReceiver(
-          currentUser?.id === data?.user1Id ? data?.user2 : data?.user1
-        );
-      } else setReceiver();
+
+      if (data) return data?.id;
+      else {
+        const res = await supabase.from("Chats").insert({
+          user1Id: currentUser?.id,
+          user2Id: receiverId,
+        });
+        console.log(data);
+        const { data, error } = await supabase
+          .from("Chats")
+          .select(
+            `*, user1:user1Id(id, name, image), user2:user2Id(id, name, image)`
+          )
+          .or(`user1Id.eq.${currentUser?.id}, user2Id.eq.${currentUser?.id}`)
+          .or(`user1Id.eq.${receiverId}, user2Id.eq.${receiverId}`)
+          .single();
+        console.log(data);
+        return data?.id;
+      }
+      console.log(currentUser?.id, receiverId);
+      console.log(data);
     } catch (e) {
       console.log(e);
     }

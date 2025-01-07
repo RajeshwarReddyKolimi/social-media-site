@@ -43,6 +43,17 @@
   background-color: transparent !important;
 }
 
+.profile-message-button {
+  border: 1px solid white;
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+}
+
+.profile-message-button:hover {
+  background-color: white;
+  color: black;
+}
+
 .profile-button-container {
   display: flex;
   flex-direction: row;
