@@ -57,7 +57,9 @@ export default function Post({ post, isMine }) {
         <button onClick={() => setShowComments((prev) => !prev)}>
           <FaRegComment className="icon-2" />
         </button>
-        {showComments && <Comments post={post} />}
+        {showComments && (
+          <Comments post={post} setShowComments={setShowComments} />
+        )}
         <button>
           <IoIosSend className="icon-2" />
         </button>
