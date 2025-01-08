@@ -105,12 +105,29 @@
 }
 .profile-dp-edit .icon-2 {
   border: 1px solid var(--border-color-1) !important;
-
   background-color: rgb(254, 254, 254);
   fill: var(--button-bg-color);
   padding: 0.25rem;
   border-radius: 50%;
 }
+
+.profile-edit-username {
+  position: relative;
+}
+
+.profile-edit-username-button {
+  position: absolute;
+  top: 50%;
+  transform: translate(0%, -50%);
+  left: 100%;
+}
+
+.edit-username-form {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
 @media screen and (min-width: 768px) {
   .profile-header img {
     width: 5rem;

@@ -12,6 +12,7 @@ import { Button, Upload } from "antd";
 import userState from "../../atoms/userState";
 import { MdEdit } from "react-icons/md";
 import { supabase } from "../../config/supabase";
+import EditUsername from "../profile/EditUsername";
 
 export default function UserProfile() {
   const { handleFollow, handleUnfollow } = useFollows();
@@ -23,10 +24,9 @@ export default function UserProfile() {
   const [showItem, setShowItem] = useState("posts");
   const [isFollowing, setIsFollowing] = useState(false);
   const [isMe, setIsMe] = useState(false);
-  const [showEditDp, setShowEditDp] = useState(false);
+  const [showEditUsername, setShowEditUsername] = useState(false);
   const [fileList, setFileList] = useState([]);
   const { getCurrentUser } = useAuth();
-
   const handleChangeDp = async (values) => {
     try {
       const image = values?.file;
@@ -40,19 +40,18 @@ export default function UserProfile() {
         .getPublicUrl(imageName);
       if (error) return;
       else {
-        console.log(data);
         const res = await supabase
           .from("Users")
           .update({ image: data?.publicUrl })
           .eq("id", currentUser?.id)
           .select();
-        console.log(res);
         await getCurrentUser();
       }
     } catch (e) {
       console.log(e);
     }
   };
+
   useEffect(() => {
     setIsFollowing(!!followings?.find((fuser) => fuser?.following === id));
   }, [followings, id]);
@@ -66,20 +65,14 @@ export default function UserProfile() {
     setIsMe(currentUser?.id == id);
     if (currentUser?.id != id) fetchUser();
     else setUser(currentUser);
-  }, [id]);
+  }, [id, currentUser]);
+
   return (
     <div className="profile">
       <div className="profile-header">
         <div className="profile-dp">
           <img src={user?.image} />
           {isMe && (
-            // <Button
-            //   onClick={() => setShowEditDp((prev) => !prev)}
-            //   type="text"
-            //   className="profile-dp-edit-icon"
-            // >
-            //   <MdEdit className="icon-2" />
-            // </Button>
             <Upload
               className="profile-dp-edit"
               listType="picture-card"
@@ -91,9 +84,24 @@ export default function UserProfile() {
               </Button>
             </Upload>
           )}
-          {/* {showEditDp && <EditProfilePic />} */}
         </div>
-        <h1>{user?.name}</h1>
+        <div className="profile-edit-username">
+          {!isMe && <h1>{user?.name}</h1>}
+          {isMe && !showEditUsername && <h1>{user?.name}</h1>}
+
+          {showEditUsername && (
+            <EditUsername setShowEditUsername={setShowEditUsername} />
+          )}
+          {isMe && !showEditUsername && (
+            <Button
+              onClick={() => setShowEditUsername((prev) => !prev)}
+              type="text"
+              className="profile-edit-username-button"
+            >
+              <MdEdit className="icon-3" />
+            </Button>
+          )}
+        </div>
         <div className="flex-buffer" />
         {!isMe &&
           (isFollowing ? (
