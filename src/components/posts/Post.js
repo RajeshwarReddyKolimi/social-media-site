@@ -12,7 +12,7 @@ import { MdDelete } from "react-icons/md";
 import usePost from "../../hooks/usePost";
 import Comments from "../comments/Comments";
 
-export default function Post({ post, isMine }) {
+export default function Post({ post, isMe }) {
   const user = useRecoilValue(userState);
   const { addToSavedPosts, removeFromSavedPosts } = useSavedPosts();
   const { addToLikedPosts, removeFromLikedPosts } = useLikedPosts();
@@ -26,7 +26,6 @@ export default function Post({ post, isMine }) {
   useEffect(() => {
     setIsSaved(!!savedPosts?.find((spost) => spost?.postId === post?.id));
   }, [savedPosts]);
-
   useEffect(() => {
     setIsLiked(!!likedPosts?.find((lpost) => lpost?.postId === post?.id));
   }, [likedPosts]);
@@ -69,7 +68,7 @@ export default function Post({ post, isMine }) {
             <FaRegBookmark className="icon-2" />
           </button>
         )}
-        {isMine && (
+        {isMe && (
           <button onClick={() => deletePost({ postId: post?.id })}>
             <MdDelete className="icon-2" />
           </button>

@@ -46,16 +46,11 @@ export default function CreatePost() {
     }
   };
 
-  // const handleSubmit = (values) => {
-  //   console.log("Form values:", values);
-  //   console.log("Uploaded file list:", fileList);
-  // };
-
   return (
     <div className="create-post-page">
+      <h1>Create new post</h1>
       <Form
-        labelCol={{ span: 4 }}
-        wrapperCol={{ span: 14 }}
+        className="create-post-form"
         layout="horizontal"
         style={{ maxWidth: 600 }}
         onFinish={handleSubmit}
@@ -71,16 +66,22 @@ export default function CreatePost() {
             fileList={fileList}
             onChange={handleImageUpload}
           >
-            <button style={{ border: 0, background: "none" }} type="button">
+            <Button
+              className="upload-button"
+              style={{ border: 0, background: "none" }}
+              htmlType="button"
+            >
               <PlusOutlined />
-              <div style={{ marginTop: 8 }}>Upload</div>
-            </button>
+              <div style={{ marginTop: 8 }}>Upload Image</div>
+            </Button>
           </Upload>
         </Form.Item>
         <Form.Item name="caption">
-          <Input />
+          <Input placeholder="Enter caption" />
         </Form.Item>
-        <Button htmlType="submit">Create</Button>
+        <Button type="primary" htmlType="submit">
+          Create
+        </Button>
       </Form>
     </div>
   );

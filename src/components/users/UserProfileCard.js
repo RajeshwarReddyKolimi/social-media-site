@@ -6,7 +6,7 @@ import followingsState from "../../atoms/followings";
 import useFollows from "../../hooks/useFollows";
 import "./index.css";
 
-export default function UserProfileCard({ user, isMine }) {
+export default function UserProfileCard({ user, isMe }) {
   const { handleFollow, handleUnfollow } = useFollows();
   const followings = useRecoilValue(followingsState);
   const [isFollowing, setIsFollowing] = useState(false);
@@ -21,7 +21,7 @@ export default function UserProfileCard({ user, isMine }) {
       <img src={user?.image} />
       <p>{user?.name}</p>
       <div className="flex-buffer" />
-      {!isFollowing && !isMine && (
+      {!isFollowing && !isMe && (
         <Button
           className="follow-button"
           onClick={(e) => {

@@ -6,11 +6,11 @@ import UserProfileCard from "../users/UserProfileCard";
 import "./post.css";
 import Post from "./Post";
 
-export default function PostCard({ post, isMine }) {
+export default function PostCard({ post, isMe }) {
   return (
     <div className="post-card">
-      <UserProfileCard user={post?.User} isMine={isMine} />
-      <Post post={post} isMine={isMine} />
+      <UserProfileCard user={post?.User} isMe={isMe} />
+      <Post post={post} isMe={isMe} />
     </div>
   );
 }

@@ -24,7 +24,7 @@ export default function UserFollowings({ user }) {
         <UserProfileCard
           user={user?.User}
           key={id}
-          isMine={user?.User?.id === currentUser?.id}
+          isMe={user?.User?.id === currentUser?.id}
         />
       ))}
     </div>

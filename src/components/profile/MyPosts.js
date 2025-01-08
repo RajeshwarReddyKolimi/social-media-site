@@ -31,7 +31,7 @@ export default function MyPosts() {
   return (
     <div className="posts">
       {myPosts?.map((post, id) => (
-        <PostCard post={post} key={id} isMine={true} />
+        <PostCard post={post} key={id} isMe={true} />
       ))}
     </div>
   );

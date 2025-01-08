@@ -165,7 +165,7 @@ export default function UserProfile() {
       ) : showItem === "followings" ? (
         <UserFollowings user={user} />
       ) : (
-        <UserPosts user={user} />
+        <UserPosts user={user} isMe={isMe} />
       )}
     </div>
   );

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import PostCard from "../posts/PostCard";
 import { supabase } from "../../config/supabase";
 
-export default function UserPosts({ user }) {
+export default function UserPosts({ user, isMe }) {
   const [userPosts, setUserPosts] = useState([]);
   async function fetchUserPosts() {
     try {
@@ -32,7 +32,7 @@ export default function UserPosts({ user }) {
   return (
     <div>
       {userPosts?.map((post, id) => (
-        <PostCard key={id} post={post} />
+        <PostCard key={id} post={post} isMe={isMe} />
       ))}
     </div>
   );
