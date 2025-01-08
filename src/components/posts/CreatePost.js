@@ -1,5 +1,5 @@
 import { PlusOutlined } from "@ant-design/icons";
-import { Form, Input, Upload } from "antd";
+import { Button, Form, Input, Upload } from "antd";
 import React, { useState } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
 import loadingState from "../../atoms/loadingState";
@@ -80,7 +80,7 @@ export default function CreatePost() {
         <Form.Item name="caption">
           <Input />
         </Form.Item>
-        <button type="submit">Create</button>
+        <Button htmlType="submit">Create</Button>
       </Form>
     </div>
   );

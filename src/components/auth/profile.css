@@ -9,9 +9,9 @@
   gap: 1rem;
 }
 
-.profile-header > img {
-  width: 5rem;
-  height: 5rem;
+.profile-header img {
+  width: 4rem;
+  height: 4rem;
   object-fit: cover;
   border-radius: 50%;
   background-color: white;

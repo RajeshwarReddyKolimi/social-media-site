@@ -4,12 +4,11 @@ import { useParams } from "react-router";
 import { useRecoilValue } from "recoil";
 import userState from "../../atoms/userState";
 import { supabase } from "../../config/supabase";
-import useMessages from "../../hooks/useMessages";
-import UserSearchCard from "../users/UserSearchCard";
-import Chats from "./Chats";
-import Message from "./Message";
-import NotFound from "../navbar/NotFound";
 import useAuth from "../../hooks/useAuth";
+import useMessages from "../../hooks/useMessages";
+import NotFound from "../navbar/NotFound";
+import UserSearchCard from "../users/UserSearchCard";
+import Message from "./Message";
 
 export default function Messages() {
   const currentUser = useRecoilValue(userState);

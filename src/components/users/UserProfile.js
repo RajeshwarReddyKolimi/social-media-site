@@ -8,8 +8,10 @@ import "./../profile/index.css";
 import UserFollowers from "./UserFollowers";
 import UserFollowings from "./UserFollowings";
 import UserPosts from "./UserPosts";
-import { Button } from "antd";
+import { Button, Upload } from "antd";
 import userState from "../../atoms/userState";
+import { MdEdit } from "react-icons/md";
+import { supabase } from "../../config/supabase";
 
 export default function UserProfile() {
   const { handleFollow, handleUnfollow } = useFollows();
@@ -21,7 +23,36 @@ export default function UserProfile() {
   const [showItem, setShowItem] = useState("posts");
   const [isFollowing, setIsFollowing] = useState(false);
   const [isMe, setIsMe] = useState(false);
+  const [showEditDp, setShowEditDp] = useState(false);
+  const [fileList, setFileList] = useState([]);
+  const { getCurrentUser } = useAuth();
 
+  const handleChangeDp = async (values) => {
+    try {
+      const image = values?.file;
+      const imageName = Date.now() + image?.name;
+      const r1 = await supabase.storage
+        .from("profileImages")
+        .upload(imageName, image?.originFileObj);
+      if (r1.error) return;
+      const { data, error } = await supabase.storage
+        .from("profileImages")
+        .getPublicUrl(imageName);
+      if (error) return;
+      else {
+        console.log(data);
+        const res = await supabase
+          .from("Users")
+          .update({ image: data?.publicUrl })
+          .eq("id", currentUser?.id)
+          .select();
+        console.log(res);
+        await getCurrentUser();
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
   useEffect(() => {
     setIsFollowing(!!followings?.find((fuser) => fuser?.following === id));
   }, [followings, id]);
@@ -30,6 +61,7 @@ export default function UserProfile() {
     const { data, error } = await fetchUserDetails(id);
     setUser(data);
   };
+
   useEffect(() => {
     setIsMe(currentUser?.id == id);
     if (currentUser?.id != id) fetchUser();
@@ -38,7 +70,29 @@ export default function UserProfile() {
   return (
     <div className="profile">
       <div className="profile-header">
-        <img src={user?.image} />
+        <div className="profile-dp">
+          <img src={user?.image} />
+          {isMe && (
+            // <Button
+            //   onClick={() => setShowEditDp((prev) => !prev)}
+            //   type="text"
+            //   className="profile-dp-edit-icon"
+            // >
+            //   <MdEdit className="icon-2" />
+            // </Button>
+            <Upload
+              className="profile-dp-edit"
+              listType="picture-card"
+              fileList={fileList}
+              onChange={handleChangeDp}
+            >
+              <Button>
+                <MdEdit className="icon-2" />
+              </Button>
+            </Upload>
+          )}
+          {/* {showEditDp && <EditProfilePic />} */}
+        </div>
         <h1>{user?.name}</h1>
         <div className="flex-buffer" />
         {!isMe &&
@@ -103,7 +157,7 @@ export default function UserProfile() {
       ) : showItem === "followings" ? (
         <UserFollowings user={user} />
       ) : (
-        showItem === "posts" && <UserPosts user={user} />
+        <UserPosts user={user} />
       )}
     </div>
   );

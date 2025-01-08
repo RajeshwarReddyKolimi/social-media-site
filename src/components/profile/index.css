@@ -20,7 +20,7 @@
   text-align: left;
 }
 
-.profile-header > img {
+.profile-header img {
   width: 3.5rem;
   height: 3.5rem;
   object-fit: cover;
@@ -75,6 +75,42 @@
   border-bottom: 2px solid white;
 }
 
+.profile-dp {
+  position: relative;
+  /* overflow: hidden; */
+}
+
+.profile-dp-edit {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  padding: 0;
+  border: none;
+}
+
+.profile-dp-edit .ant-upload-select {
+  border: none !important;
+  width: unset !important;
+  height: unset !important;
+}
+.profile-dp-edit button {
+  border: none;
+  padding: 0;
+  background-color: transparent;
+}
+
+.profile-dp-edit button:hover,
+.profile-dp-edit button:active {
+  background-color: transparent !important;
+}
+.profile-dp-edit .icon-2 {
+  border: 1px solid var(--border-color-1) !important;
+
+  background-color: rgb(254, 254, 254);
+  fill: var(--button-bg-color);
+  padding: 0.25rem;
+  border-radius: 50%;
+}
 @media screen and (min-width: 768px) {
   .profile-header img {
     width: 5rem;

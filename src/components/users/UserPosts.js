@@ -28,7 +28,7 @@ export default function UserPosts({ user }) {
   }
   useEffect(() => {
     fetchUserPosts();
-  }, []);
+  }, [user?.id]);
   return (
     <div>
       {userPosts?.map((post, id) => (

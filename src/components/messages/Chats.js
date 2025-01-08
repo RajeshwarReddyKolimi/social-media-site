@@ -34,7 +34,6 @@ export default function Chats() {
         `
         )
         .or(`user1Id.eq.${currentUser?.id}, user2Id.eq.${currentUser?.id}`);
-      console.log(data);
       setChats(data);
     } catch (e) {
       console.log(e);
