@@ -110,7 +110,7 @@ const Navbar = () => {
     {
       key: "6",
       icon: <MenuOutlined />,
-      onClick: () => console.log("More clicked"),
+      onClick: () => setShowMoreItems((prev) => !prev),
     },
   ];
   const smallScreenItems = [
@@ -142,7 +142,7 @@ const Navbar = () => {
     {
       key: "6",
       icon: <MenuOutlined />,
-      onClick: () => console.log("More clicked"),
+      onClick: () => setShowMoreItems((prev) => !prev),
     },
   ];
   useEffect(() => {

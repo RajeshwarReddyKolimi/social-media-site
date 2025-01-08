@@ -22,7 +22,7 @@ export default function MoreItems() {
   ];
   return (
     <Menu
-      className="menu large-screen-menu more-items"
+      className="menu more-items"
       defaultSelectedKeys={["1"]}
       theme="dark"
       defaultOpenKeys={["sub1"]}

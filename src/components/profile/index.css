@@ -1,5 +1,5 @@
 .profile {
-  padding: 2rem 0;
+  padding: 2rem 0.5rem;
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -111,15 +111,19 @@
   border-radius: 50%;
 }
 
-.profile-edit-username {
+.profile-username {
   position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
 
-.profile-edit-username-button {
-  position: absolute;
-  top: 50%;
-  transform: translate(0%, -50%);
-  left: 100%;
+.profile-username h1 {
+  text-align: left;
+  width: calc(100vw - 8rem);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .edit-username-form {
@@ -128,6 +132,11 @@
   align-items: center;
 }
 
+@media screen and (min-width: 500px) {
+  .profile-username {
+    width: calc(500px - 8rem);
+  }
+}
 @media screen and (min-width: 768px) {
   .profile-header img {
     width: 5rem;

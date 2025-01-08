@@ -60,9 +60,6 @@ export default function Post({ post, isMine }) {
         {showComments && (
           <Comments post={post} setShowComments={setShowComments} />
         )}
-        <button>
-          <IoIosSend className="icon-2" />
-        </button>
         {isSaved ? (
           <button onClick={() => removeFromSavedPosts({ postId: post?.id })}>
             <FaBookmark className="icon-2" />

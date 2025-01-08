@@ -85,7 +85,7 @@ export default function UserProfile() {
             </Upload>
           )}
         </div>
-        <div className="profile-edit-username">
+        <div className="profile-username">
           {!isMe && <h1>{user?.name}</h1>}
           {isMe && !showEditUsername && <h1>{user?.name}</h1>}
 
