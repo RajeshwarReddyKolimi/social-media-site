@@ -17,11 +17,11 @@ import Search from "../search/Search";
 import "./index.css";
 import MoreItems from "./MoreItems";
 const Navbar = () => {
-  const [showSearch, setShowSearch] = useState(false);
+  const currentUser = useRecoilValue(userState);
   const user = useRecoilValue(userState);
   const navigate = useNavigate();
   const location = useLocation();
-  const [showMoreItems, setShowMoreItems] = useState(false);
+  const [showItem, setShowItem] = useState();
 
   const largeScreenItems = [
     {
@@ -41,7 +41,13 @@ const Navbar = () => {
       key: "2",
       icon: <SearchOutlined />,
       label: (
-        <button onClick={() => setShowSearch((prev) => !prev)}>Search</button>
+        <button
+          onClick={() =>
+            setShowItem((prev) => (prev === "search" ? null : "search"))
+          }
+        >
+          Search
+        </button>
       ),
     },
     {
@@ -64,9 +70,9 @@ const Navbar = () => {
       icon: <MenuOutlined />,
       label: (
         <button
-          onClick={() => {
-            setShowMoreItems((prev) => !prev);
-          }}
+          onClick={() =>
+            setShowItem((prev) => (prev === "more" ? null : "more"))
+          }
           style={{
             marginBottom: 16,
           }}
@@ -90,7 +96,8 @@ const Navbar = () => {
     {
       key: "2",
       icon: <SearchOutlined />,
-      onClick: () => setShowSearch((prev) => !prev),
+      onClick: () =>
+        setShowItem((prev) => (prev === "search" ? null : "search")),
     },
     {
       key: "3",
@@ -110,7 +117,7 @@ const Navbar = () => {
     {
       key: "6",
       icon: <MenuOutlined />,
-      onClick: () => setShowMoreItems((prev) => !prev),
+      onClick: () => setShowItem((prev) => (prev === "more" ? null : "more")),
     },
   ];
   const smallScreenItems = [
@@ -122,7 +129,8 @@ const Navbar = () => {
     {
       key: "2",
       icon: <SearchOutlined />,
-      onClick: () => setShowSearch((prev) => !prev),
+      onClick: () =>
+        setShowItem((prev) => (prev === "search" ? null : "search")),
     },
     {
       key: "3",
@@ -142,24 +150,41 @@ const Navbar = () => {
     {
       key: "6",
       icon: <MenuOutlined />,
-      onClick: () => setShowMoreItems((prev) => !prev),
+      onClick: () => setShowItem((prev) => (prev === "more" ? null : "more")),
     },
   ];
+  const selectedKey =
+    showItem === "search"
+      ? "2"
+      : showItem === "more"
+      ? "6"
+      : location.pathname === "/saved-posts"
+      ? "6"
+      : location.pathname === "/liked-posts"
+      ? "6"
+      : location.pathname === "/chat"
+      ? "3"
+      : location.pathname === "/create"
+      ? "4"
+      : location.pathname === `/user/${currentUser?.id}`
+      ? "5"
+      : location.pathname === "/" && "1";
   useEffect(() => {
-    setShowSearch(false);
-    setShowMoreItems(false);
+    setShowItem();
   }, [location]);
   return (
     <>
       <Menu
         className="menu large-screen-menu"
         defaultSelectedKeys={["1"]}
+        selectedKeys={[selectedKey]}
         theme="dark"
         defaultOpenKeys={["sub1"]}
         items={largeScreenItems}
       />
       <Menu
         className="menu mid-screen-menu"
+        selectedKeys={[selectedKey]}
         defaultSelectedKeys={["1"]}
         theme="dark"
         defaultOpenKeys={["sub1"]}
@@ -167,13 +192,17 @@ const Navbar = () => {
       />
       <Menu
         className="menu small-screen-menu"
+        selectedKeys={[selectedKey]}
         defaultSelectedKeys={["1"]}
         theme="dark"
         defaultOpenKeys={["sub1"]}
         items={smallScreenItems}
       />
-      {showSearch && <Search />}
-      {showMoreItems && <MoreItems />}
+      {showItem === "search" ? (
+        <Search />
+      ) : (
+        showItem === "more" && <MoreItems />
+      )}
     </>
   );
 };

@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import "./index.css";
 import { Menu } from "antd";
-import { Link } from "react-router";
+import { Link, useLocation } from "react-router";
 import useAuth from "../../hooks/useAuth";
 
 export default function MoreItems() {
+  const location = useLocation();
   const { logout } = useAuth();
   const moreItems = [
     {
@@ -20,10 +21,15 @@ export default function MoreItems() {
       label: <button onClick={logout}>Logout</button>,
     },
   ];
+  const selectedKey =
+    location.pathname === "/saved-posts"
+      ? "0"
+      : location.pathname === "/liked-posts" && "1";
   return (
     <Menu
       className="menu more-items"
       defaultSelectedKeys={["1"]}
+      selectedKeys={[selectedKey]}
       theme="dark"
       defaultOpenKeys={["sub1"]}
       items={moreItems}
