@@ -18,8 +18,10 @@ export default function useLikedPosts() {
               User:userId (id, name, image),
               id,
               caption,
-              image
-            )`
+              image,
+              likes:LikedPosts!postId(postId)
+            )
+          `
         )
         .order("created_at", { ascending: false });
       setLikedPosts(data);

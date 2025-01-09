@@ -11,6 +11,7 @@ export default function MyPosts() {
   const user = useRecoilValue(userState);
   const fetchMyPosts = async () => {
     try {
+      console.log("fethcing..");
       setLoading((prev) => prev + 1);
       const { data, error } = await supabase
         .from("Posts")

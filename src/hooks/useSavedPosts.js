@@ -19,8 +19,10 @@ export default function useSavedPosts() {
               User:userId (id, name, image),
               id,
               caption,
-              image
-            )`
+              image,
+              likes:LikedPosts!postId(postId)
+            )
+          `
         )
         .order("created_at", { ascending: false });
       setSavedPosts(data);
