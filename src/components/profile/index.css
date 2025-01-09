@@ -77,7 +77,6 @@
 
 .profile-dp {
   position: relative;
-  /* overflow: hidden; */
 }
 
 .profile-dp-edit {
@@ -93,6 +92,11 @@
   width: unset !important;
   height: unset !important;
 }
+
+.profile-dp .ant-upload-wrapper {
+  width: unset !important;
+}
+
 .profile-dp-edit button {
   border: none;
   padding: 0;
