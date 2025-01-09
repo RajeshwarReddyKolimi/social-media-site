@@ -1,30 +1,26 @@
+import { Button, Form, Input } from "antd";
 import React, { useEffect } from "react";
-import { Button, Checkbox, Form, Input } from "antd";
 import { Link, useNavigate, useSearchParams } from "react-router";
-import useAuth from "../../hooks/useAuth";
-import { useRecoilState } from "recoil";
-import userState from "../../atoms/userState";
-import "./index.css";
+import { useRecoilValue } from "recoil";
 import Logo from "../../assets/Logo";
-
-const onFinish = (values) => {
-  console.log("Success:", values);
-};
-
-const onFinishFailed = (errorInfo) => {
-  console.log("Failed:", errorInfo);
-};
+import userState from "../../atoms/userState";
+import useAuth from "../../hooks/useAuth";
+import "./index.css";
+import loadingState from "../../atoms/loadingState";
 
 export default function Signin() {
-  const [user, setUser] = useRecoilState(userState);
-  const navigate = useNavigate();
   const { signin } = useAuth();
+  const loading = useRecoilValue(loadingState);
+  const currentUser = useRecoilValue(userState);
+  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
+
   useEffect(() => {
-    if (user) {
-      navigate(searchParams?.get("redirect"));
+    if (loading == 0) {
+      if (currentUser) navigate(searchParams?.get("redirect") ?? "/");
     }
-  }, [user]);
+  }, [currentUser, loading]);
+
   return (
     <div className="signin-page">
       <div className="signin-form">
@@ -32,19 +28,14 @@ export default function Signin() {
         <Form
           className="form"
           name="basic"
-          wrapperCol={
-            {
-              // span: 16,
-            }
-          }
           style={{
             maxWidth: 500,
           }}
           initialValues={{
             remember: true,
           }}
-          onFinish={(values) => signin(values)}
-          onFinishFailed={onFinishFailed}
+          onFinish={signin}
+          onFinishFailed={(e) => console.log(e)}
           autoComplete="off"
         >
           <Form.Item

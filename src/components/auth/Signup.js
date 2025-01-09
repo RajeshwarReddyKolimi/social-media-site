@@ -1,27 +1,26 @@
+import { Button, Form, Input } from "antd";
 import React, { useEffect } from "react";
-import { Button, Checkbox, Form, Input } from "antd";
-import { Link, useNavigate } from "react-router";
-import useAuth from "../../hooks/useAuth";
-import { useRecoilState } from "recoil";
-import userState from "../../atoms/userState";
-import "./index.css";
+import { Link, useNavigate, useSearchParams } from "react-router";
+import { useRecoilValue } from "recoil";
 import Logo from "../../assets/Logo";
+import userState from "../../atoms/userState";
+import useAuth from "../../hooks/useAuth";
+import "./index.css";
+import loadingState from "../../atoms/loadingState";
 
-const onFinish = (values) => {
-  console.log("Success:", values);
-};
-const onFinishFailed = (errorInfo) => {
-  console.log("Failed:", errorInfo);
-};
 export default function Signup() {
-  const [user, setUser] = useRecoilState(userState);
-  const navigate = useNavigate();
   const { signup } = useAuth();
+  const loading = useRecoilValue(loadingState);
+  const currentUser = useRecoilValue(userState);
+  const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+
   useEffect(() => {
-    if (user) {
-      navigate(`/user/${user.id}`);
+    if (loading == 0) {
+      if (currentUser) navigate(searchParams?.get("redirect") ?? "/");
     }
-  }, [user]);
+  }, [currentUser, loading]);
+
   return (
     <div className="signin-page">
       <div className="signin-form">
@@ -29,19 +28,14 @@ export default function Signup() {
         <Form
           className="form"
           name="basic"
-          wrapperCol={
-            {
-              // span: 16,
-            }
-          }
           style={{
             maxWidth: 500,
           }}
           initialValues={{
             remember: true,
           }}
-          onFinish={(values) => signup(values)}
-          onFinishFailed={onFinishFailed}
+          onFinish={signup}
+          onFinishFailed={(e) => console.log(e)}
           autoComplete="off"
         >
           <Form.Item

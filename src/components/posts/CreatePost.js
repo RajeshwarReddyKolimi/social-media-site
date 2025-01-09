@@ -66,6 +66,8 @@ export default function CreatePost() {
             listType="picture-card"
             fileList={fileList}
             onChange={handleImageUpload}
+            maxCount={1}
+            accept="image/*"
           >
             <Button
               className="upload-button"

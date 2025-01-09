@@ -12,6 +12,15 @@
   color: white;
 }
 
+.menu > li:hover {
+  background-color: rgb(30, 30, 30) !important;
+}
+
+.mid-screen-menu > li:first-child:hover,
+.large-screen-menu > li:first-child:hover {
+  background-color: unset !important;
+}
+
 .small-screen-menu svg,
 .mid-screen-menu svg {
   font-size: 1.25rem;
@@ -48,6 +57,7 @@
   background-color: black;
   height: 100vh;
   color: white;
+  border-right: 1px solid var(--border-color-1) !important;
 }
 
 .not-found {

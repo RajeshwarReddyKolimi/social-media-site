@@ -40,15 +40,9 @@ const Navbar = () => {
     {
       key: "2",
       icon: <SearchOutlined />,
-      label: (
-        <button
-          onClick={() =>
-            setShowItem((prev) => (prev === "search" ? null : "search"))
-          }
-        >
-          Search
-        </button>
-      ),
+      label: <button>Search</button>,
+      onClick: () =>
+        setShowItem((prev) => (prev === "search" ? null : "search")),
     },
     {
       key: "3",
@@ -68,18 +62,8 @@ const Navbar = () => {
     {
       key: "6",
       icon: <MenuOutlined />,
-      label: (
-        <button
-          onClick={() =>
-            setShowItem((prev) => (prev === "more" ? null : "more"))
-          }
-          style={{
-            marginBottom: 16,
-          }}
-        >
-          More
-        </button>
-      ),
+      label: <button>More</button>,
+      onClick: () => setShowItem((prev) => (prev === "more" ? null : "more")),
     },
   ];
   const midScreenItems = [

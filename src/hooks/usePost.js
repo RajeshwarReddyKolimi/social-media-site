@@ -1,26 +1,26 @@
-import React, { useState } from "react";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import loadingState from "../atoms/loadingState";
-import { supabase } from "../config/supabase";
 import userState from "../atoms/userState";
+import { supabase } from "../config/supabase";
 
 export default function usePost() {
-  const [loading, setLoading] = useRecoilState(loadingState);
+  const setLoading = useSetRecoilState(loadingState);
   const user = useRecoilValue(userState);
   async function uploadImage(image) {}
   async function fetchAllPosts() {
     try {
+      setLoading((prev) => prev + 1);
       if (!user?.id) return;
       const { data, error } = await supabase
         .from("Posts")
         .select(
           `*,
-     User:userId (
-       id,
-       name,
-       image
-     ),
-     likes:LikedPosts!postId(postId)`
+          User:userId (
+            id,
+            name,
+            image
+          ),
+          likes:LikedPosts!postId(postId)`
         )
         .neq("userId", user?.id)
         .order("created_at", { ascending: false });
@@ -29,14 +29,14 @@ export default function usePost() {
     } catch (e) {
       console.error(e);
     } finally {
-      // setLoading((prev) => prev - 1);
+      setLoading((prev) => prev - 1);
     }
   }
 
   async function createAPost({ userId, image, caption }) {
     try {
-      if (!user?.id) return;
       setLoading((prev) => prev + 1);
+      if (!user?.id) return;
       const imageUrl = await uploadImage(image);
       const data = await supabase
         .from("Posts")
@@ -51,8 +51,8 @@ export default function usePost() {
 
   async function deletePost({ postId }) {
     try {
-      if (!user?.id) return;
       setLoading((prev) => prev + 1);
+      if (!user?.id) return;
       const data = await supabase
         .from("Posts")
         .delete()

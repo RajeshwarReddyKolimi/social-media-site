@@ -19,7 +19,6 @@ export default function UserPosts({ user, isMe }) {
           likes:LikedPosts!postId(postId)`
         )
         .eq(`userId`, user?.id);
-      console.log(data, error);
       setUserPosts(data);
     } catch (e) {
       console.error(e);
@@ -31,7 +30,7 @@ export default function UserPosts({ user, isMe }) {
     fetchUserPosts();
   }, [user?.id]);
   return (
-    <div>
+    <div className="posts">
       {userPosts?.map((post, id) => (
         <PostCard key={id} post={post} isMe={isMe} />
       ))}
