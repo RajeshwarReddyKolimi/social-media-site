@@ -33,7 +33,7 @@ function App() {
   useEffect(() => {
     getCurrentUser();
   }, []);
-  console.log(currentUser);
+
   useEffect(() => {
     fetchSavedPosts(currentUser);
     fetchLikedPosts(currentUser);
