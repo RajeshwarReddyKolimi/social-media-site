@@ -1,14 +1,17 @@
 import { Button, Form, Input } from "antd";
 import React from "react";
 import { supabase } from "../../config/supabase";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import userState from "../../atoms/userState";
 import { MdClose } from "react-icons/md";
+import loadingState from "../../atoms/loadingState";
 
 export default function EditUsername({ setShowEditUsername }) {
   const [currentUser, setCurrentUser] = useRecoilState(userState);
+  const setLoading = useSetRecoilState(loadingState);
   const handleChangeUsername = async (values) => {
     try {
+      setLoading((prev) => prev + 1);
       if (!values?.username?.trim()) return;
       const { data, error } = await supabase
         .from("Users")
@@ -22,6 +25,8 @@ export default function EditUsername({ setShowEditUsername }) {
       setShowEditUsername(false);
     } catch (e) {
       console.log(e);
+    } finally {
+      setLoading((prev) => prev - 1);
     }
   };
   return (

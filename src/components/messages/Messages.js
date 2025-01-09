@@ -1,7 +1,7 @@
 import { Button, Form, Input } from "antd";
 import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router";
-import { useRecoilValue } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import userState from "../../atoms/userState";
 import { supabase } from "../../config/supabase";
 import useAuth from "../../hooks/useAuth";
@@ -9,9 +9,11 @@ import useMessages from "../../hooks/useMessages";
 import NotFound from "../navbar/NotFound";
 import UserSearchCard from "../users/UserSearchCard";
 import Message from "./Message";
+import loadingState from "../../atoms/loadingState";
 
 export default function Messages() {
   const currentUser = useRecoilValue(userState);
+  const setLoading = useSetRecoilState(loadingState);
   const { id: chatId } = useParams();
   const [messages, setMessages] = useState([]);
   const [error, setError] = useState();
@@ -21,6 +23,7 @@ export default function Messages() {
   const [receiver, setReceiver] = useState();
   const handleSendMessage = async (values) => {
     try {
+      setLoading((prev) => prev + 1);
       if (!values?.message?.trim()) return;
       if (!chatId) return;
       const { data, error } = await supabase.from("Messages").insert({
@@ -36,10 +39,13 @@ export default function Messages() {
       }
     } catch (e) {
       console.log(e);
+    } finally {
+      setLoading((prev) => prev - 1);
     }
   };
   const fetchChatDetails = async () => {
     try {
+      setLoading((prev) => prev + 1);
       const { data, error } = await supabase
         .from("Chats")
         .select(
@@ -55,10 +61,13 @@ export default function Messages() {
       setChatDetails(data);
     } catch (e) {
       console.log(e);
+    } finally {
+      setLoading((prev) => prev - 1);
     }
   };
   const fetchMessages = async () => {
     try {
+      setLoading((prev) => prev + 1);
       const { data, error } = await supabase
         .from("Messages")
         .select(`*`)
@@ -69,6 +78,8 @@ export default function Messages() {
     } catch (e) {
       setError("Invalid Url");
       console.log(e);
+    } finally {
+      setLoading((prev) => prev - 1);
     }
   };
 

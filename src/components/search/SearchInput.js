@@ -1,15 +1,18 @@
 import { SearchOutlined } from "@ant-design/icons";
 import { Button, Form, Input, Tooltip } from "antd";
 import React, { useState } from "react";
-import { useRecoilValue } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import userState from "../../atoms/userState";
 import { supabase } from "../../config/supabase";
+import loadingState from "../../atoms/loadingState";
 
 export default function SearchInput({ setSearchResults }) {
   const user = useRecoilValue(userState);
+  const setLoading = useSetRecoilState(loadingState);
 
   const handleSearch = async (values) => {
     try {
+      setLoading((prev) => prev + 1);
       if (!values?.searchInput?.trim()) return;
       const { data, error } = await supabase
         .from("Users")
@@ -20,6 +23,8 @@ export default function SearchInput({ setSearchResults }) {
       setSearchResults(data);
     } catch (e) {
       console.log(e);
+    } finally {
+      setLoading((prev) => prev - 1);
     }
   };
 

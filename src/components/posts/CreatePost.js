@@ -1,14 +1,15 @@
 import { PlusOutlined } from "@ant-design/icons";
 import { Button, Form, Input, Upload } from "antd";
 import React, { useState } from "react";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import loadingState from "../../atoms/loadingState";
 import userState from "../../atoms/userState";
 import { supabase } from "../../config/supabase";
 
 export default function CreatePost() {
   const [fileList, setFileList] = useState([]);
-  const [loading, setLoading] = useRecoilState(loadingState);
+  const setLoading = useSetRecoilState(loadingState);
+
   const user = useRecoilValue(userState);
   const handleImageUpload = () => {};
   const createPost = async (image, caption) => {

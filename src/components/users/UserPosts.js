@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from "react";
 import PostCard from "../posts/PostCard";
 import { supabase } from "../../config/supabase";
+import { useSetRecoilState } from "recoil";
+import loadingState from "../../atoms/loadingState";
 
 export default function UserPosts({ user, isMe }) {
   const [userPosts, setUserPosts] = useState([]);
+  const setLoading = useSetRecoilState(loadingState);
   async function fetchUserPosts() {
     try {
+      setLoading((prev) => prev + 1);
       if (!user?.id) return;
-      // setLoading((prev) => prev + 1);
       const { data, error } = await supabase
         .from("Posts")
         .select(
@@ -23,7 +26,7 @@ export default function UserPosts({ user, isMe }) {
     } catch (e) {
       console.error(e);
     } finally {
-      // setLoading((prev) => prev - 1);
+      setLoading((prev) => prev - 1);
     }
   }
   useEffect(() => {

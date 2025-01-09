@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import loadingState from "../../atoms/loadingState";
 import userState from "../../atoms/userState";
 import { supabase } from "../../config/supabase";
@@ -8,10 +8,12 @@ import "./index.css";
 
 export default function Chats() {
   const [chats, setChats] = useState([]);
-  const [loading, setLoading] = useRecoilState(loadingState);
+  const setLoading = useSetRecoilState(loadingState);
+
   const currentUser = useRecoilValue(userState);
   const fetchChats = async () => {
     try {
+      setLoading((prev) => prev + 1);
       const { data, error } = await supabase
         .from("Chats")
         .select(
@@ -27,12 +29,13 @@ export default function Chats() {
     } catch (e) {
       console.log(e);
     } finally {
-      // setLoading((prev) => prev - 1);
+      setLoading((prev) => prev - 1);
     }
   };
 
   const updateChat = async (message) => {
     try {
+      setLoading((prev) => prev + 1);
       const { data, error } = await supabase
         .from("Chats")
         .update({
@@ -42,6 +45,8 @@ export default function Chats() {
       fetchChats();
     } catch (e) {
       console.log(e);
+    } finally {
+      setLoading((prev) => prev - 1);
     }
   };
 

@@ -44,13 +44,13 @@ function App() {
           <Route index element={<Home />} />
           <Route path="/user/:id" element={<UserProfile />} />
           <Route path="/create" element={<CreatePost />} />
-          <Route path="/signin" element={<Signin />} />
-          <Route path="/signup" element={<Signup />} />
           <Route path="/chat" element={<Chats />} />
           <Route path="/chat/:id" element={<Messages />} />
           <Route path="/saved-posts" element={<SavedPosts />} />
           <Route path="/liked-posts" element={<LikedPosts />} />
         </Route>
+        <Route path="/signin" element={<Signin />} />
+        <Route path="/signup" element={<Signup />} />{" "}
         <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>

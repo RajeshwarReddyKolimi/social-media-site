@@ -14,15 +14,19 @@ export default function Layout() {
   const navigate = useNavigate();
   const location = useLocation();
   useEffect(() => {
-    if (!user) {
-      navigate(`/signin?redirect=${location?.pathname}`);
+    if (!loading) {
+      if (!user) {
+        const curLocation = location?.pathname;
+        if (curLocation != "signin" || curLocation != "signup")
+          navigate(`/signin?redirect=${location?.pathname}`);
+        else navigate(`/signin?redirect=/}`);
+      }
     }
-  }, [user]);
-
-  if (loading !== 0) return <Loader />;
+  }, [user, loading]);
 
   return (
     <div className="layout">
+      {loading !== 0 && <Loader />}
       <Navbar />
       <div className="outlet">
         <Outlet />

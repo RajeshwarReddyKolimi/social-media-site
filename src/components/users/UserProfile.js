@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router";
-import { useRecoilValue } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import followingsState from "../../atoms/followings";
 import useAuth from "../../hooks/useAuth";
 import useFollows from "../../hooks/useFollows";
@@ -13,10 +13,12 @@ import userState from "../../atoms/userState";
 import { MdEdit } from "react-icons/md";
 import { supabase } from "../../config/supabase";
 import EditUsername from "../profile/EditUsername";
+import loadingState from "../../atoms/loadingState";
 
 export default function UserProfile() {
   const { handleFollow, handleUnfollow } = useFollows();
   const followings = useRecoilValue(followingsState);
+  const setLoading = useSetRecoilState(loadingState);
   const [user, setUser] = useState();
   const { id } = useParams();
   const currentUser = useRecoilValue(userState);
@@ -31,6 +33,7 @@ export default function UserProfile() {
 
   const handleChangeDp = async (values) => {
     try {
+      setLoading((prev) => prev + 1);
       const image = values?.file;
       const imageName = Date.now() + image?.name;
       const r1 = await supabase.storage
@@ -51,11 +54,14 @@ export default function UserProfile() {
       }
     } catch (e) {
       console.log(e);
+    } finally {
+      setLoading((prev) => prev - 1);
     }
   };
 
   const fetchChatId = async () => {
     try {
+      setLoading((prev) => prev + 1);
       if (currentUser?.id == user?.id) return;
       const { data, error } = await supabase
         .from("Chats")
@@ -82,6 +88,8 @@ export default function UserProfile() {
       }
     } catch (e) {
       console.log(e);
+    } finally {
+      setLoading((prev) => prev - 1);
     }
   };
   useEffect(() => {

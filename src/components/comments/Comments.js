@@ -1,19 +1,22 @@
 import { Button, Form, Input } from "antd";
 import React, { useEffect, useState } from "react";
 import { IoIosSend } from "react-icons/io";
-import { useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import userState from "../../atoms/userState";
 import { supabase } from "../../config/supabase";
 import "./index.css";
 import UserCommentCard from "./UserCommentCard";
+import loadingState from "../../atoms/loadingState";
 
 export default function Comments({ setShowComments, post }) {
   const currentUser = useRecoilValue(userState);
+  const setLoading = useSetRecoilState(loadingState);
   const [comments, setComments] = useState([]);
   const [form] = Form.useForm();
 
   const fetchComments = async () => {
     try {
+      setLoading((prev) => prev + 1);
       const { data, error } = await supabase
         .from("Comments")
         .select(`*, user:userId (id, name, image)`)
@@ -22,11 +25,15 @@ export default function Comments({ setShowComments, post }) {
       setComments(data);
     } catch (e) {
       console.log(e);
+    } finally {
+      setLoading((prev) => prev - 1);
     }
   };
   const handleAddComment = async (values) => {
     try {
+      setLoading((prev) => prev + 1);
       if (!values?.commentInput?.trim()) return;
+
       const { data, error } = await supabase
         .from("Comments")
         .insert({
@@ -39,6 +46,8 @@ export default function Comments({ setShowComments, post }) {
       fetchComments();
     } catch (e) {
       console.log(e);
+    } finally {
+      setLoading((prev) => prev - 1);
     }
   };
   useEffect(() => {
