@@ -11,15 +11,18 @@ export default function useSavedPosts() {
     try {
       if (!user?.id) return;
 
-      const { data, error } = await supabase.from("SavedPosts").select(
-        `*,
+      const { data, error } = await supabase
+        .from("SavedPosts")
+        .select(
+          `*,
             Post:postId (
               User:userId (id, name, image),
               id,
               caption,
               image
             )`
-      );
+        )
+        .order("created_at", { ascending: false });
       setSavedPosts(data);
     } catch (e) {
       console.log(e);

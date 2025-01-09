@@ -10,7 +10,6 @@ export default function Chats() {
   const [chats, setChats] = useState([]);
   const [loading, setLoading] = useRecoilState(loadingState);
   const currentUser = useRecoilValue(userState);
-
   const fetchChats = async () => {
     try {
       const { data, error } = await supabase

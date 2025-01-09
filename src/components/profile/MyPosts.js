@@ -16,8 +16,8 @@ export default function MyPosts() {
           User:userId (id, name, image),
           likes:LikedPosts!postId(postId)`
         )
-
-        .eq("userId", user?.id);
+        .eq("userId", user?.id)
+        .order("created_at", { ascending: false });
       setMyPosts(data);
     } catch (e) {
       console.log(e);

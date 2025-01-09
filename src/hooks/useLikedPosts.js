@@ -10,15 +10,18 @@ export default function useLikedPosts() {
   const fetchLikedPosts = async () => {
     try {
       if (!user?.id) return;
-      const { data, error } = await supabase.from("LikedPosts").select(
-        `*,
+      const { data, error } = await supabase
+        .from("LikedPosts")
+        .select(
+          `*,
             Post:postId (
               User:userId (id, name, image),
               id,
               caption,
               image
             )`
-      );
+        )
+        .order("created_at", { ascending: false });
       setLikedPosts(data);
     } catch (e) {
       console.log(e);

@@ -17,7 +17,8 @@ export default function Comments({ setShowComments, post }) {
       const { data, error } = await supabase
         .from("Comments")
         .select(`*, user:userId (id, name, image)`)
-        .eq("postId", post?.id);
+        .eq("postId", post?.id)
+        .order("created_at", { ascending: false });
       setComments(data);
     } catch (e) {
       console.log(e);

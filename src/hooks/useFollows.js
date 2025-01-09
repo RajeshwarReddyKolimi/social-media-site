@@ -21,7 +21,8 @@ export default function useFollows() {
             User:follower(id, name, image)
             `
         )
-        .eq("following", user?.id);
+        .eq("following", user?.id)
+        .order("created_at", { ascending: false });
       if (currentUser?.id == user?.id) setFollowers(data);
       else return data;
     } catch (e) {
@@ -41,7 +42,8 @@ export default function useFollows() {
                 User:following(id, name, image)
                 `
         )
-        .eq("follower", user?.id);
+        .eq("follower", user?.id)
+        .order("created_at", { ascending: false });
 
       if (currentUser?.id == user?.id) setFollowings(data);
       else return data;

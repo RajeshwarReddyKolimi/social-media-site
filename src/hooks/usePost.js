@@ -11,20 +11,6 @@ export default function usePost() {
   async function fetchAllPosts() {
     try {
       if (!user?.id) return;
-      // setLoading((prev) => prev + 1);
-      // const { data, error } = await supabase
-      //   .from("Posts")
-      //   .select(
-      //     `*,
-      //   User:userId (
-      //     id,
-      //     name,
-      //     image
-      //   )`
-      //   )
-      //   .neq(`userId`, user?.id);
-      // error && console.log(error);
-
       const { data, error } = await supabase
         .from("Posts")
         .select(
