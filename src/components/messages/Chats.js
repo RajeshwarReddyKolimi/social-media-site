@@ -11,19 +11,8 @@ export default function Chats() {
   const [loading, setLoading] = useRecoilState(loadingState);
   const currentUser = useRecoilValue(userState);
 
-  const getChats = async () => {
+  const fetchChats = async () => {
     try {
-      // setLoading((prev) => prev + 1);
-      // const { data, error } = await supabase
-      //   .from("Messages")
-      //   .select(
-      //     `
-      //     *,
-      //     sender (id, name, image),
-      //     receiver (id, name, image)
-      //   `
-      //   )
-      //   .or(`sender.eq.${currentUser?.id}, receiver.eq.${currentUser?.id}`);
       const { data, error } = await supabase
         .from("Chats")
         .select(
@@ -33,7 +22,8 @@ export default function Chats() {
           user2:user2Id (id, name, image)
         `
         )
-        .or(`user1Id.eq.${currentUser?.id}, user2Id.eq.${currentUser?.id}`);
+        .or(`user1Id.eq.${currentUser?.id}, user2Id.eq.${currentUser?.id}`)
+        .order("lastUpdatedAt", { ascending: false });
       setChats(data);
     } catch (e) {
       console.log(e);
@@ -42,10 +32,46 @@ export default function Chats() {
     }
   };
 
+  const updateChat = async (message) => {
+    try {
+      const { data, error } = await supabase
+        .from("Chats")
+        .update({
+          lastUpdatedAt: message?.created_at,
+        })
+        .eq("id", message?.chatId);
+      fetchChats();
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   useEffect(() => {
-    if (currentUser) getChats();
+    if (currentUser) fetchChats();
     else setChats([]);
   }, [currentUser]);
+
+  useEffect(() => {
+    const subscription = supabase
+      .channel("message-channel")
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "Messages" },
+        (payload) => {
+          if (
+            payload?.new?.receiver === currentUser?.id ||
+            payload?.new?.sender === currentUser?.id
+          ) {
+            updateChat(payload?.new);
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [currentUser?.id]);
   return (
     <div className="chat-list">
       {chats?.map((chat, id) => (

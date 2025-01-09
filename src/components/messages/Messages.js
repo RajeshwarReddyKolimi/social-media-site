@@ -12,25 +12,22 @@ import Message from "./Message";
 
 export default function Messages() {
   const currentUser = useRecoilValue(userState);
-  const { id: receiverId } = useParams();
-  const [chatId, setChatId] = useState();
+  const { id: chatId } = useParams();
   const [messages, setMessages] = useState([]);
-  const [receiver, setReceiver] = useState(null);
   const [error, setError] = useState();
   const [form] = Form.useForm();
   const messagesEndRef = useRef(null);
-  const { fetchChatDetls, fetchMessages } = useMessages();
-  const { fetchUserDetails } = useAuth();
+  const [chatDetails, setChatDetails] = useState();
+  const [receiver, setReceiver] = useState();
   const handleSendMessage = async (values) => {
     try {
-      console.log(chatId);
       if (!values?.message?.trim()) return;
       if (!chatId) return;
       const { data, error } = await supabase.from("Messages").insert({
         sender: currentUser?.id,
         receiver: receiver?.id,
         text: values?.message?.trim(),
-        chatId,
+        chatId: chatId,
       });
       if (error) {
         console.log(error);
@@ -41,44 +38,38 @@ export default function Messages() {
       console.log(e);
     }
   };
-  const createNewChat = async () => {
-    try {
-      const { data, error } = await supabase.from("Chats").upsert({
-        user1Id: currentUser?.id,
-        user2Id: receiverId,
-      });
-      setChatId(data?.id);
-    } catch (e) {
-      console.log(e);
-    }
-  };
   const fetchChatDetails = async () => {
     try {
-      if (!currentUser?.id || currentUser?.id == receiverId) {
-        setError("Invalid url");
-        return;
-      }
       const { data, error } = await supabase
         .from("Chats")
         .select(
-          `*, user1:user1Id(id, name, image), user2:user2Id(id, name, image)`
+          `*, 
+          user1:user1Id (id, name, image), 
+          user2:user2Id (id, name, image)`
         )
-        .or(`user1Id.eq.${currentUser?.id}, user2Id.eq.${currentUser?.id}`)
-        .or(`user1Id.eq.${receiverId}, user2Id.eq.${receiverId}`)
-        .single();
-      if (data) setChatId(data?.id);
-      else {
-        await createNewChat();
-      }
+        .eq("id", chatId)
+        .maybeSingle();
+      if (currentUser?.id != data?.user1Id && currentUser?.id != data?.user2Id)
+        setError("Invalid Url");
+      setReceiver(currentUser?.id == data?.user1Id ? data?.user2 : data?.user1);
+      setChatDetails(data);
     } catch (e) {
       console.log(e);
     }
   };
-
-  const fetchReceiver = async () => {
-    const { data, error } = await fetchUserDetails(receiverId);
-    setError(error);
-    setReceiver(data);
+  const fetchMessages = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("Messages")
+        .select(`*`)
+        .eq("chatId", chatId)
+        .or(`sender.eq.${currentUser?.id}, receiver.eq.${currentUser.id}`);
+      if (error) setError("Invalid Url");
+      setMessages(data);
+    } catch (e) {
+      setError("Invalid Url");
+      console.log(e);
+    }
   };
 
   useEffect(() => {
@@ -86,17 +77,11 @@ export default function Messages() {
   }, [messages]);
 
   useEffect(() => {
-    if (receiverId) {
-      fetchReceiver();
-    }
-  }, [receiverId]);
-
-  useEffect(() => {
-    if (receiverId) {
+    if (chatId) {
+      fetchMessages();
       fetchChatDetails();
-      fetchMessages({ receiverId, setMessages });
     }
-  }, [receiverId, currentUser]);
+  }, [chatId, currentUser]);
 
   useEffect(() => {
     const subscription = supabase
@@ -125,37 +110,36 @@ export default function Messages() {
 
   return (
     <div className="messages-page">
-      {/* <div className="chat-sidebar">
-        <Chats />
-      </div> */}
-      {receiverId && (
-        <div className="messages-container">
-          <UserSearchCard user={receiver} />
-          <div className="messages">
-            {messages?.map((message, id) => (
-              <Message key={id} message={message} userId={currentUser?.id} />
-            ))}
-            {messages?.length == 0 && (
-              <p className="empty-message">No messages</p>
-            )}
-            <div ref={messagesEndRef} />
-          </div>
-          <Form
-            className="message-input-form"
-            onFinish={handleSendMessage}
-            form={form}
-          >
-            <Form.Item name="message">
-              <Input placeholder="Enter a message" autoFocus />
-            </Form.Item>
-            <Form.Item>
-              <Button type="primary" htmlType="submit">
-                Send
-              </Button>
-            </Form.Item>
-          </Form>
+      <div className="messages-container">
+        <UserSearchCard user={receiver} />
+        <div className="messages">
+          {messages?.map((message, id) => (
+            <Message
+              key={id}
+              message={message}
+              isSent={currentUser?.id === message?.sender}
+            />
+          ))}
+          {messages?.length == 0 && (
+            <p className="empty-message">No messages</p>
+          )}
+          <div ref={messagesEndRef} />
         </div>
-      )}
+        <Form
+          className="message-input-form"
+          onFinish={handleSendMessage}
+          form={form}
+        >
+          <Form.Item name="message">
+            <Input placeholder="Enter a message" autoFocus />
+          </Form.Item>
+          <Form.Item>
+            <Button type="primary" htmlType="submit">
+              Send
+            </Button>
+          </Form.Item>
+        </Form>
+      </div>
     </div>
   );
 }

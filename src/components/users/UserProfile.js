@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useParams } from "react-router";
+import { Link, useNavigate, useParams } from "react-router";
 import { useRecoilValue } from "recoil";
 import followingsState from "../../atoms/followings";
 import useAuth from "../../hooks/useAuth";
@@ -27,6 +27,8 @@ export default function UserProfile() {
   const [showEditUsername, setShowEditUsername] = useState(false);
   const [fileList, setFileList] = useState([]);
   const { getCurrentUser } = useAuth();
+  const navigate = useNavigate();
+
   const handleChangeDp = async (values) => {
     try {
       const image = values?.file;
@@ -52,6 +54,36 @@ export default function UserProfile() {
     }
   };
 
+  const fetchChatId = async () => {
+    try {
+      if (currentUser?.id == user?.id) return;
+      const { data, error } = await supabase
+        .from("Chats")
+        .select(
+          `*,
+        user1:user1Id (id, name, image),
+        user2:user2Id (id, name, image)`
+        )
+        .or(`user1Id.eq.${currentUser?.id}, user2Id.eq.${currentUser?.id}`)
+        .or(`user1Id.eq.${user?.id}, user2Id.eq.${user?.id}`)
+        .maybeSingle();
+      if (data) navigate(`/chat/${data?.id}`);
+      else {
+        const { data, error } = await supabase
+          .from("Chats")
+          .upsert({
+            user1Id: currentUser?.id,
+            user2Id: user?.id,
+          })
+          .select()
+          .single();
+        if (data) navigate(`/chat/${data?.id}`);
+        return;
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
   useEffect(() => {
     setIsFollowing(!!followings?.find((fuser) => fuser?.following === id));
   }, [followings, id]);
@@ -127,9 +159,16 @@ export default function UserProfile() {
           ))}
       </div>
       {!isMe && (
-        <Link to={`/chat/${user?.id}`} className="profile-message-button">
+        // <Link to={`/chat/${user?.id}`} className="profile-message-button">
+        //   Message
+        // </Link>
+        <Button
+          type="text"
+          onClick={fetchChatId}
+          className="profile-message-button"
+        >
           Message
-        </Link>
+        </Button>
       )}
       <div className="profile-button-container">
         <button

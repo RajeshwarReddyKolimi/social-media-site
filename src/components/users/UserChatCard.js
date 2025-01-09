@@ -4,7 +4,7 @@ import "./index.css";
 
 export default function UserChatCard({ user, chat }) {
   return (
-    <Link to={`/chat/${user?.id}`} className="user-chat-card user-profile-card">
+    <Link to={`/chat/${chat?.id}`} className="user-chat-card user-profile-card">
       <img src={user?.image} />
       <p>{user?.name}</p>
     </Link>
