@@ -39,6 +39,7 @@ export default function MyPosts() {
       {myPosts?.map((post, id) => (
         <PostCard post={post} key={id} isMe={true} />
       ))}
+      {myPosts?.length == 0 && <p className="empty-message">No posts.</p>}
     </div>
   );
 }

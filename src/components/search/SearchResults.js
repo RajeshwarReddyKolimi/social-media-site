@@ -9,6 +9,9 @@ export default function SearchResults({ searchResults }) {
       {searchResults?.map((user, id) => (
         <UserSearchCard user={user} key={id} />
       ))}
+      {searchResults?.length == 0 && (
+        <p className="empty-message">No results</p>
+      )}
     </div>
   );
 }

@@ -115,7 +115,6 @@ export default function UserProfile() {
           {isMe && (
             <Upload
               className="profile-dp-edit"
-              listType="picture-card"
               fileList={fileList}
               onChange={handleChangeDp}
             >
@@ -167,9 +166,6 @@ export default function UserProfile() {
           ))}
       </div>
       {!isMe && (
-        // <Link to={`/chat/${user?.id}`} className="profile-message-button">
-        //   Message
-        // </Link>
         <Button
           type="text"
           onClick={fetchChatId}

@@ -67,6 +67,10 @@ export default function Comments({ setShowComments, post }) {
           {comments?.map((comment, id) => (
             <UserCommentCard key={id} comment={comment} />
           ))}
+
+          {comments?.length == 0 && (
+            <p className="empty-message">No comments.</p>
+          )}
         </div>
         <Form
           className="comment-form"

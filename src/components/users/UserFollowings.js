@@ -36,6 +36,9 @@ export default function UserFollowings({ user }) {
           isMe={user?.User?.id === currentUser?.id}
         />
       ))}
+      {userFollowings?.length == 0 && (
+        <p className="empty-message">No followings</p>
+      )}
     </div>
   );
 }
