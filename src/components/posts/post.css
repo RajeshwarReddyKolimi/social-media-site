@@ -47,7 +47,7 @@
 }
 
 .create-post-page {
-  max-width: 350px !important;
+  max-width: 350px;
   margin: auto;
   display: flex;
   flex-direction: column;
@@ -56,33 +56,10 @@
   text-align: center;
 }
 
-.create-post-form {
-  width: 100%;
-}
-
 .create-post-form > * {
   width: 100%;
 }
 
-.ant-upload-wrapper {
-  border: 1px dashed white;
-  border-radius: 0.25rem;
+.create-post-form .ant-upload-select {
   width: 100%;
-}
-
-.ant-upload-list {
-  justify-content: center;
-}
-
-.ant-upload {
-  border: none !important;
-}
-
-.upload-button {
-  flex-direction: column;
-}
-
-.create-post-form input,
-.create-post-form button {
-  border-radius: 0.25rem;
 }

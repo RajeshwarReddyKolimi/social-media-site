@@ -18,7 +18,8 @@ export default function MoreItems() {
     },
     {
       key: "2",
-      label: <button onClick={logout}>Logout</button>,
+      label: <button>Logout</button>,
+      onClick: logout,
     },
   ];
   const selectedKey =

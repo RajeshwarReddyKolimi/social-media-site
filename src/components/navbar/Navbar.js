@@ -6,9 +6,9 @@ import {
   SearchOutlined,
   UserOutlined,
 } from "@ant-design/icons";
-import { Menu } from "antd";
+import { Button, Menu } from "antd";
 import React, { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import { useRecoilValue } from "recoil";
 import Logo from "../../assets/Logo";
 import LogoMini from "../../assets/LogoMini";
@@ -27,37 +27,41 @@ const Navbar = () => {
     {
       key: "0",
       label: (
-        <a href="/">
+        <Link to="/">
           <Logo />
-        </a>
+        </Link>
       ),
     },
     {
       key: "1",
       icon: <HomeOutlined />,
-      label: <a href="/">Home</a>,
+      label: <Link to="/">Home</Link>,
     },
     {
       key: "2",
       icon: <SearchOutlined />,
-      label: <button>Search</button>,
+      label: (
+        <Button type="text" style={{ padding: "0" }} htmlType="button">
+          Search
+        </Button>
+      ),
       onClick: () =>
         setShowItem((prev) => (prev === "search" ? null : "search")),
     },
     {
       key: "3",
       icon: <MessageOutlined />,
-      label: <a href="/chat">Chats</a>,
+      label: <Link to="/chat">Chats</Link>,
     },
     {
       key: "4",
-      label: <a href="/create">Create</a>,
+      label: <Link to="/create">Create</Link>,
       icon: <PlusCircleOutlined />,
     },
     {
       key: "5",
       icon: <UserOutlined />,
-      label: <a href={`/user/${user?.id}`}>Profile</a>,
+      label: <Link to={`/user/${user?.id}`}>Profile</Link>,
     },
     {
       key: "6",
@@ -163,7 +167,6 @@ const Navbar = () => {
         defaultSelectedKeys={["1"]}
         selectedKeys={[selectedKey]}
         theme="dark"
-        defaultOpenKeys={["sub1"]}
         items={largeScreenItems}
       />
       <Menu
@@ -171,7 +174,6 @@ const Navbar = () => {
         selectedKeys={[selectedKey]}
         defaultSelectedKeys={["1"]}
         theme="dark"
-        defaultOpenKeys={["sub1"]}
         items={midScreenItems}
       />
       <Menu
@@ -179,7 +181,6 @@ const Navbar = () => {
         selectedKeys={[selectedKey]}
         defaultSelectedKeys={["1"]}
         theme="dark"
-        defaultOpenKeys={["sub1"]}
         items={smallScreenItems}
       />
       {showItem === "search" ? (

@@ -1,10 +1,13 @@
-import { PlusOutlined } from "@ant-design/icons";
+import { InboxOutlined, PlusOutlined, UploadOutlined } from "@ant-design/icons";
 import { Button, Form, Input, Upload } from "antd";
 import React, { useState } from "react";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import loadingState from "../../atoms/loadingState";
 import userState from "../../atoms/userState";
 import { supabase } from "../../config/supabase";
+import ImgCrop from "antd-img-crop";
+import Dragger from "antd/es/upload/Dragger";
+import { MdClose } from "react-icons/md";
 
 export default function CreatePost() {
   const [fileList, setFileList] = useState([]);
@@ -29,6 +32,7 @@ export default function CreatePost() {
   const handleSubmit = async (values) => {
     try {
       setLoading((prev) => prev + 1);
+      console.log(values);
       const image = values?.fileList?.[0];
       const imageName = Date.now() + image?.name;
       const r1 = await supabase.storage
@@ -46,14 +50,12 @@ export default function CreatePost() {
       setLoading((prev) => prev - 1);
     }
   };
-
   return (
     <div className="create-post-page">
       <h1>Create new post</h1>
       <Form
         className="create-post-form"
         layout="horizontal"
-        style={{ maxWidth: 600 }}
         onFinish={handleSubmit}
         onFinishFailed={(e) => console.log("Form submission failed:", e)}
       >
@@ -63,24 +65,30 @@ export default function CreatePost() {
           getValueFromEvent={(e) => e.fileList}
         >
           <Upload
-            listType="picture-card"
+            listType="text"
             fileList={fileList}
-            onChange={handleImageUpload}
             maxCount={1}
             accept="image/*"
           >
             <Button
-              className="upload-button"
-              style={{ border: 0, background: "none" }}
-              htmlType="button"
+              style={{
+                width: "100%",
+                backgroundColor: "transparent",
+                borderRadius: "0.25rem",
+              }}
+              icon={<UploadOutlined />}
             >
-              <PlusOutlined />
-              <div style={{ marginTop: 8 }}>Upload Image</div>
+              Upload Image
             </Button>
           </Upload>
         </Form.Item>
         <Form.Item name="caption">
-          <Input placeholder="Enter caption" />
+          <Input
+            placeholder="Add caption"
+            style={{
+              borderRadius: "0.25rem",
+            }}
+          />
         </Form.Item>
         <Button type="primary" htmlType="submit">
           Create
