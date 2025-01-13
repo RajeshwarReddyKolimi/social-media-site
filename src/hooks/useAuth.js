@@ -71,9 +71,13 @@ export default function useAuth() {
       setLoading((prev) => prev + 1);
       const { data: signinData, error: signinError } =
         await supabase.auth.signInWithPassword(values);
-      if (signinData) {
+
+      if (signinData?.user) {
         const response = await fetchUserDetails(signinData?.user?.id);
         setUser(response?.data);
+      } else {
+        console.log(signinError);
+        return { error: signinError };
       }
     } catch (e) {
       console.error(e);

@@ -21,6 +21,7 @@ import useSavedPosts from "./hooks/useSavedPosts";
 import Home from "./pages/home/Home";
 import Loader from "./utils/loader/Loader";
 import { GiConsoleController } from "react-icons/gi";
+import PostPage from "./components/posts/PostPage";
 
 function App() {
   const currentUser = useRecoilValue(userState);
@@ -51,6 +52,7 @@ function App() {
           <Route path="/create" element={<CreatePost />} />
           <Route path="/chat" element={<Chats />} />
           <Route path="/chat/:id" element={<Messages />} />
+          <Route path="/post/:id" element={<PostPage />} />
           <Route path="/saved-posts" element={<SavedPosts />} />
           <Route path="/liked-posts" element={<LikedPosts />} />
         </Route>

@@ -2,14 +2,13 @@ import { Button, Form, Input } from "antd";
 import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router";
 import { useRecoilValue, useSetRecoilState } from "recoil";
+import loadingState from "../../atoms/loadingState";
 import userState from "../../atoms/userState";
 import { supabase } from "../../config/supabase";
-import useAuth from "../../hooks/useAuth";
-import useMessages from "../../hooks/useMessages";
 import NotFound from "../navbar/NotFound";
 import UserSearchCard from "../users/UserSearchCard";
 import Message from "./Message";
-import loadingState from "../../atoms/loadingState";
+import MessagePost from "./MessagePost";
 
 export default function Messages() {
   const currentUser = useRecoilValue(userState);
@@ -70,7 +69,13 @@ export default function Messages() {
       setLoading((prev) => prev + 1);
       const { data, error } = await supabase
         .from("Messages")
-        .select(`*`)
+        .select(
+          `*, 
+          post:postId(id, image, caption, 
+            user:userId (id, name, image)
+          )
+          `
+        )
         .eq("chatId", chatId)
         .or(`sender.eq.${currentUser?.id}, receiver.eq.${currentUser.id}`);
       if (error) setError("Invalid Url");
@@ -124,13 +129,21 @@ export default function Messages() {
       <div className="messages-container">
         <UserSearchCard user={receiver} />
         <div className="messages">
-          {messages?.map((message, id) => (
-            <Message
-              key={id}
-              message={message}
-              isSent={currentUser?.id === message?.sender}
-            />
-          ))}
+          {messages?.map((message, id) =>
+            message?.postId ? (
+              <MessagePost
+                key={id}
+                message={message}
+                isSent={currentUser?.id === message?.sender}
+              />
+            ) : (
+              <Message
+                key={id}
+                message={message}
+                isSent={currentUser?.id === message?.sender}
+              />
+            )
+          )}
           {messages?.length == 0 && (
             <p className="empty-message">No messages</p>
           )}

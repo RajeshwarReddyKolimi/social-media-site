@@ -50,10 +50,32 @@
 
 .sent-message {
   text-align: right;
+  align-self: flex-end;
 }
 
 .received-message {
   text-align: left;
+  align-self: flex-start;
+}
+
+.message-post {
+  width: 200px;
+  /* overflow: hidden; */
+  border: 1px solid var(--border-color-1);
+  border-radius: 1rem;
+  text-align: left;
+}
+
+.message-post-link > p {
+  width: 200px;
+  padding: 1rem;
+}
+
+.message-post-link > img {
+  width: 200px;
+  height: 200px;
+  object-fit: contain;
+  border-bottom: 1px solid var(--border-color-1);
 }
 
 .message-input-form {

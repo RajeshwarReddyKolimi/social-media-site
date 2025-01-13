@@ -1,5 +1,5 @@
 import { Button, Form, Input } from "antd";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router";
 import { useRecoilValue } from "recoil";
 import Logo from "../../assets/Logo";
@@ -7,6 +7,7 @@ import userState from "../../atoms/userState";
 import useAuth from "../../hooks/useAuth";
 import "./index.css";
 import loadingState from "../../atoms/loadingState";
+import validateEmail from "../../utils/anon/validateEmail";
 
 export default function Signin() {
   const { signin } = useAuth();
@@ -14,7 +15,28 @@ export default function Signin() {
   const currentUser = useRecoilValue(userState);
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-
+  const [error, setError] = useState();
+  const handleSignin = async (values) => {
+    try {
+      const { email, password } = values;
+      console.log(validateEmail(email));
+      if (!validateEmail(email)) {
+        setError("Invalid email");
+        console.log("Invalid email");
+        return;
+      }
+      console.log(email, password);
+      const { data, error } = await signin(values);
+      Object.keys(error).forEach((e) => {
+        console.log(error[e]);
+      });
+      console.log(error);
+      console.log();
+      if (error) setError(error);
+    } catch (e) {
+      console.log(e);
+    }
+  };
   useEffect(() => {
     if (loading == 0) {
       if (currentUser) navigate(searchParams?.get("redirect") ?? "/");
@@ -34,7 +56,7 @@ export default function Signin() {
           initialValues={{
             remember: true,
           }}
-          onFinish={signin}
+          onFinish={handleSignin}
           onFinishFailed={(e) => console.log(e)}
           autoComplete="off"
         >
@@ -61,7 +83,7 @@ export default function Signin() {
           >
             <Input.Password visibilityToggle={false} placeholder="Password" />
           </Form.Item>
-
+          {/* {error && <p>{error}</p>} */}
           <Form.Item label={null}>
             <Button type="primary" htmlType="submit">
               Sign in

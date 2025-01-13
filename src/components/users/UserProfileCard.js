@@ -26,10 +26,10 @@ export default function UserProfileCard({ user, isMe }) {
           className="follow-button"
           onClick={(e) => {
             e.preventDefault();
-            handleUnfollow({ userId: user?.id });
+            handleFollow({ userId: user?.id });
           }}
         >
-          Unfollow
+          Follow
         </Button>
       )}
     </Link>

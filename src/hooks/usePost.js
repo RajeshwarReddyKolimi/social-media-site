@@ -15,7 +15,7 @@ export default function usePost() {
         .from("Posts")
         .select(
           `*,
-          User:userId (
+          user:userId (
             id,
             name,
             image
@@ -33,6 +33,24 @@ export default function usePost() {
     }
   }
 
+  async function fetchAPost(id) {
+    try {
+      setLoading((prev) => prev + 1);
+      if (!user?.id) return;
+      const data = await supabase
+        .from("Posts")
+        .select(
+          `*, user:userId(id, name, image), likes:LikedPosts!postId(postId)`
+        )
+        .eq("id", id)
+        .maybeSingle();
+      return data;
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoading((prev) => prev - 1);
+    }
+  }
   async function createAPost({ userId, image, caption }) {
     try {
       setLoading((prev) => prev + 1);
@@ -65,5 +83,5 @@ export default function usePost() {
       setLoading((prev) => prev - 1);
     }
   }
-  return { fetchAllPosts, createAPost, deletePost };
+  return { fetchAllPosts, createAPost, deletePost, fetchAPost };
 }

@@ -2,18 +2,21 @@ import React, { useEffect, useState } from "react";
 import { FaRegBookmark } from "react-icons/fa";
 import { FaBookmark, FaHeart, FaRegComment, FaRegHeart } from "react-icons/fa6";
 import { IoIosSend, IoMdHeartEmpty } from "react-icons/io";
-import { useRecoilValue } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import likedPostsState from "../../atoms/likedPosts";
 import savedPostsState from "../../atoms/savedPosts";
 import userState from "../../atoms/userState";
 import useLikedPosts from "../../hooks/useLikedPosts";
 import useSavedPosts from "../../hooks/useSavedPosts";
-import { MdDelete } from "react-icons/md";
+import { MdDelete, MdSend } from "react-icons/md";
 import usePost from "../../hooks/usePost";
 import Comments from "../comments/Comments";
+import { supabase } from "../../config/supabase";
+import loadingState from "../../atoms/loadingState";
 
 export default function Post({ post, isMe }) {
-  const user = useRecoilValue(userState);
+  const currentUser = useRecoilValue(userState);
+  const setLoading = useSetRecoilState(loadingState);
   const { addToSavedPosts, removeFromSavedPosts } = useSavedPosts();
   const { addToLikedPosts, removeFromLikedPosts } = useLikedPosts();
   const savedPosts = useRecoilValue(savedPostsState);
@@ -23,6 +26,52 @@ export default function Post({ post, isMe }) {
   const [likesCount, setLikesCount] = useState(post?.likes?.length || 0);
   const { deletePost } = usePost();
   const [showComments, setShowComments] = useState(false);
+  const receiverId = "519599c8-6936-4e36-8bdc-2e89ad221f0a";
+  const fetchChatId = async () => {
+    try {
+      setLoading((prev) => prev + 1);
+      if (currentUser?.id == receiverId) return;
+      const { data, error } = await supabase
+        .from("Chats")
+        .select(
+          `*,
+        user1:user1Id (id, name, image),
+        user2:user2Id (id, name, image)`
+        )
+        .or(`user1Id.eq.${currentUser?.id}, user2Id.eq.${currentUser?.id}`)
+        .or(`user1Id.eq.${receiverId}, user2Id.eq.${receiverId}`)
+        .maybeSingle();
+      if (data) return data?.id;
+      else {
+        const { data, error } = await supabase
+          .from("Chats")
+          .upsert({
+            user1Id: currentUser?.id,
+            user2Id: receiverId,
+          })
+          .select()
+          .single();
+        if (data) return data?.id;
+      }
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setLoading((prev) => prev - 1);
+    }
+  };
+  const handleSharePost = async () => {
+    try {
+      const chatId = await fetchChatId();
+      const { data, error } = await supabase.from("Messages").insert({
+        sender: currentUser?.id,
+        receiver: "519599c8-6936-4e36-8bdc-2e89ad221f0a",
+        postId: post?.id,
+        chatId: chatId,
+      });
+    } catch (e) {
+      console.log(e);
+    }
+  };
   useEffect(() => {
     setIsSaved(!!savedPosts?.find((spost) => spost?.postId === post?.id));
   }, [savedPosts]);
@@ -55,6 +104,9 @@ export default function Post({ post, isMe }) {
         )}
         <button onClick={() => setShowComments((prev) => !prev)}>
           <FaRegComment className="icon-2" />
+        </button>
+        <button onClick={() => handleSharePost()}>
+          <MdSend className="icon-2" />
         </button>
         {showComments && (
           <Comments post={post} setShowComments={setShowComments} />
