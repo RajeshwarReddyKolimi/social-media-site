@@ -31,9 +31,9 @@ export default function UserFollowers({ user }) {
     <div>
       {userFollowers?.map((user, id) => (
         <UserProfileCard
-          user={user?.User}
+          user={user?.user}
           key={id}
-          isMe={user?.User?.id === currentUser?.id}
+          isMe={user?.user?.id === currentUser?.id}
         />
       ))}
       {userFollowers?.length == 0 && (

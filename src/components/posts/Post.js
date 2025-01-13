@@ -1,18 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { FaRegBookmark } from "react-icons/fa";
 import { FaBookmark, FaHeart, FaRegComment, FaRegHeart } from "react-icons/fa6";
-import { IoIosSend, IoMdHeartEmpty } from "react-icons/io";
+import { IoIosSend } from "react-icons/io";
+import { MdDelete } from "react-icons/md";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import likedPostsState from "../../atoms/likedPosts";
+import loadingState from "../../atoms/loadingState";
 import savedPostsState from "../../atoms/savedPosts";
 import userState from "../../atoms/userState";
-import useLikedPosts from "../../hooks/useLikedPosts";
-import useSavedPosts from "../../hooks/useSavedPosts";
-import { MdDelete, MdSend } from "react-icons/md";
-import usePost from "../../hooks/usePost";
-import Comments from "../comments/Comments";
 import { supabase } from "../../config/supabase";
-import loadingState from "../../atoms/loadingState";
+import useLikedPosts from "../../hooks/useLikedPosts";
+import usePost from "../../hooks/usePost";
+import useSavedPosts from "../../hooks/useSavedPosts";
+import Comments from "../comments/Comments";
+import ShareOptions from "./ShareOptions";
 
 export default function Post({ post, isMe }) {
   const currentUser = useRecoilValue(userState);
@@ -27,6 +28,7 @@ export default function Post({ post, isMe }) {
   const { deletePost } = usePost();
   const [showComments, setShowComments] = useState(false);
   const receiverId = "519599c8-6936-4e36-8bdc-2e89ad221f0a";
+  const [showShareOptions, setShowShareOptions] = useState(false);
   const fetchChatId = async () => {
     try {
       setLoading((prev) => prev + 1);
@@ -59,15 +61,16 @@ export default function Post({ post, isMe }) {
       setLoading((prev) => prev - 1);
     }
   };
-  const handleSharePost = async () => {
+  const handleSharePost = async (receiverId) => {
     try {
       const chatId = await fetchChatId();
       const { data, error } = await supabase.from("Messages").insert({
         sender: currentUser?.id,
-        receiver: "519599c8-6936-4e36-8bdc-2e89ad221f0a",
+        receiver: receiverId,
         postId: post?.id,
         chatId: chatId,
       });
+      setShowShareOptions(false);
     } catch (e) {
       console.log(e);
     }
@@ -105,11 +108,17 @@ export default function Post({ post, isMe }) {
         <button onClick={() => setShowComments((prev) => !prev)}>
           <FaRegComment className="icon-2" />
         </button>
-        <button onClick={() => handleSharePost()}>
-          <MdSend className="icon-2" />
-        </button>
         {showComments && (
           <Comments post={post} setShowComments={setShowComments} />
+        )}
+        <button onClick={() => setShowShareOptions((prev) => !prev)}>
+          <IoIosSend className="icon-2" />
+        </button>
+        {showShareOptions && (
+          <ShareOptions
+            handleSharePost={handleSharePost}
+            setShowShareOptions={setShowShareOptions}
+          />
         )}
         {isSaved ? (
           <button onClick={() => removeFromSavedPosts({ postId: post?.id })}>

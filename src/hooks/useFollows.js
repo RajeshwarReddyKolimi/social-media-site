@@ -18,7 +18,7 @@ export default function useFollows() {
         .select(
           `
             *,
-            User:follower(id, name, image)
+            user:follower(id, name, image)
             `
         )
         .eq("following", user?.id)
@@ -39,7 +39,7 @@ export default function useFollows() {
         .select(
           `
                 *,
-                User:following(id, name, image)
+                user:following(id, name, image)
                 `
         )
         .eq("follower", user?.id)

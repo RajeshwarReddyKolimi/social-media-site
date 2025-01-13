@@ -2,29 +2,34 @@ import { useRecoilValue, useSetRecoilState } from "recoil";
 import loadingState from "../atoms/loadingState";
 import userState from "../atoms/userState";
 import { supabase } from "../config/supabase";
+import followersState from "../atoms/followers";
 
 export default function usePost() {
   const setLoading = useSetRecoilState(loadingState);
-  const user = useRecoilValue(userState);
+  const followers = useRecoilValue(followersState);
+  const currentUser = useRecoilValue(userState);
   async function uploadImage(image) {}
   async function fetchAllPosts() {
     try {
       setLoading((prev) => prev + 1);
-      if (!user?.id) return;
+      const followerIds = [
+        ...(followers?.map((follow) => follow.follower) || []),
+        currentUser?.id,
+      ];
+      if (!currentUser?.id) return;
       const { data, error } = await supabase
         .from("Posts")
         .select(
           `*,
-          user:userId (
-            id,
-            name,
-            image
-          ),
-          likes:LikedPosts!postId(postId)`
+    user:userId (
+      id,
+      name,
+      image
+    ),
+    likes:LikedPosts!postId(postId)`
         )
-        .neq("userId", user?.id)
+        .in("userId", followerIds)
         .order("created_at", { ascending: false });
-
       return data;
     } catch (e) {
       console.error(e);
@@ -36,7 +41,7 @@ export default function usePost() {
   async function fetchAPost(id) {
     try {
       setLoading((prev) => prev + 1);
-      if (!user?.id) return;
+      if (!currentUser?.id) return;
       const data = await supabase
         .from("Posts")
         .select(
@@ -54,7 +59,7 @@ export default function usePost() {
   async function createAPost({ userId, image, caption }) {
     try {
       setLoading((prev) => prev + 1);
-      if (!user?.id) return;
+      if (!currentUser?.id) return;
       const imageUrl = await uploadImage(image);
       const data = await supabase
         .from("Posts")
@@ -70,12 +75,12 @@ export default function usePost() {
   async function deletePost({ postId }) {
     try {
       setLoading((prev) => prev + 1);
-      if (!user?.id) return;
+      if (!currentUser?.id) return;
       const data = await supabase
         .from("Posts")
         .delete()
         .eq("id", postId)
-        .eq("userId", user?.id);
+        .eq("userId", currentUser?.id);
       return data;
     } catch (e) {
       console.error(e);

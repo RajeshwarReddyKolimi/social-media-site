@@ -11,13 +11,12 @@ export default function MyPosts() {
   const user = useRecoilValue(userState);
   const fetchMyPosts = async () => {
     try {
-      console.log("fethcing..");
       setLoading((prev) => prev + 1);
       const { data, error } = await supabase
         .from("Posts")
         .select(
           `*,
-          User:userId (id, name, image),
+          user:userId (id, name, image),
           likes:LikedPosts!postId(postId)`
         )
         .eq("userId", user?.id)
@@ -29,7 +28,7 @@ export default function MyPosts() {
       setLoading((prev) => prev - 1);
     }
   };
-
+  console.log(myPosts);
   useEffect(() => {
     fetchMyPosts();
   }, []);

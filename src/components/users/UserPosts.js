@@ -15,7 +15,7 @@ export default function UserPosts({ user, isMe }) {
         .from("Posts")
         .select(
           `*,
-          User:userId (id, name, image),
+          user:userId (id, name, image),
           likes:LikedPosts!postId(postId)`
         )
         .eq(`userId`, user?.id);
