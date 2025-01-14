@@ -136,7 +136,7 @@ export default function Post({ post, isMe }) {
         )}
       </div>
       <p>
-        <strong>{post?.User?.name}: </strong>
+        <strong>{post?.user?.name}: </strong>
         {post?.caption}
       </p>
     </div>

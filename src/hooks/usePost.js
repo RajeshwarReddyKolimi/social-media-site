@@ -16,6 +16,7 @@ export default function usePost() {
         ...(followers?.map((follow) => follow.follower) || []),
         currentUser?.id,
       ];
+      console.log(followers, followerIds);
       if (!currentUser?.id) return;
       const { data, error } = await supabase
         .from("Posts")
