@@ -21,8 +21,6 @@ export default function Posts() {
       setLoading((prev) => prev - 1);
     }
   }
-
-  console.log(posts);
   useEffect(() => {
     fetchPosts();
   }, [user]);

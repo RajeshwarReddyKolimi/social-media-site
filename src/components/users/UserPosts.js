@@ -32,7 +32,12 @@ export default function UserPosts({ user, isMe }) {
   return (
     <div className="posts">
       {userPosts?.map((post, id) => (
-        <PostCard key={id} post={post} isMe={isMe} />
+        <PostCard
+          key={id}
+          post={post}
+          isMe={isMe}
+          setUserPosts={setUserPosts}
+        />
       ))}
     </div>
   );

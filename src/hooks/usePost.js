@@ -16,18 +16,17 @@ export default function usePost() {
         ...(followers?.map((follow) => follow.follower) || []),
         currentUser?.id,
       ];
-      console.log(followers, followerIds);
       if (!currentUser?.id) return;
       const { data, error } = await supabase
         .from("Posts")
         .select(
           `*,
-    user:userId (
-      id,
-      name,
-      image
-    ),
-    likes:LikedPosts!postId(postId)`
+          user:userId (
+            id,
+            name,
+            image
+          ),
+          likes:LikedPosts!postId(postId)`
         )
         .in("userId", followerIds)
         .order("created_at", { ascending: false });
@@ -77,7 +76,7 @@ export default function usePost() {
     try {
       setLoading((prev) => prev + 1);
       if (!currentUser?.id) return;
-      const data = await supabase
+      const { data, error } = await supabase
         .from("Posts")
         .delete()
         .eq("id", postId)

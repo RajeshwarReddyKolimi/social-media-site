@@ -15,7 +15,7 @@ import useSavedPosts from "../../hooks/useSavedPosts";
 import Comments from "../comments/Comments";
 import ShareOptions from "./ShareOptions";
 
-export default function Post({ post, isMe }) {
+export default function Post({ post, isMe, setUserPosts }) {
   const currentUser = useRecoilValue(userState);
   const setLoading = useSetRecoilState(loadingState);
   const { addToSavedPosts, removeFromSavedPosts } = useSavedPosts();
@@ -130,7 +130,12 @@ export default function Post({ post, isMe }) {
           </button>
         )}
         {isMe && (
-          <button onClick={() => deletePost({ postId: post?.id })}>
+          <button
+            onClick={() => {
+              deletePost({ postId: post?.id });
+              setUserPosts((prev) => prev.filter((p) => p.id != post?.id));
+            }}
+          >
             <MdDelete className="icon-2" />
           </button>
         )}
