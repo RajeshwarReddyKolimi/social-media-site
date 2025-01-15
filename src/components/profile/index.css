@@ -31,11 +31,12 @@
 
 .follow-button {
   background-color: transparent;
+  color: var(--button-bg-color) !important;
   border-color: transparent;
 }
 
 .follow-button span {
-  color: var(--button-bg-color);
+  color: var(--button-bg-color) !important;
 }
 
 .follow-button:hover {
@@ -125,7 +126,7 @@
 
 .profile-username h1 {
   text-align: left;
-  width: calc(100vw - 8rem);
+  /* width: calc(100vw - 8rem); */
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -142,9 +143,9 @@
 }
 
 @media screen and (min-width: 500px) {
-  .profile-username {
+  /* .profile-username {
     width: calc(500px - 8rem);
-  }
+  } */
 }
 @media screen and (min-width: 768px) {
   .profile-header img {

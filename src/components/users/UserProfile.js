@@ -92,14 +92,15 @@ export default function UserProfile() {
       setLoading((prev) => prev - 1);
     }
   };
-  useEffect(() => {
-    setIsFollowing(!!followings?.find((fuser) => fuser?.following === id));
-  }, [followings, id]);
 
   const fetchUser = async () => {
     const { data, error } = await fetchUserDetails(id);
     setUser(data);
   };
+
+  useEffect(() => {
+    setIsFollowing(!!followings?.find((fuser) => fuser?.following === id));
+  }, [followings, id]);
 
   useEffect(() => {
     setIsMe(currentUser?.id == id);
@@ -145,6 +146,7 @@ export default function UserProfile() {
         {!isMe &&
           (isFollowing ? (
             <Button
+              type="text"
               className="follow-button"
               onClick={(e) => {
                 e.preventDefault();
@@ -155,17 +157,18 @@ export default function UserProfile() {
             </Button>
           ) : (
             <Button
+              type="text"
               className="follow-button"
               onClick={(e) => {
                 e.preventDefault();
                 handleFollow({ userId: user?.id });
               }}
             >
-              Unfollow
+              Follow
             </Button>
           ))}
       </div>
-      {!isMe && (
+      {!isMe && isFollowing && (
         <Button
           type="text"
           onClick={fetchChatId}
@@ -203,12 +206,16 @@ export default function UserProfile() {
           <span>{user?.posts?.length}</span>
         </button>
       </div>
-      {showItem === "followers" ? (
-        <UserFollowers user={user} />
-      ) : showItem === "followings" ? (
-        <UserFollowings user={user} />
+      {isMe || !user?.isPrivate || isFollowing ? (
+        showItem === "followers" ? (
+          <UserFollowers user={user} />
+        ) : showItem === "followings" ? (
+          <UserFollowings user={user} />
+        ) : (
+          <UserPosts user={user} isMe={isMe} />
+        )
       ) : (
-        <UserPosts user={user} isMe={isMe} />
+        <p>Follow to view</p>
       )}
     </div>
   );

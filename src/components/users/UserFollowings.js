@@ -15,7 +15,7 @@ export default function UserFollowings({ user }) {
   const fetchUserFollowings = async () => {
     try {
       setLoading((prev) => prev + 1);
-      const data = await fetchFollowings(user);
+      const data = await fetchFollowings(user?.id);
       setUserFollowings(data);
     } catch (e) {
       console.log(e);

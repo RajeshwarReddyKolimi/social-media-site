@@ -10,7 +10,7 @@ export default function useFollows() {
   const [followers, setFollowers] = useRecoilState(followersState);
   const [followings, setFollowings] = useRecoilState(followingsState);
   const currentUser = useRecoilValue(userState);
-  const fetchFollowers = async (user) => {
+  const fetchFollowers = async (userId) => {
     try {
       if (!currentUser?.id) return;
       const { data, error } = await supabase
@@ -21,16 +21,16 @@ export default function useFollows() {
             user:follower(id, name, image)
             `
         )
-        .eq("following", user?.id)
+        .eq("following", userId)
         .order("created_at", { ascending: false });
-      if (currentUser?.id == user?.id) setFollowers(data);
+      if (currentUser?.id == userId) setFollowers(data);
       else return data;
     } catch (e) {
       console.log(e);
     }
   };
 
-  const fetchFollowings = async (user) => {
+  const fetchFollowings = async (userId) => {
     try {
       if (!currentUser?.id) return;
 
@@ -42,10 +42,9 @@ export default function useFollows() {
                 user:following(id, name, image)
                 `
         )
-        .eq("follower", user?.id)
+        .eq("follower", userId)
         .order("created_at", { ascending: false });
-
-      if (currentUser?.id == user?.id) setFollowings(data);
+      if (currentUser?.id == userId) setFollowings(data);
       else return data;
     } catch (e) {
       console.log(e);
@@ -57,8 +56,14 @@ export default function useFollows() {
       if (!currentUser?.id) return;
       const { data, error } = await supabase
         .from("Follows")
-        .insert({ follower: currentUser?.id, following: userId });
-      fetchFollowings();
+        .insert({ follower: currentUser?.id, following: userId })
+        .select(
+          `*,
+          user:following(id, name, image)
+          `
+        )
+        .maybeSingle();
+      setFollowings((prev) => [...prev, data]);
     } catch (e) {
       console.log(e);
     }
@@ -71,8 +76,16 @@ export default function useFollows() {
         .from("Follows")
         .delete()
         .eq("follower", currentUser?.id)
-        .eq("following", userId);
-      fetchFollowings();
+        .eq("following", userId)
+        .select(
+          `*,
+          user:following(id, name, image)
+          `
+        )
+        .maybeSingle();
+      setFollowings((prev) => prev.filter((user) => user?.following != userId));
+      const newFollowings = await fetchFollowings(userId);
+      return newFollowings;
     } catch (e) {
       console.log(e);
     }
