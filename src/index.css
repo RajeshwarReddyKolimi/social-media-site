@@ -114,6 +114,10 @@ a {
   color: var(--theme-color);
 }
 
+.ant-empty-description {
+  color: var(--theme-color) !important;
+}
+
 @media screen and (min-width: 425px) {
   body {
     font-size: 14px;

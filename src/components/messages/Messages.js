@@ -1,4 +1,4 @@
-import { Button, Form, Input } from "antd";
+import { Button, Empty, Form, Input } from "antd";
 import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router";
 import { useRecoilValue, useSetRecoilState } from "recoil";
@@ -144,9 +144,7 @@ export default function Messages() {
               />
             )
           )}
-          {messages?.length == 0 && (
-            <p className="empty-message">No messages</p>
-          )}
+          {messages?.length == 0 && <Empty description="No messages" />}
           <div ref={messagesEndRef} />
         </div>
         <Form

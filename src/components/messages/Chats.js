@@ -5,6 +5,7 @@ import userState from "../../atoms/userState";
 import { supabase } from "../../config/supabase";
 import UserChatCard from "../users/UserChatCard";
 import "./index.css";
+import { Empty } from "antd";
 
 export default function Chats() {
   const [chats, setChats] = useState([]);
@@ -85,7 +86,7 @@ export default function Chats() {
           user={currentUser?.id == chat?.user1Id ? chat?.user2 : chat?.user1}
         />
       ))}
-      {!chats?.length && <p className="empty-message">No chats</p>}
+      {!chats?.length && <Empty description="No chats" />}
     </div>
   );
 }

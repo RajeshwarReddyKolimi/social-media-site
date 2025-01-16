@@ -5,6 +5,7 @@ import usePost from "../../hooks/usePost";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import userState from "../../atoms/userState";
 import loadingState from "../../atoms/loadingState";
+import { Empty } from "antd";
 export default function Posts() {
   const [posts, setPosts] = useState([]);
   const setLoading = useSetRecoilState(loadingState);
@@ -29,9 +30,7 @@ export default function Posts() {
       {posts?.map((post, id) => (
         <PostCard post={post} key={id} />
       ))}
-      {posts?.length == 0 && (
-        <p className="empty-message">No posts yet. Come back later</p>
-      )}
+      {posts?.length == 0 && <Empty description="No posts" />}
     </div>
   );
 }

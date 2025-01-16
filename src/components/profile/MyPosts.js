@@ -4,6 +4,7 @@ import { supabase } from "../../config/supabase";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import userState from "../../atoms/userState";
 import loadingState from "../../atoms/loadingState";
+import { Empty } from "antd";
 
 export default function MyPosts() {
   const [myPosts, setMyPosts] = useState();
@@ -38,7 +39,7 @@ export default function MyPosts() {
       {myPosts?.map((post, id) => (
         <PostCard post={post} key={id} isMe={true} />
       ))}
-      {myPosts?.length == 0 && <p className="empty-message">No posts.</p>}
+      {myPosts?.length == 0 && <Empty description="No posts" />}
     </div>
   );
 }

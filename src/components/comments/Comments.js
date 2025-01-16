@@ -1,4 +1,4 @@
-import { Button, Form, Input } from "antd";
+import { Button, Empty, Form, Input } from "antd";
 import React, { useEffect, useState } from "react";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import loadingState from "../../atoms/loadingState";
@@ -67,9 +67,7 @@ export default function Comments({ setShowComments, post }) {
             <UserCommentCard key={id} comment={comment} />
           ))}
 
-          {comments?.length == 0 && (
-            <p className="empty-message">No comments.</p>
-          )}
+          {comments?.length == 0 && <Empty description="No comments" />}
         </div>
         <Form
           className="comment-form"

@@ -5,6 +5,7 @@ import userState from "../../atoms/userState";
 import useFollows from "../../hooks/useFollows";
 import UserProfileCard from "./UserProfileCard";
 import loadingState from "../../atoms/loadingState";
+import { Empty } from "antd";
 
 export default function UserFollowers({ user }) {
   const [userFollowers, setUserFollowers] = useState([]);
@@ -36,9 +37,7 @@ export default function UserFollowers({ user }) {
           isMe={user?.user?.id === currentUser?.id}
         />
       ))}
-      {userFollowers?.length == 0 && (
-        <p className="empty-message">No followers</p>
-      )}
+      {userFollowers?.length == 0 && <Empty description="No followers" />}
     </div>
   );
 }

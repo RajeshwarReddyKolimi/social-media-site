@@ -11,11 +11,7 @@ export default function SearchResults({ searchResults }) {
         <UserSearchCard user={user} key={id} />
       ))}
       {searchResults?.length == 0 && (
-        // <p className="empty-message">No results</p>
-        <Empty
-          description={false}
-          style={{ description: { color: "white" } }}
-        />
+        <Empty description="No matching results" />
       )}
     </div>
   );
