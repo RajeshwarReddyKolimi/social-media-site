@@ -4,6 +4,8 @@ import { useRecoilValue } from "recoil";
 import "./App.css";
 import loadingState from "./atoms/loadingState";
 import userState from "./atoms/userState";
+import ChangePassword from "./components/auth/ChangePassword";
+import ForgotPassword from "./components/auth/ForgotPassword";
 import Signin from "./components/auth/Signin";
 import Signup from "./components/auth/Signup";
 import Chats from "./components/messages/Chats";
@@ -11,6 +13,7 @@ import Messages from "./components/messages/Messages";
 import Layout from "./components/navbar/Layout";
 import NotFound from "./components/navbar/NotFound";
 import CreatePost from "./components/posts/CreatePost";
+import PostPage from "./components/posts/PostPage";
 import LikedPosts from "./components/profile/LikedPosts";
 import SavedPosts from "./components/profile/SavedPosts";
 import UserProfile from "./components/users/UserProfile";
@@ -20,8 +23,6 @@ import useLikedPosts from "./hooks/useLikedPosts";
 import useSavedPosts from "./hooks/useSavedPosts";
 import Home from "./pages/home/Home";
 import Loader from "./utils/loader/Loader";
-import { GiConsoleController } from "react-icons/gi";
-import PostPage from "./components/posts/PostPage";
 
 function App() {
   const currentUser = useRecoilValue(userState);
@@ -55,7 +56,11 @@ function App() {
           <Route path="/post/:id" element={<PostPage />} />
           <Route path="/saved-posts" element={<SavedPosts />} />
           <Route path="/liked-posts" element={<LikedPosts />} />
+          <Route path="/change-password" element={<ChangePassword />} />
         </Route>
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+
+        <Route path="/change-password" element={<ChangePassword />} />
         <Route path="/signin" element={<Signin />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="*" element={<NotFound />} />

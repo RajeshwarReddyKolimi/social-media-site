@@ -10,7 +10,7 @@ import loadingState from "../../atoms/loadingState";
 import validateEmail from "../../utils/anon/validateEmail";
 
 export default function Signin() {
-  const { signin } = useAuth();
+  const { signin, handleInitiateChangePassword } = useAuth();
   const loading = useRecoilValue(loadingState);
   const currentUser = useRecoilValue(userState);
   const navigate = useNavigate();
@@ -84,6 +84,15 @@ export default function Signin() {
             <Input.Password visibilityToggle={false} placeholder="Password" />
           </Form.Item>
           {/* {error && <p>{error}</p>} */}
+          <Link
+            style={{
+              display: "block",
+              textAlign: "right",
+            }}
+            to="/forgot-password"
+          >
+            Forgot Password?
+          </Link>
           <Form.Item label={null}>
             <Button type="primary" htmlType="submit">
               Sign in

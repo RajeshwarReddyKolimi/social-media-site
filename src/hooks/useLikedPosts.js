@@ -18,7 +18,7 @@ export default function useLikedPosts() {
         .select(
           `*,
             Post:postId (
-              User:userId (id, name, image),
+              user:userId (id, name, image),
               id,
               caption,
               image,

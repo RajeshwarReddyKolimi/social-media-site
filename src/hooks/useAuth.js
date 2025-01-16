@@ -4,6 +4,8 @@ import { useRecoilState } from "recoil";
 import userState from "../atoms/userState";
 import loadingState from "../atoms/loadingState";
 import { supabase } from "../config/supabase";
+import validatePassword from "../utils/anon/validatePassword";
+import { redirect } from "react-router";
 
 export default function useAuth() {
   const [user, setUser] = useRecoilState(userState);
@@ -100,6 +102,36 @@ export default function useAuth() {
       setLoading((prev) => prev - 1);
     }
   }
+  const handleInitiateChangePassword = async (email) => {
+    try {
+      const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: "http://localhost:3000/change-password",
+      });
+      console.log(data, error);
+      if (data) alert("Password reset link is set to email");
+    } catch (e) {
+      console.log(e);
+    }
+  };
+  const handleChangePassword = async (values) => {
+    try {
+      if (!validatePassword(values?.password)) {
+        alert("Invalid password");
+        return;
+      }
+      const { data, error } = await supabase.auth.updateUser({
+        password: values?.password,
+      });
+      if (data?.user) {
+        alert("Password reset successful");
+        return true;
+      } else if (error) {
+        console.log(error?.status);
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
   async function logout() {
     try {
       setLoading((prev) => prev + 1);
@@ -112,5 +144,13 @@ export default function useAuth() {
       setLoading((prev) => prev - 1);
     }
   }
-  return { signup, signin, getCurrentUser, logout, fetchUserDetails };
+  return {
+    signup,
+    signin,
+    getCurrentUser,
+    logout,
+    fetchUserDetails,
+    handleInitiateChangePassword,
+    handleChangePassword,
+  };
 }

@@ -16,7 +16,7 @@ export default function useSavedPosts() {
         .select(
           `*,
             Post:postId (
-              User:userId (id, name, image),
+              user:userId (id, name, image),
               id,
               caption,
               image,

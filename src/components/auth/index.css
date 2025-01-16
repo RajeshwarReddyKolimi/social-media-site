@@ -27,6 +27,10 @@
 .ant-form-item {
   margin-bottom: 0.5rem;
 }
+.signin-form > h1 {
+  margin: auto;
+  padding: 1rem;
+}
 .signin-form input {
   width: 100%;
   background-color: rgba(255, 255, 255, 0.05);
