@@ -3,7 +3,7 @@ import { FaRegBookmark } from "react-icons/fa";
 import { FaBookmark, FaHeart, FaRegComment, FaRegHeart } from "react-icons/fa6";
 import { IoIosSend } from "react-icons/io";
 import { MdDelete } from "react-icons/md";
-import { useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import likedPostsState from "../../atoms/likedPosts";
 import loadingState from "../../atoms/loadingState";
 import savedPostsState from "../../atoms/savedPosts";
@@ -14,9 +14,10 @@ import usePost from "../../hooks/usePost";
 import useSavedPosts from "../../hooks/useSavedPosts";
 import Comments from "../comments/Comments";
 import ShareOptions from "./ShareOptions";
+import { Button, Image, Popconfirm } from "antd";
 
 export default function Post({ post, isMe, setUserPosts }) {
-  const currentUser = useRecoilValue(userState);
+  const [currentUser, setCurrentUser] = useRecoilState(userState);
   const setLoading = useSetRecoilState(loadingState);
   const { addToSavedPosts, removeFromSavedPosts } = useSavedPosts();
   const { addToLikedPosts, removeFromLikedPosts } = useLikedPosts();
@@ -27,9 +28,8 @@ export default function Post({ post, isMe, setUserPosts }) {
   const [likesCount, setLikesCount] = useState(post?.likes?.length || 0);
   const { deletePost } = usePost();
   const [showComments, setShowComments] = useState(false);
-  const receiverId = "519599c8-6936-4e36-8bdc-2e89ad221f0a";
   const [showShareOptions, setShowShareOptions] = useState(false);
-  const fetchChatId = async () => {
+  const fetchChatId = async (receiverId) => {
     try {
       setLoading((prev) => prev + 1);
       if (currentUser?.id == receiverId) return;
@@ -63,7 +63,7 @@ export default function Post({ post, isMe, setUserPosts }) {
   };
   const handleSharePost = async (receiverId) => {
     try {
-      const chatId = await fetchChatId();
+      const chatId = await fetchChatId(receiverId);
       const { data, error } = await supabase.from("Messages").insert({
         sender: currentUser?.id,
         receiver: receiverId,
@@ -83,7 +83,7 @@ export default function Post({ post, isMe, setUserPosts }) {
   }, [likedPosts]);
   return (
     <div className="post">
-      <img src={post?.image} />
+      <Image height="350px" className="post-image" src={post?.image} />
       <div className="post-action-items">
         {isLiked ? (
           <button
@@ -130,14 +130,20 @@ export default function Post({ post, isMe, setUserPosts }) {
           </button>
         )}
         {isMe && (
-          <button
-            onClick={() => {
+          <Popconfirm
+            color="var(--theme-color)"
+            description="Are you sure to delete this task?"
+            onConfirm={() => {
               deletePost({ postId: post?.id });
               setUserPosts((prev) => prev.filter((p) => p.id != post?.id));
             }}
+            okText="Confirm"
+            cancelText="Cancel"
           >
-            <MdDelete className="icon-2" />
-          </button>
+            <Button type="text" style={{ padding: "0" }}>
+              <MdDelete className="icon-2" />
+            </Button>
+          </Popconfirm>
         )}
       </div>
       <p>

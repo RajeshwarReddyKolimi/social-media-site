@@ -1,12 +1,11 @@
 import { Button, Form, Input } from "antd";
 import React, { useEffect, useState } from "react";
-import { IoIosSend } from "react-icons/io";
-import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import loadingState from "../../atoms/loadingState";
 import userState from "../../atoms/userState";
 import { supabase } from "../../config/supabase";
 import "./index.css";
 import UserCommentCard from "./UserCommentCard";
-import loadingState from "../../atoms/loadingState";
 
 export default function Comments({ setShowComments, post }) {
   const currentUser = useRecoilValue(userState);
@@ -55,9 +54,9 @@ export default function Comments({ setShowComments, post }) {
   }, []);
   return (
     <div
-      className="comments-overlay"
+      className="overlay"
       onClick={(e) => {
-        if (e.target.className != "comments-overlay") return;
+        if (e.target.className != "overlay") return;
         setShowComments(false);
       }}
     >
@@ -85,7 +84,9 @@ export default function Comments({ setShowComments, post }) {
           </Form.Item>
 
           <Form.Item>
-            <Button type="primary" htmlType="submit" icon={<IoIosSend />} />
+            <Button type="primary" htmlType="submit">
+              Send
+            </Button>
           </Form.Item>
         </Form>
       </div>

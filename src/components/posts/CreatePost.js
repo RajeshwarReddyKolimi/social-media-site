@@ -8,21 +8,32 @@ import { supabase } from "../../config/supabase";
 import ImgCrop from "antd-img-crop";
 import Dragger from "antd/es/upload/Dragger";
 import { MdClose } from "react-icons/md";
+import { useNavigate } from "react-router";
 
 export default function CreatePost() {
   const [fileList, setFileList] = useState([]);
   const setLoading = useSetRecoilState(loadingState);
-
-  const user = useRecoilValue(userState);
+  const navigate = useNavigate();
+  const [currentUser, setCurrentUser] = useRecoilState(userState);
   const handleImageUpload = () => {};
   const createPost = async (image, caption) => {
     try {
       setLoading((prev) => prev + 1);
-      const { data, error } = await supabase.from("Posts").insert({
-        userId: user?.id,
-        image,
-        caption,
+      const { data, error } = await supabase
+        .from("Posts")
+        .insert({
+          userId: currentUser?.id,
+          image,
+          caption,
+        })
+        .select()
+        .maybeSingle();
+      setCurrentUser((prev) => {
+        return { ...prev, posts: [...prev?.posts, data] };
       });
+      console.log(data, error);
+
+      if (!error) navigate("/");
     } catch (e) {
       console.log(e);
     } finally {
@@ -32,7 +43,6 @@ export default function CreatePost() {
   const handleSubmit = async (values) => {
     try {
       setLoading((prev) => prev + 1);
-      console.log(values);
       const image = values?.fileList?.[0];
       const imageName = Date.now() + image?.name;
       const r1 = await supabase.storage

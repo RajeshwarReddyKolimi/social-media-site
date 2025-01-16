@@ -1,19 +1,21 @@
-import { useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import loadingState from "../atoms/loadingState";
 import userState from "../atoms/userState";
 import { supabase } from "../config/supabase";
 import followersState from "../atoms/followers";
+import followingsState from "../atoms/followings";
+import { GiConsoleController } from "react-icons/gi";
 
 export default function usePost() {
   const setLoading = useSetRecoilState(loadingState);
-  const followers = useRecoilValue(followersState);
-  const currentUser = useRecoilValue(userState);
+  const followings = useRecoilValue(followingsState);
+  const [currentUser, setCurrentUser] = useRecoilState(userState);
   async function uploadImage(image) {}
   async function fetchAllPosts() {
     try {
       setLoading((prev) => prev + 1);
       const followerIds = [
-        ...(followers?.map((follow) => follow.follower) || []),
+        ...(followings?.map((follow) => follow.following) || []),
         currentUser?.id,
       ];
       if (!currentUser?.id) return;
@@ -80,7 +82,15 @@ export default function usePost() {
         .from("Posts")
         .delete()
         .eq("id", postId)
-        .eq("userId", currentUser?.id);
+        .eq("userId", currentUser?.id)
+        .select()
+        .maybeSingle();
+      setCurrentUser((prev) => {
+        return {
+          ...prev,
+          posts: prev?.posts?.filter((p) => p.id !== postId),
+        };
+      });
       return data;
     } catch (e) {
       console.error(e);

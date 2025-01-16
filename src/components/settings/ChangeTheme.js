@@ -9,18 +9,12 @@ export default function ChangeTheme() {
   const [theme, setTheme] = useRecoilState(themeState);
   return (
     <div className="change-theme">
-      <span>Theme</span>
+      <span>Light Theme</span>
       <Switch
         style={{
           border: "1px solid var(--border-color-1)",
         }}
-        checkedChildren={
-          <IoSunny style={{ fill: "white", verticalAlign: "middle" }} />
-        }
-        unCheckedChildren={
-          <IoMoon style={{ fill: "white", verticalAlign: "middle" }} />
-        }
-        defaultChecked
+        defaultChecked={theme === "light"}
         onChange={(e) => {
           setTheme(e ? "light" : "dark");
           localStorage.setItem("theme", e ? "light" : "dark");
