@@ -110,6 +110,10 @@ a {
   color: white;
 }
 
+.ant-btn-color-default > span {
+  color: var(--theme-color);
+}
+
 @media screen and (min-width: 425px) {
   body {
     font-size: 14px;

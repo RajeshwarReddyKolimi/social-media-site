@@ -83,3 +83,7 @@
 .share {
   overflow-y: auto;
 }
+
+.ant-popover-content .ant-btn-default span {
+  color: black;
+}
