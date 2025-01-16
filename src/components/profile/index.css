@@ -25,8 +25,7 @@
   height: 3.5rem;
   object-fit: cover;
   border-radius: 50%;
-  background-color: white;
-  padding: 0.25rem;
+  border: 1px solid grey;
 }
 
 .follow-button {
@@ -45,14 +44,14 @@
 }
 
 .profile-message-button {
-  border: 1px solid white;
+  border: 1px solid var(--theme-color);
   padding: 0.5rem;
   border-radius: 0.25rem;
 }
 
 .profile-message-button:hover {
-  background-color: white;
-  color: black;
+  background-color: var(--theme-color);
+  color: var(--theme-color);
 }
 
 .profile-button-container {
@@ -73,7 +72,7 @@
 }
 
 .profile-button-selected {
-  border-bottom: 2px solid white;
+  border-bottom: 2px solid var(--theme-color);
 }
 
 .profile-dp {

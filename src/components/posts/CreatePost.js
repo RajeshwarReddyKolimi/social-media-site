@@ -90,7 +90,7 @@ export default function CreatePost() {
             }}
           />
         </Form.Item>
-        <Button type="primary" htmlType="submit">
+        <Button type="primary" style={{ color: "white" }} htmlType="submit">
           Create
         </Button>
       </Form>

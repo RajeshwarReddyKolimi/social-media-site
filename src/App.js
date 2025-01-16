@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { BrowserRouter, Route, Routes } from "react-router";
-import { useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import "./App.css";
 import loadingState from "./atoms/loadingState";
 import userState from "./atoms/userState";
@@ -23,15 +23,21 @@ import useLikedPosts from "./hooks/useLikedPosts";
 import useSavedPosts from "./hooks/useSavedPosts";
 import Home from "./pages/home/Home";
 import Loader from "./utils/loader/Loader";
+import themeState from "./atoms/themeState";
 
 function App() {
   const currentUser = useRecoilValue(userState);
   const loading = useRecoilValue(loadingState);
+  const [theme, setTheme] = useRecoilState(themeState);
   const { fetchSavedPosts } = useSavedPosts();
   const { fetchLikedPosts } = useLikedPosts();
   const { fetchFollowings, fetchFollowers } = useFollows();
   const { getCurrentUser } = useAuth();
 
+  useEffect(() => {
+    if (theme === "dark") document?.body?.classList?.remove("light-theme");
+    else document?.body?.classList?.add("light-theme");
+  }, [theme]);
   useEffect(() => {
     getCurrentUser();
   }, []);
@@ -43,6 +49,9 @@ function App() {
     fetchFollowings(currentUser?.id);
   }, [currentUser]);
 
+  useEffect(() => {
+    setTheme(localStorage?.getItem("theme") || "dark");
+  }, []);
   return (
     <BrowserRouter>
       {loading !== 0 && <Loader />}

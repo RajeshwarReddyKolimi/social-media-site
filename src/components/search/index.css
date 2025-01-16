@@ -4,7 +4,7 @@
   left: 0;
   width: 90vw;
   max-width: 300px;
-  background-color: black;
+  background-color: var(--theme-bg-color);
   z-index: 9;
   height: 100vh;
   border-right: 1px solid var(--border-color-1);
@@ -23,11 +23,11 @@
   width: 100%;
 }
 .search-form button {
-  background-color: black !important;
+  background-color: var(--theme-bg-color) !important;
 }
 
 .search-form button:hover {
-  background-color: black !important;
+  background-color: var(--theme-bg-color) !important;
 }
 
 @media screen and (min-width: 500px) {

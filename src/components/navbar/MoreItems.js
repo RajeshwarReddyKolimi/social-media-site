@@ -5,10 +5,13 @@ import { Link, useLocation } from "react-router";
 import useAuth from "../../hooks/useAuth";
 import { useRecoilValue } from "recoil";
 import userState from "../../atoms/userState";
+import ChangeTheme from "../settings/ChangeTheme";
+import themeState from "../../atoms/themeState";
 
 export default function MoreItems() {
   const location = useLocation();
   const currentUser = useRecoilValue(userState);
+  const theme = useRecoilValue(themeState);
   const { logout, handleInitiateChangePassword } = useAuth();
   const moreItems = [
     {
@@ -23,6 +26,10 @@ export default function MoreItems() {
       key: "2",
       label: <button>Change Password</button>,
       onClick: () => handleInitiateChangePassword(currentUser?.email),
+    },
+    {
+      key: "",
+      label: <ChangeTheme />,
     },
     {
       key: "3",
@@ -41,7 +48,7 @@ export default function MoreItems() {
       className="menu more-items"
       defaultSelectedKeys={["1"]}
       selectedKeys={[selectedKey]}
-      theme="dark"
+      theme={theme}
       defaultOpenKeys={["sub1"]}
       items={moreItems}
     />

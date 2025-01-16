@@ -5,15 +5,15 @@
 }
 
 .menu {
-  background-color: rgba(0, 0, 0);
+  background-color: var(--theme-bg-color);
   z-index: 10;
   position: fixed;
   left: 0;
-  color: white;
+  color: var(--theme-color);
 }
 
 .menu > li:hover {
-  background-color: rgb(30, 30, 30) !important;
+  background-color: var(--border-color-1) !important;
 }
 
 .mid-screen-menu > li:first-child:hover,
@@ -54,9 +54,9 @@
   top: 0;
   z-index: 9;
   width: 300px;
-  background-color: black;
+  background-color: var(--theme-bg-color);
   height: 100vh;
-  color: white;
+  color: var(--theme-color);
   border-right: 1px solid var(--border-color-1) !important;
 }
 

@@ -14,10 +14,10 @@
   height: 4rem;
   object-fit: cover;
   border-radius: 50%;
-  background-color: white;
+  background-color: var(--theme-color);
   padding: 0.25rem;
 }
 
 .profile-message-button {
-  border: 1px solid white;
+  border: 1px solid var(--theme-color);
 }

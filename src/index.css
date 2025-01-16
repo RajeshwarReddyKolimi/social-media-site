@@ -7,6 +7,15 @@
   --loader-color: rgb(255, 255, 255);
 }
 
+.light-theme {
+  --theme-color: black;
+  --theme-bg-color: rgb(255, 255, 255);
+  --border-color-1: rgb(212, 212, 212);
+  --border-color-2: rgb(83, 83, 83);
+  --button-bg-color: rgb(0, 149, 246);
+  --loader-color: rgb(255, 255, 255);
+}
+
 * {
   box-sizing: border-box;
   padding: 0;
@@ -50,9 +59,9 @@ button {
 }
 
 input {
-  background-color: black;
+  background-color: var(--theme-bg-color);
   border: 1px solid var(--border-color-1);
-  color: white !important;
+  color: var(--theme-color) !important;
 }
 
 input::placeholder {
@@ -61,8 +70,8 @@ input::placeholder {
 
 input:focus,
 input:hover {
-  background-color: black !important;
-  color: white !important;
+  background-color: var(--theme-bg-color) !important;
+  color: var(--theme-color) !important;
 }
 
 a {
@@ -95,6 +104,10 @@ a {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+}
+
+.ant-btn-color-primary > span {
+  color: white;
 }
 
 @media screen and (min-width: 425px) {

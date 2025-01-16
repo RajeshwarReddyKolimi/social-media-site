@@ -16,9 +16,11 @@ import userState from "../../atoms/userState";
 import Search from "../search/Search";
 import "./index.css";
 import MoreItems from "./MoreItems";
+import themeState from "../../atoms/themeState";
 const Navbar = () => {
   const currentUser = useRecoilValue(userState);
   const user = useRecoilValue(userState);
+  const theme = useRecoilValue(themeState);
   const navigate = useNavigate();
   const location = useLocation();
   const [showItem, setShowItem] = useState();
@@ -166,21 +168,21 @@ const Navbar = () => {
         className="menu large-screen-menu"
         defaultSelectedKeys={["1"]}
         selectedKeys={[selectedKey]}
-        theme="dark"
+        theme={theme}
         items={largeScreenItems}
       />
       <Menu
         className="menu mid-screen-menu"
         selectedKeys={[selectedKey]}
         defaultSelectedKeys={["1"]}
-        theme="dark"
+        theme={theme}
         items={midScreenItems}
       />
       <Menu
         className="menu small-screen-menu"
         selectedKeys={[selectedKey]}
         defaultSelectedKeys={["1"]}
-        theme="dark"
+        theme={theme}
         items={smallScreenItems}
       />
       {showItem === "search" ? (
