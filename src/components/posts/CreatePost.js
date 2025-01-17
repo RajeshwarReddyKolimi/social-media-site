@@ -1,21 +1,17 @@
-import { InboxOutlined, PlusOutlined, UploadOutlined } from "@ant-design/icons";
+import { UploadOutlined } from "@ant-design/icons";
 import { Button, Form, Input, Upload } from "antd";
 import React, { useState } from "react";
-import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import { useNavigate } from "react-router";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import loadingState from "../../atoms/loadingState";
 import userState from "../../atoms/userState";
 import { supabase } from "../../config/supabase";
-import ImgCrop from "antd-img-crop";
-import Dragger from "antd/es/upload/Dragger";
-import { MdClose } from "react-icons/md";
-import { useNavigate } from "react-router";
 
 export default function CreatePost() {
   const [fileList, setFileList] = useState([]);
   const setLoading = useSetRecoilState(loadingState);
   const navigate = useNavigate();
   const [currentUser, setCurrentUser] = useRecoilState(userState);
-  const handleImageUpload = () => {};
   const createPost = async (image, caption) => {
     try {
       setLoading((prev) => prev + 1);
@@ -31,7 +27,6 @@ export default function CreatePost() {
       setCurrentUser((prev) => {
         return { ...prev, posts: [...prev?.posts, data] };
       });
-      console.log(data, error);
 
       if (!error) navigate("/");
     } catch (e) {

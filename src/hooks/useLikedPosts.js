@@ -1,12 +1,11 @@
-import React from "react";
-import { supabase } from "../config/supabase";
-import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import likedPostsState from "../atoms/likedPosts";
-import userState from "../atoms/userState";
 import loadingState from "../atoms/loadingState";
+import userState from "../atoms/userState";
+import { supabase } from "../config/supabase";
 
 export default function useLikedPosts() {
-  const [likedPosts, setLikedPosts] = useRecoilState(likedPostsState);
+  const setLikedPosts = useSetRecoilState(likedPostsState);
   const user = useRecoilValue(userState);
   const setLoading = useSetRecoilState(loadingState);
   const fetchLikedPosts = async () => {
@@ -41,8 +40,20 @@ export default function useLikedPosts() {
       if (!user?.id) return;
       const { data, error } = await supabase
         .from("LikedPosts")
-        .insert({ postId, userId: user?.id });
-      fetchLikedPosts();
+        .insert({ postId, userId: user?.id })
+        .select(
+          `*,
+            Post:postId (
+              user:userId (id, name, image),
+              id,
+              caption,
+              image,
+              likes:LikedPosts!postId(postId)
+            )
+          `
+        )
+        .maybeSingle();
+      setLikedPosts((prev) => [data, ...prev]);
     } catch (e) {
       console.log(e);
     } finally {
@@ -53,14 +64,14 @@ export default function useLikedPosts() {
   const removeFromLikedPosts = async ({ postId }) => {
     try {
       setLoading((prev) => prev + 1);
-
       if (!user?.id) return;
       const { data, error } = await supabase
         .from("LikedPosts")
         .delete()
         .eq("postId", postId)
-        .eq("userId", user?.id);
-      fetchLikedPosts();
+        .eq("userId", user?.id)
+        .select();
+      setLikedPosts((prev) => prev?.filter((post) => post?.postId !== postId));
     } catch (e) {
       console.log(e);
     } finally {

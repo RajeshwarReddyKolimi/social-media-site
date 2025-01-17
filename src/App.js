@@ -44,8 +44,8 @@ function App() {
   }, []);
 
   useEffect(() => {
-    fetchSavedPosts(currentUser?.id);
-    fetchLikedPosts(currentUser?.id);
+    fetchSavedPosts();
+    fetchLikedPosts();
     fetchFollowers(currentUser?.id);
     fetchFollowings(currentUser?.id);
   }, [currentUser]);

@@ -1,16 +1,17 @@
-import React from "react";
-import { supabase } from "../config/supabase";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import savedPostsState from "../atoms/savedPosts";
 import userState from "../atoms/userState";
+import { supabase } from "../config/supabase";
+import loadingState from "../atoms/loadingState";
 
 export default function useSavedPosts() {
-  const [savedPosts, setSavedPosts] = useRecoilState(savedPostsState);
+  const setSavedPosts = useSetRecoilState(savedPostsState);
+  const setLoading = useSetRecoilState(loadingState);
   const user = useRecoilValue(userState);
   const fetchSavedPosts = async () => {
     try {
+      setLoading((prev) => prev + 1);
       if (!user?.id) return;
-
       const { data, error } = await supabase
         .from("SavedPosts")
         .select(
@@ -28,13 +29,16 @@ export default function useSavedPosts() {
       setSavedPosts(data);
     } catch (e) {
       console.log(e);
+    } finally {
+      setLoading((prev) => prev - 1);
     }
   };
 
   const addToSavedPosts = async ({ postId }) => {
     try {
-      if (!user?.id) return;
+      setLoading((prev) => prev + 1);
 
+      if (!user?.id) return;
       const { data, error } = await supabase
         .from("SavedPosts")
         .insert({ postId, userId: user?.id })
@@ -50,24 +54,29 @@ export default function useSavedPosts() {
           `
         )
         .maybeSingle();
-      console.log(data, savedPosts);
-      // fetchSavedPosts();
+      setSavedPosts((prev) => [data, ...prev]);
     } catch (e) {
       console.log(e);
+    } finally {
+      setLoading((prev) => prev - 1);
     }
   };
 
   const removeFromSavedPosts = async ({ postId }) => {
     try {
+      setLoading((prev) => prev + 1);
       if (!user?.id) return;
       const { data, error } = await supabase
         .from("SavedPosts")
         .delete()
         .eq("postId", postId)
-        .eq("userId", user?.id);
-      fetchSavedPosts();
+        .eq("userId", user?.id)
+        .select();
+      setSavedPosts((prev) => prev?.filter((post) => post?.postId !== postId));
     } catch (e) {
       console.log(e);
+    } finally {
+      setLoading((prev) => prev - 1);
     }
   };
 
