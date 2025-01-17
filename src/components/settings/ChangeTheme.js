@@ -1,24 +1,22 @@
-import React from "react";
-import "./index.css";
 import { Switch } from "antd";
-import { IoMoon, IoSunny } from "react-icons/io5";
+import React from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
-import themeState from "../../atoms/themeState";
+import userState from "../../atoms/userState";
+import "./index.css";
+import useAuth from "../../hooks/useAuth";
 
 export default function ChangeTheme() {
-  const [theme, setTheme] = useRecoilState(themeState);
+  const currentUser = useRecoilValue(userState);
+  const { handleChangePrivacy } = useAuth();
   return (
     <div className="change-theme">
-      <span>Light Theme</span>
+      <span>Private Account</span>
       <Switch
         style={{
           border: "1px solid var(--border-color-1)",
         }}
-        defaultChecked={theme === "light"}
-        onChange={(e) => {
-          setTheme(e ? "light" : "dark");
-          localStorage.setItem("theme", e ? "light" : "dark");
-        }}
+        defaultChecked={currentUser?.isPrivate}
+        onChange={handleChangePrivacy}
       />
     </div>
   );

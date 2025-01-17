@@ -8,7 +8,7 @@ import validatePassword from "../utils/anon/validatePassword";
 import { redirect } from "react-router";
 
 export default function useAuth() {
-  const [user, setUser] = useRecoilState(userState);
+  const [currentUser, setCurrentUser] = useRecoilState(userState);
   const [loading, setLoading] = useRecoilState(loadingState);
   async function fetchUserDetails(id) {
     try {
@@ -60,7 +60,7 @@ export default function useAuth() {
         });
         if (detailsAdded?.error) return;
         const response = await fetchUserDetails(signupData?.user?.id);
-        setUser(response?.data);
+        setCurrentUser(response?.data);
       }
     } catch (e) {
       console.error(e);
@@ -76,7 +76,7 @@ export default function useAuth() {
 
       if (signinData?.user) {
         const response = await fetchUserDetails(signinData?.user?.id);
-        setUser(response?.data);
+        setCurrentUser(response?.data);
       } else {
         console.log(signinError);
         return { error: signinError };
@@ -94,7 +94,7 @@ export default function useAuth() {
         await supabase.auth.getUser();
       if (currentUserData?.user) {
         const response = await fetchUserDetails(currentUserData?.user?.id);
-        setUser(response?.data);
+        setCurrentUser(response?.data);
       }
     } catch (e) {
       console.error(e);
@@ -132,12 +132,26 @@ export default function useAuth() {
       console.log(e);
     }
   };
+  const handleChangePrivacy = async (value) => {
+    try {
+      const { data, error } = await supabase
+        .from("Users")
+        .update({ isPrivate: value })
+        .eq("id", currentUser?.id);
+      if (!error)
+        setCurrentUser((prev) => {
+          return { ...prev, isPrivate: value };
+        });
+    } catch (e) {
+      console.log(e);
+    }
+  };
   async function logout() {
     try {
       setLoading((prev) => prev + 1);
       const { data: logoutData, error: logoutError } =
         await supabase.auth.signOut();
-      setUser(null);
+      setCurrentUser(null);
     } catch (e) {
       console.error(e);
     } finally {
@@ -152,5 +166,6 @@ export default function useAuth() {
     fetchUserDetails,
     handleInitiateChangePassword,
     handleChangePassword,
+    handleChangePrivacy,
   };
 }

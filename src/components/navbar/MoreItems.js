@@ -7,6 +7,7 @@ import { useRecoilValue } from "recoil";
 import userState from "../../atoms/userState";
 import ChangeTheme from "../settings/ChangeTheme";
 import themeState from "../../atoms/themeState";
+import ChangePrivacy from "../settings/ChangePrivacy";
 
 export default function MoreItems() {
   const location = useLocation();
@@ -28,11 +29,15 @@ export default function MoreItems() {
       onClick: () => handleInitiateChangePassword(currentUser?.email),
     },
     {
-      key: "",
+      key: "3",
+      label: <ChangePrivacy />,
+    },
+    {
+      key: "4",
       label: <ChangeTheme />,
     },
     {
-      key: "3",
+      key: "5",
       label: <button>Logout</button>,
       onClick: logout,
     },
