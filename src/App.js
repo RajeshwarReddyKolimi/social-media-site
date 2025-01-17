@@ -48,7 +48,7 @@ function App() {
     fetchLikedPosts();
     fetchFollowers(currentUser?.id);
     fetchFollowings(currentUser?.id);
-  }, [currentUser]);
+  }, [currentUser?.id]);
 
   useEffect(() => {
     setTheme(localStorage?.getItem("theme") || "dark");

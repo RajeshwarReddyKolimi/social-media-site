@@ -1,13 +1,16 @@
 import React from "react";
 import { supabase } from "../config/supabase";
-import { useRecoilValue } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import userState from "../atoms/userState";
 import NotFound from "../components/navbar/NotFound";
+import loadingState from "../atoms/loadingState";
 
 export default function useMessages() {
   const currentUser = useRecoilValue(userState);
+  const setLoading = useSetRecoilState(loadingState);
   const fetchChatDetails = async ({ chatId, receiverId }) => {
     try {
+      setLoading((prev) => prev + 1);
       if (currentUser?.id == receiverId) return;
       const { data, error } = await supabase
         .from("Chats")
@@ -40,25 +43,32 @@ export default function useMessages() {
       console.log(data);
     } catch (e) {
       console.log(e);
+    } finally {
+      setLoading((prev) => prev - 1);
     }
   };
 
-  const fetchMessages = async ({ receiverId, setMessages }) => {
+  const fetchMessages = async ({ chatId, setMessages, setError }) => {
     try {
+      setLoading((prev) => prev + 1);
       const { data, error } = await supabase
         .from("Messages")
         .select(
-          `
-            *,
-            Sender:sender (id, name, image),
-            Receiver:receiver (id, name, image)
+          `*, 
+          post:postId(id, image, caption, 
+            user:userId (id, name, image)
+          )
           `
         )
-        .or(`sender.eq.${currentUser?.id}, receiver.eq.${currentUser?.id}`)
-        .or(`sender.eq.${receiverId}, receiver.eq.${receiverId}`);
+        .eq("chatId", chatId)
+        .or(`sender.eq.${currentUser?.id}, receiver.eq.${currentUser.id}`);
+      if (error) setError("Invalid Url");
       setMessages(data);
     } catch (e) {
+      setError("Invalid Url");
       console.log(e);
+    } finally {
+      setLoading((prev) => prev - 1);
     }
   };
 

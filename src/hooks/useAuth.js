@@ -19,7 +19,7 @@ export default function useAuth() {
           `*, followers:Follows!following(following), followings:Follows!follower(follower), posts:Posts!userId(userId)`
         )
         .eq("id", id)
-        .single();
+        .maybeSingle();
       return data;
     } catch (e) {
       console.error(e);

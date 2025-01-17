@@ -14,6 +14,7 @@ import "./../profile/index.css";
 import UserFollowers from "./UserFollowers";
 import UserFollowings from "./UserFollowings";
 import UserPosts from "./UserPosts";
+import NotFound from "../navbar/NotFound";
 
 export default function UserProfile() {
   const { handleFollow, handleUnfollow } = useFollows();
@@ -30,6 +31,7 @@ export default function UserProfile() {
   const [fileList, setFileList] = useState([]);
   const { getCurrentUser } = useAuth();
   const navigate = useNavigate();
+  const [error, setError] = useState();
 
   const handleChangeDp = async (values) => {
     try {
@@ -99,6 +101,7 @@ export default function UserProfile() {
 
   const fetchUser = async () => {
     const { data, error } = await fetchUserDetails(id);
+    if (error) setError(error);
     setUser(data);
   };
 
@@ -110,7 +113,10 @@ export default function UserProfile() {
     setIsMe(currentUser?.id == id);
     if (currentUser?.id != id) fetchUser();
     else setUser(currentUser);
+    setShowItem("posts");
   }, [id, currentUser]);
+
+  if (error) return <NotFound />;
 
   return (
     <div className="profile">

@@ -9,6 +9,7 @@ import NotFound from "../navbar/NotFound";
 import UserSearchCard from "../users/UserSearchCard";
 import Message from "./Message";
 import MessagePost from "./MessagePost";
+import useMessages from "../../hooks/useMessages";
 
 export default function Messages() {
   const currentUser = useRecoilValue(userState);
@@ -20,6 +21,7 @@ export default function Messages() {
   const messagesEndRef = useRef(null);
   const [chatDetails, setChatDetails] = useState();
   const [receiver, setReceiver] = useState();
+  const { fetchMessages } = useMessages();
   const handleSendMessage = async (values) => {
     try {
       setLoading((prev) => prev + 1);
@@ -64,29 +66,6 @@ export default function Messages() {
       setLoading((prev) => prev - 1);
     }
   };
-  const fetchMessages = async () => {
-    try {
-      setLoading((prev) => prev + 1);
-      const { data, error } = await supabase
-        .from("Messages")
-        .select(
-          `*, 
-          post:postId(id, image, caption, 
-            user:userId (id, name, image)
-          )
-          `
-        )
-        .eq("chatId", chatId)
-        .or(`sender.eq.${currentUser?.id}, receiver.eq.${currentUser.id}`);
-      if (error) setError("Invalid Url");
-      setMessages(data);
-    } catch (e) {
-      setError("Invalid Url");
-      console.log(e);
-    } finally {
-      setLoading((prev) => prev - 1);
-    }
-  };
 
   useEffect(() => {
     messagesEndRef?.current?.scrollIntoView();
@@ -94,7 +73,7 @@ export default function Messages() {
 
   useEffect(() => {
     if (chatId) {
-      fetchMessages();
+      fetchMessages({ chatId, setMessages, setError });
       fetchChatDetails();
     }
   }, [chatId, currentUser]);
