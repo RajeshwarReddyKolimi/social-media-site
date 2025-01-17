@@ -153,8 +153,7 @@ export default function UserProfile() {
               type="text"
               className="follow-button"
               onClick={(e) => {
-                e.preventDefault();
-                handleUnfollow({ userId: user?.id });
+                handleUnfollow({ userId: user?.id, setUser });
               }}
             >
               Unfollow
@@ -164,8 +163,7 @@ export default function UserProfile() {
               type="text"
               className="follow-button"
               onClick={(e) => {
-                e.preventDefault();
-                handleFollow({ userId: user?.id });
+                handleFollow({ userId: user?.id, setUser });
               }}
             >
               Follow

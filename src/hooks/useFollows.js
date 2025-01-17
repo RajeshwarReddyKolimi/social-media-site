@@ -1,17 +1,18 @@
-import React, { useEffect } from "react";
-import { supabase } from "../config/supabase";
-import { useRecoilState, useRecoilValue } from "recoil";
-import likedPostsState from "../atoms/likedPosts";
-import userState from "../atoms/userState";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import followersState from "../atoms/followers";
 import followingsState from "../atoms/followings";
+import loadingState from "../atoms/loadingState";
+import userState from "../atoms/userState";
+import { supabase } from "../config/supabase";
 
 export default function useFollows() {
-  const [followers, setFollowers] = useRecoilState(followersState);
-  const [followings, setFollowings] = useRecoilState(followingsState);
+  const setFollowers = useSetRecoilState(followersState);
+  const setFollowings = useSetRecoilState(followingsState);
+  const setLoading = useSetRecoilState(loadingState);
   const currentUser = useRecoilValue(userState);
   const fetchFollowers = async (userId) => {
     try {
+      setLoading((prev) => prev + 1);
       if (!currentUser?.id) return;
       const { data, error } = await supabase
         .from("Follows")
@@ -27,20 +28,23 @@ export default function useFollows() {
       else return data;
     } catch (e) {
       console.log(e);
+    } finally {
+      setLoading((prev) => prev - 1);
     }
   };
 
   const fetchFollowings = async (userId) => {
     try {
+      setLoading((prev) => prev + 1);
       if (!currentUser?.id) return;
 
       const { data, error } = await supabase
         .from("Follows")
         .select(
           `
-                *,
-                user:following(id, name, image)
-                `
+            *,
+            user:following(id, name, image)
+          `
         )
         .eq("follower", userId)
         .order("created_at", { ascending: false });
@@ -48,11 +52,14 @@ export default function useFollows() {
       else return data;
     } catch (e) {
       console.log(e);
+    } finally {
+      setLoading((prev) => prev - 1);
     }
   };
 
-  const handleFollow = async ({ userId }) => {
+  const handleFollow = async ({ userId, setUser }) => {
     try {
+      setLoading((prev) => prev + 1);
       if (!currentUser?.id) return;
       const { data, error } = await supabase
         .from("Follows")
@@ -63,14 +70,23 @@ export default function useFollows() {
           `
         )
         .maybeSingle();
-      setFollowings((prev) => [...prev, data]);
+      setFollowings((prev) => [data, ...prev]);
+      setUser((prev) => {
+        return {
+          ...prev,
+          followers: [...prev?.followers, { following: data?.following }],
+        };
+      });
     } catch (e) {
       console.log(e);
+    } finally {
+      setLoading((prev) => prev - 1);
     }
   };
 
-  const handleUnfollow = async ({ userId }) => {
+  const handleUnfollow = async ({ userId, setUser }) => {
     try {
+      setLoading((prev) => prev + 1);
       if (!currentUser?.id) return;
       const { data, error } = await supabase
         .from("Follows")
@@ -84,10 +100,18 @@ export default function useFollows() {
         )
         .maybeSingle();
       setFollowings((prev) => prev.filter((user) => user?.following != userId));
-      const newFollowings = await fetchFollowings(userId);
-      return newFollowings;
+      setUser((prev) => {
+        return {
+          ...prev,
+          followers: prev?.followers?.filter(
+            (follower) => follower?.following !== data?.following
+          ),
+        };
+      });
     } catch (e) {
       console.log(e);
+    } finally {
+      setLoading((prev) => prev - 1);
     }
   };
 
