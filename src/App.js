@@ -38,6 +38,7 @@ function App() {
     if (theme === "dark") document?.body?.classList?.remove("light-theme");
     else document?.body?.classList?.add("light-theme");
   }, [theme]);
+
   useEffect(() => {
     getCurrentUser();
   }, []);

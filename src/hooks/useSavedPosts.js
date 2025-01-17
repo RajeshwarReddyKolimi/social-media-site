@@ -37,8 +37,21 @@ export default function useSavedPosts() {
 
       const { data, error } = await supabase
         .from("SavedPosts")
-        .insert({ postId, userId: user?.id });
-      fetchSavedPosts();
+        .insert({ postId, userId: user?.id })
+        .select(
+          `*,
+            Post:postId (
+              user:userId (id, name, image),
+              id,
+              caption,
+              image,
+              likes:LikedPosts!postId(postId)
+            )
+          `
+        )
+        .maybeSingle();
+      console.log(data, savedPosts);
+      // fetchSavedPosts();
     } catch (e) {
       console.log(e);
     }

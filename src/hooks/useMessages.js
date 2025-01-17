@@ -8,14 +8,6 @@ export default function useMessages() {
   const currentUser = useRecoilValue(userState);
   const fetchChatDetails = async ({ chatId, receiverId }) => {
     try {
-      //   const { data, error } = await supabase
-      //     .from("Chats")
-      //     .select(
-      //       `*, user1:user1Id(id, name, image), user2:user2Id(id, name, image)`
-      //     )
-      //     .or(`user1Id.eq.${currentUser?.id}, user2Id.eq.${currentUser?.id}`)
-      //     .single();
-
       if (currentUser?.id == receiverId) return;
       const { data, error } = await supabase
         .from("Chats")

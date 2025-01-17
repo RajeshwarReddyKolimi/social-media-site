@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import PostCard from "./PostCard";
-import "./post.css";
+import "./index.css";
 import usePost from "../../hooks/usePost";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import userState from "../../atoms/userState";

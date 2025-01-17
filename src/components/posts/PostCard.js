@@ -1,7 +1,7 @@
 import React from "react";
 import UserProfileCard from "../users/UserProfileCard";
 import Post from "./Post";
-import "./post.css";
+import "./index.css";
 
 export default function PostCard({ post, isMe, setUserPosts }) {
   return (

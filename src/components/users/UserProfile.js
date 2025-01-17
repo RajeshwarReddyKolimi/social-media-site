@@ -1,19 +1,19 @@
+import { Button, Upload } from "antd";
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router";
+import { MdEdit } from "react-icons/md";
+import { useNavigate, useParams } from "react-router";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import followingsState from "../../atoms/followings";
+import loadingState from "../../atoms/loadingState";
+import userState from "../../atoms/userState";
+import { supabase } from "../../config/supabase";
 import useAuth from "../../hooks/useAuth";
 import useFollows from "../../hooks/useFollows";
+import EditUsername from "../profile/EditUsername";
 import "./../profile/index.css";
 import UserFollowers from "./UserFollowers";
 import UserFollowings from "./UserFollowings";
 import UserPosts from "./UserPosts";
-import { Button, Upload } from "antd";
-import userState from "../../atoms/userState";
-import { MdEdit } from "react-icons/md";
-import { supabase } from "../../config/supabase";
-import EditUsername from "../profile/EditUsername";
-import loadingState from "../../atoms/loadingState";
 
 export default function UserProfile() {
   const { handleFollow, handleUnfollow } = useFollows();
@@ -75,11 +75,15 @@ export default function UserProfile() {
         .maybeSingle();
       if (data) navigate(`/chat/${data?.id}`);
       else {
+        const [user1Id, user2Id] =
+          currentUser?.id?.localeCompare(user?.id) < 0
+            ? [currentUser?.id, user?.id]
+            : [user?.id, currentUser?.id];
         const { data, error } = await supabase
           .from("Chats")
           .upsert({
-            user1Id: currentUser?.id,
-            user2Id: user?.id,
+            user1Id,
+            user2Id,
           })
           .select()
           .single();

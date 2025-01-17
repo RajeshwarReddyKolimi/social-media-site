@@ -2,7 +2,7 @@ import React from "react";
 import { useRecoilValue } from "recoil";
 import savedPostsState from "../../atoms/savedPosts";
 import PostCard from "../posts/PostCard";
-import "./../posts/post.css";
+import "./../posts/index.css";
 import { Empty } from "antd";
 
 export default function SavedPosts() {

@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
-import Post from "./Post";
 import { useParams } from "react-router";
-import usePost from "../../hooks/usePost";
-import "./post.css";
-import PostCard from "./PostCard";
 import { useRecoilValue } from "recoil";
 import userState from "../../atoms/userState";
+import usePost from "../../hooks/usePost";
+import "./index.css";
+import PostCard from "./PostCard";
 
 export default function PostPage() {
   const currentUser = useRecoilValue(userState);
