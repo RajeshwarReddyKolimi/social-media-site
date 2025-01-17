@@ -44,7 +44,7 @@ export default function CreatePost() {
     try {
       setLoading((prev) => prev + 1);
       const image = values?.fileList?.[0];
-      const imageName = Date.now() + image?.name;
+      const imageName = Date.now() + image?.name.replace(/\s+/g, "_");
       const r1 = await supabase.storage
         .from("postImages")
         .upload(imageName, image?.originFileObj);

@@ -91,6 +91,12 @@ export default function usePost() {
           posts: prev?.posts?.filter((p) => p.id !== postId),
         };
       });
+      const imagePath = data?.image?.split(
+        "/storage/v1/object/public/postImages/"
+      )?.[1];
+      console.log(imagePath);
+      const res = await supabase.storage.from("postImages").remove([imagePath]);
+      console.log(res);
       return data;
     } catch (e) {
       console.error(e);
