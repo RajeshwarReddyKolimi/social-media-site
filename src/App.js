@@ -66,10 +66,8 @@ function App() {
           <Route path="/post/:id" element={<PostPage />} />
           <Route path="/saved-posts" element={<SavedPosts />} />
           <Route path="/liked-posts" element={<LikedPosts />} />
-          <Route path="/change-password" element={<ChangePassword />} />
         </Route>
         <Route path="/forgot-password" element={<ForgotPassword />} />
-
         <Route path="/change-password" element={<ChangePassword />} />
         <Route path="/signin" element={<Signin />} />
         <Route path="/signup" element={<Signup />} />

@@ -13,7 +13,7 @@ export default function Signup() {
   const loading = useRecoilValue(loadingState);
   const currentUser = useRecoilValue(userState);
   const navigate = useNavigate();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
 
   useEffect(() => {
     if (loading == 0) {

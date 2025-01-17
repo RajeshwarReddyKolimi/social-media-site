@@ -8,6 +8,29 @@ import loadingState from "../atoms/loadingState";
 export default function useMessages({ chatId, setError }) {
   const currentUser = useRecoilValue(userState);
   const setLoading = useSetRecoilState(loadingState);
+
+  const fetchChats = async ({ setChats }) => {
+    try {
+      setLoading((prev) => prev + 1);
+      const { data, error } = await supabase
+        .from("Chats")
+        .select(
+          `
+          *,
+          user1:user1Id (id, name, image), 
+          user2:user2Id (id, name, image)
+        `
+        )
+        .or(`user1Id.eq.${currentUser?.id}, user2Id.eq.${currentUser?.id}`)
+        .order("lastUpdatedAt", { ascending: false });
+      setChats(data);
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setLoading((prev) => prev - 1);
+    }
+  };
+
   const fetchReceiver = async ({ setReceiver }) => {
     try {
       setLoading((prev) => prev + 1);
@@ -76,5 +99,5 @@ export default function useMessages({ chatId, setError }) {
       setLoading((prev) => prev - 1);
     }
   };
-  return { fetchReceiver, fetchMessages, handleSendMessage };
+  return { fetchChats, fetchReceiver, fetchMessages, handleSendMessage };
 }

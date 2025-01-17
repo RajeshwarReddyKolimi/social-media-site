@@ -10,7 +10,7 @@ import loadingState from "../../atoms/loadingState";
 import validateEmail from "../../utils/anon/validateEmail";
 
 export default function Signin() {
-  const { signin, handleInitiateChangePassword } = useAuth();
+  const { signin } = useAuth();
   const loading = useRecoilValue(loadingState);
   const currentUser = useRecoilValue(userState);
   const navigate = useNavigate();
@@ -19,19 +19,11 @@ export default function Signin() {
   const handleSignin = async (values) => {
     try {
       const { email, password } = values;
-      console.log(validateEmail(email));
       if (!validateEmail(email)) {
         setError("Invalid email");
-        console.log("Invalid email");
         return;
       }
-      console.log(email, password);
       const { data, error } = await signin(values);
-      Object.keys(error).forEach((e) => {
-        console.log(error[e]);
-      });
-      console.log(error);
-      console.log();
       if (error) setError(error);
     } catch (e) {
       console.log(e);

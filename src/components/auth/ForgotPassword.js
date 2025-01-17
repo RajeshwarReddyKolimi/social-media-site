@@ -1,13 +1,9 @@
 import { Button, Form, Input } from "antd";
-import React, { useEffect } from "react";
+import React from "react";
 import useAuth from "../../hooks/useAuth";
-import { replace, useNavigate, useParams, useSearchParams } from "react-router";
-import { supabase } from "../../config/supabase";
 
 export default function ForgotPassword() {
   const { handleInitiateChangePassword } = useAuth();
-  const navigate = useNavigate();
-  const [searchParams, setSearchParams] = useSearchParams();
   return (
     <div className="signin-page">
       <div className="change-password signin-form">
