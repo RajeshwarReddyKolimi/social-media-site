@@ -34,23 +34,6 @@ export default function Chats() {
     }
   };
 
-  const updateChat = async (message) => {
-    try {
-      setLoading((prev) => prev + 1);
-      const { data, error } = await supabase
-        .from("Chats")
-        .update({
-          lastUpdatedAt: message?.created_at,
-        })
-        .eq("id", message?.chatId);
-      fetchChats();
-    } catch (e) {
-      console.log(e);
-    } finally {
-      setLoading((prev) => prev - 1);
-    }
-  };
-
   useEffect(() => {
     if (currentUser) fetchChats();
     else setChats([]);
@@ -67,7 +50,7 @@ export default function Chats() {
             payload?.new?.receiver === currentUser?.id ||
             payload?.new?.sender === currentUser?.id
           ) {
-            updateChat(payload?.new);
+            fetchChats();
           }
         }
       )

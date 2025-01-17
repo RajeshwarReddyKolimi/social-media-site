@@ -1,71 +1,27 @@
 import { Button, Empty, Form, Input } from "antd";
 import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router";
-import { useRecoilValue, useSetRecoilState } from "recoil";
-import loadingState from "../../atoms/loadingState";
+import { useRecoilValue } from "recoil";
 import userState from "../../atoms/userState";
 import { supabase } from "../../config/supabase";
+import useMessages from "../../hooks/useMessages";
 import NotFound from "../navbar/NotFound";
 import UserSearchCard from "../users/UserSearchCard";
 import Message from "./Message";
 import MessagePost from "./MessagePost";
-import useMessages from "../../hooks/useMessages";
 
 export default function Messages() {
   const currentUser = useRecoilValue(userState);
-  const setLoading = useSetRecoilState(loadingState);
   const { id: chatId } = useParams();
   const [messages, setMessages] = useState([]);
   const [error, setError] = useState();
   const [form] = Form.useForm();
   const messagesEndRef = useRef(null);
-  const [chatDetails, setChatDetails] = useState();
   const [receiver, setReceiver] = useState();
-  const { fetchMessages } = useMessages();
-  const handleSendMessage = async (values) => {
-    try {
-      setLoading((prev) => prev + 1);
-      if (!values?.message?.trim()) return;
-      if (!chatId) return;
-      const { data, error } = await supabase.from("Messages").insert({
-        sender: currentUser?.id,
-        receiver: receiver?.id,
-        text: values?.message?.trim(),
-        chatId: chatId,
-      });
-      if (error) {
-        console.log(error);
-      } else {
-        form.resetFields();
-      }
-    } catch (e) {
-      console.log(e);
-    } finally {
-      setLoading((prev) => prev - 1);
-    }
-  };
-  const fetchChatDetails = async () => {
-    try {
-      setLoading((prev) => prev + 1);
-      const { data, error } = await supabase
-        .from("Chats")
-        .select(
-          `*, 
-          user1:user1Id (id, name, image), 
-          user2:user2Id (id, name, image)`
-        )
-        .eq("id", chatId)
-        .maybeSingle();
-      if (currentUser?.id != data?.user1Id && currentUser?.id != data?.user2Id)
-        setError("Invalid Url");
-      setReceiver(currentUser?.id == data?.user1Id ? data?.user2 : data?.user1);
-      setChatDetails(data);
-    } catch (e) {
-      console.log(e);
-    } finally {
-      setLoading((prev) => prev - 1);
-    }
-  };
+  const { fetchMessages, fetchReceiver, handleSendMessage } = useMessages({
+    chatId,
+    setError,
+  });
 
   useEffect(() => {
     messagesEndRef?.current?.scrollIntoView();
@@ -73,8 +29,8 @@ export default function Messages() {
 
   useEffect(() => {
     if (chatId) {
-      fetchMessages({ chatId, setMessages, setError });
-      fetchChatDetails();
+      fetchReceiver({ setReceiver });
+      fetchMessages({ setMessages });
     }
   }, [chatId, currentUser]);
 
@@ -128,7 +84,13 @@ export default function Messages() {
         </div>
         <Form
           className="message-input-form"
-          onFinish={handleSendMessage}
+          onFinish={(values) =>
+            handleSendMessage({
+              message: values?.message,
+              receiverId: receiver?.id,
+              form,
+            })
+          }
           form={form}
         >
           <Form.Item name="message">
