@@ -5,24 +5,12 @@ import loadingState from "../../atoms/loadingState";
 import userState from "../../atoms/userState";
 import Navbar from "./Navbar";
 import "./index.css";
+import Signin from "../auth/Signin";
 
 export default function Layout() {
-  const loading = useRecoilValue(loadingState);
   const currentUser = useRecoilValue(userState);
-  const navigate = useNavigate();
-  const location = useLocation();
 
-  useEffect(() => {
-    if (loading == 0) {
-      if (!currentUser) {
-        const curLocation = location.pathname;
-        if (curLocation != "signin" || curLocation != "signup")
-          navigate(`/signin?redirect=${location?.pathname}`);
-        else navigate(`/signin?redirect=/}`);
-      }
-    }
-  }, [currentUser, loading]);
-
+  if (!currentUser) return <Signin />;
   return (
     <div className="layout">
       <Navbar />

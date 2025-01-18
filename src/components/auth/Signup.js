@@ -1,29 +1,54 @@
 import { Button, Form, Input } from "antd";
-import React, { useEffect } from "react";
-import { Link, useNavigate, useSearchParams } from "react-router";
-import { useRecoilValue } from "recoil";
+import React from "react";
+import { Link } from "react-router";
 import Logo from "../../assets/Logo";
-import userState from "../../atoms/userState";
 import useAuth from "../../hooks/useAuth";
 import "./index.css";
-import loadingState from "../../atoms/loadingState";
+import validateEmail from "../../utils/anon/validateEmail";
+import useNotify from "../../hooks/useNotify";
+import validatePassword from "../../utils/anon/validatePassword";
 
 export default function Signup() {
   const { signup } = useAuth();
-  const loading = useRecoilValue(loadingState);
-  const currentUser = useRecoilValue(userState);
-  const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
+  const { notify, contextHolder } = useNotify();
 
-  useEffect(() => {
-    if (loading == 0) {
-      if (currentUser) navigate(searchParams?.get("redirect") ?? "/");
+  const handleSignup = async (values) => {
+    try {
+      const { email, password } = values;
+      if (!validateEmail(email)) {
+        notify({
+          type: "error",
+          message: "Signup Error",
+          description: "Invalid email address",
+        });
+        return;
+      }
+      if (!validatePassword(password)) {
+        notify({
+          type: "error",
+          message: "Signup Error",
+          description: "Invalid password",
+        });
+        return;
+      }
+      const { data, error } = await signup(values);
+      if (error) {
+        notify({
+          type: "error",
+          message: "Signup Error",
+          description: error?.code ?? "Invalid credentials",
+        });
+        return;
+      }
+    } catch (e) {
+      console.log(e);
     }
-  }, [currentUser, loading]);
+  };
 
   return (
     <div className="signin-page">
       <div className="signin-form">
+        {contextHolder}
         <Logo />
         <Form
           className="form"
@@ -34,7 +59,7 @@ export default function Signup() {
           initialValues={{
             remember: true,
           }}
-          onFinish={signup}
+          onFinish={handleSignup}
           onFinishFailed={(e) => console.log(e)}
           autoComplete="off"
         >

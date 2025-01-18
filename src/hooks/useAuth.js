@@ -46,11 +46,19 @@ export default function useAuth() {
   async function signup(values) {
     try {
       setLoading((prev) => prev + 1);
+      const userExists = await supabase
+        ?.from("Users")
+        .select()
+        .eq("name", values?.name)
+        .maybeSingle();
+      if (userExists?.data)
+        return { error: { code: "Username already taken" } };
       const { data: signupData, error: signupError } =
         await supabase.auth.signUp({
           email: values?.email,
           password: values?.password,
         });
+      if (signupError) return { error: signupError };
       if (signupData) {
         const detailsAdded = await putUserDetails({
           id: signupData?.user?.id,
@@ -58,7 +66,7 @@ export default function useAuth() {
           image: "",
           email: values?.email,
         });
-        if (detailsAdded?.error) return;
+        if (detailsAdded?.error) return { error: detailsAdded?.error };
         const response = await fetchUserDetails(signupData?.user?.id);
         setCurrentUser(response?.data);
       }

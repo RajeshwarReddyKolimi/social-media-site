@@ -118,6 +118,10 @@ a {
   color: var(--theme-color) !important;
 }
 
+.notify-popup * {
+  color: black;
+}
+
 @media screen and (min-width: 425px) {
   body {
     font-size: 14px;
