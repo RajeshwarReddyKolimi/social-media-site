@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { BrowserRouter, Route, Routes } from "react-router";
 import { useRecoilState, useRecoilValue } from "recoil";
 import "./App.css";
@@ -34,6 +34,7 @@ function App() {
   const { fetchLikedPosts } = useLikedPosts();
   const { fetchFollowings, fetchFollowers } = useFollows();
   const { getCurrentUser } = useAuth();
+  const [userLoading, setUserLoading] = useState(true);
 
   useEffect(() => {
     if (theme === "dark") document?.body?.classList?.remove("light-theme");
@@ -41,7 +42,7 @@ function App() {
   }, [theme]);
 
   useEffect(() => {
-    getCurrentUser();
+    getCurrentUser({ setUserLoading });
   }, []);
 
   useEffect(() => {
@@ -57,6 +58,7 @@ function App() {
   return (
     <BrowserRouter>
       {loading !== 0 && <Loader />}
+      {userLoading && <Loader userLoading />}
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Posts />} />

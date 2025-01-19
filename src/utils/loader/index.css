@@ -14,7 +14,7 @@
   top: 0;
   left: 0;
   z-index: 100;
-  background-color: rgba(0, 0, 0, 1);
+  background-color: rgba(0, 0, 0, 0.5);
   display: grid;
   place-items: center;
 }
@@ -29,4 +29,8 @@
   animation-duration: 1.5s;
   animation-timing-function: linear;
   animation-iteration-count: infinite;
+}
+
+.user-loader {
+  background-color: rgba(0, 0, 0, 1);
 }

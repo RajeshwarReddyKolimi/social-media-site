@@ -94,9 +94,9 @@ export default function useAuth() {
       setLoading((prev) => prev - 1);
     }
   }
-  async function getCurrentUser() {
+  async function getCurrentUser({ setUserLoading }) {
     try {
-      setLoading((prev) => prev + 1);
+      setUserLoading(true);
       const { data: currentUserData, error: currentUserError } =
         await supabase.auth.getUser();
       if (currentUserData?.user) {
@@ -106,7 +106,7 @@ export default function useAuth() {
     } catch (e) {
       console.error(e);
     } finally {
-      setLoading((prev) => prev - 1);
+      setUserLoading(false);
     }
   }
   const handleInitiateChangePassword = async (email) => {

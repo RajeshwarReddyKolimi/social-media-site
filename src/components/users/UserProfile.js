@@ -2,19 +2,19 @@ import { Button, Upload } from "antd";
 import React, { useEffect, useState } from "react";
 import { MdEdit } from "react-icons/md";
 import { useNavigate, useParams } from "react-router";
-import { useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import followingsState from "../../atoms/followings";
 import loadingState from "../../atoms/loadingState";
 import userState from "../../atoms/userState";
 import { supabase } from "../../config/supabase";
 import useAuth from "../../hooks/useAuth";
 import useFollows from "../../hooks/useFollows";
+import NotFound from "../navbar/NotFound";
 import EditUsername from "../profile/EditUsername";
 import "./../profile/index.css";
 import UserFollowers from "./UserFollowers";
 import UserFollowings from "./UserFollowings";
 import UserPosts from "./UserPosts";
-import NotFound from "../navbar/NotFound";
 
 export default function UserProfile() {
   const { handleFollow, handleUnfollow } = useFollows();
@@ -22,14 +22,13 @@ export default function UserProfile() {
   const setLoading = useSetRecoilState(loadingState);
   const [user, setUser] = useState();
   const { id } = useParams();
-  const currentUser = useRecoilValue(userState);
+  const [currentUser, setCurrentUser] = useRecoilState(userState);
   const { fetchUserDetails } = useAuth();
   const [showItem, setShowItem] = useState("posts");
   const [isFollowing, setIsFollowing] = useState(false);
   const [isMe, setIsMe] = useState(false);
   const [showEditUsername, setShowEditUsername] = useState(false);
   const [fileList, setFileList] = useState([]);
-  const { getCurrentUser } = useAuth();
   const navigate = useNavigate();
   const [error, setError] = useState();
 
@@ -51,8 +50,11 @@ export default function UserProfile() {
           .from("Users")
           .update({ image: data?.publicUrl })
           .eq("id", currentUser?.id)
-          .select();
-        await getCurrentUser();
+          .select()
+          .maybeSingle();
+        setCurrentUser((prev) => {
+          return { ...prev, image: res?.data?.image };
+        });
       }
     } catch (e) {
       console.log(e);
