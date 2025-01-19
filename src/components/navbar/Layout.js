@@ -1,16 +1,14 @@
-import React, { useEffect } from "react";
-import { Outlet, useLocation, useNavigate } from "react-router";
+import React from "react";
+import { Outlet } from "react-router";
 import { useRecoilValue } from "recoil";
-import loadingState from "../../atoms/loadingState";
 import userState from "../../atoms/userState";
+import Auth from "../auth/Auth";
 import Navbar from "./Navbar";
 import "./index.css";
-import Signin from "../auth/Signin";
 
 export default function Layout() {
   const currentUser = useRecoilValue(userState);
-
-  if (!currentUser) return <Signin />;
+  if (!currentUser) return <Auth />;
   return (
     <div className="layout">
       <Navbar />

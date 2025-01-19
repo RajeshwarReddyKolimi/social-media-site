@@ -124,18 +124,12 @@ export default function useAuth() {
   const handleChangePassword = async (values) => {
     try {
       if (!validatePassword(values?.password)) {
-        alert("Invalid password");
-        return;
+        return { error: "Invalid password" };
       }
       const { data, error } = await supabase.auth.updateUser({
         password: values?.password,
       });
-      if (data?.user) {
-        alert("Password reset successful");
-        return true;
-      } else if (error) {
-        console.log(error?.status);
-      }
+      return { data, error };
     } catch (e) {
       console.log(e);
     }

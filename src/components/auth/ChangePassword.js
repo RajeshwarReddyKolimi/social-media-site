@@ -2,17 +2,25 @@ import { Button, Form, Input } from "antd";
 import React from "react";
 import { useNavigate } from "react-router";
 import useAuth from "../../hooks/useAuth";
+import useNotify from "../../hooks/useNotify";
 
 export default function ChangePassword() {
   const { handleChangePassword } = useAuth();
   const navigate = useNavigate();
+  const { notify, contextHolder } = useNotify();
   const changePassword = async (values) => {
-    const isSuccess = await handleChangePassword(values);
-    if (isSuccess) navigate("/", { replace: true });
-    else alert("error changing password");
+    const { data, error } = await handleChangePassword(values);
+    if (!error) navigate("/", { replace: true });
+    else
+      notify({
+        type: "error",
+        message: "Password change Error",
+        description: error?.status,
+      });
   };
   return (
     <div className="signin-page">
+      {contextHolder}
       <div className="change-password signin-form">
         <h1>Change password</h1>
         <Form

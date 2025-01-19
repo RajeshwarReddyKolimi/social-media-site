@@ -1,14 +1,13 @@
 import { Button, Form, Input } from "antd";
 import React from "react";
-import { Link } from "react-router";
 import Logo from "../../assets/Logo";
 import useAuth from "../../hooks/useAuth";
-import "./index.css";
-import validateEmail from "../../utils/anon/validateEmail";
 import useNotify from "../../hooks/useNotify";
+import validateEmail from "../../utils/anon/validateEmail";
 import validatePassword from "../../utils/anon/validatePassword";
+import "./index.css";
 
-export default function Signup() {
+export default function Signup({ setShowItem }) {
   const { signup } = useAuth();
   const { notify, contextHolder } = useNotify();
 
@@ -106,7 +105,10 @@ export default function Signup() {
       </div>
       <div className="signin-toggle">
         <p>
-          Have an account? <Link to="/signin">Sign in</Link>
+          Have an account?{" "}
+          <Button type="text" onClick={() => setShowItem("signin")}>
+            Sign In
+          </Button>
         </p>
       </div>
     </div>

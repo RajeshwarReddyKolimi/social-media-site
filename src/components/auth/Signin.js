@@ -8,7 +8,7 @@ import validateEmail from "../../utils/anon/validateEmail";
 import validatePassword from "../../utils/anon/validatePassword";
 import "./index.css";
 
-export default function Signin() {
+export default function Signin({ setShowItem }) {
   const { signin } = useAuth();
   const { notify, contextHolder } = useNotify();
   const handleSignin = async (values) => {
@@ -104,7 +104,10 @@ export default function Signin() {
       </div>
       <div className="signin-toggle">
         <p>
-          Don't have an account? <Link to="/signup">Sign up</Link>
+          Don't have an account?{" "}
+          <Button type="text" onClick={() => setShowItem("signup")}>
+            Sign up
+          </Button>
         </p>
       </div>
     </div>
