@@ -18,8 +18,8 @@ export default function PostPage() {
   }, [postId]);
   if (error) return <NotFound />;
   return (
-    <div className="posts">
+    <main className="posts">
       <PostCard post={post} isMe={currentUser?.id == post?.userId} />
-    </div>
+    </main>
   );
 }

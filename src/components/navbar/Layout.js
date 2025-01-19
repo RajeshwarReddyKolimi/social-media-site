@@ -10,11 +10,11 @@ export default function Layout() {
   const currentUser = useRecoilValue(userState);
   if (!currentUser) return <Auth />;
   return (
-    <div className="layout">
+    <section className="layout">
       <Navbar />
       <div className="outlet">
         <Outlet />
       </div>
-    </div>
+    </section>
   );
 }

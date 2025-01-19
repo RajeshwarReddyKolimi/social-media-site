@@ -53,7 +53,7 @@ export default function Comments({ setShowComments, post }) {
     fetchComments();
   }, []);
   return (
-    <div
+    <section
       className="overlay"
       onClick={(e) => {
         if (e.target.className != "overlay") return;
@@ -88,6 +88,6 @@ export default function Comments({ setShowComments, post }) {
           </Form.Item>
         </Form>
       </div>
-    </div>
+    </section>
   );
 }

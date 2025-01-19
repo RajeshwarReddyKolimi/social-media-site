@@ -35,11 +35,11 @@ export default function MyPosts() {
   }, []);
 
   return (
-    <div className="posts">
+    <section className="posts">
       {myPosts?.map((post, id) => (
         <PostCard post={post} key={id} isMe={true} />
       ))}
       {myPosts?.length == 0 && <Empty description="No posts" />}
-    </div>
+    </section>
   );
 }

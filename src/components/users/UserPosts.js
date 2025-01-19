@@ -30,7 +30,7 @@ export default function UserPosts({ user, isMe }) {
     fetchUserPosts();
   }, [user?.id]);
   return (
-    <div className="posts">
+    <section className="posts">
       {userPosts?.map((post, id) => (
         <PostCard
           key={id}
@@ -39,6 +39,6 @@ export default function UserPosts({ user, isMe }) {
           setUserPosts={setUserPosts}
         />
       ))}
-    </div>
+    </section>
   );
 }

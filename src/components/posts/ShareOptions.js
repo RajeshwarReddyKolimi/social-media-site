@@ -7,7 +7,7 @@ import UserSharePostCard from "../users/UserSharePostCard";
 export default function ShareOptions({ handleSharePost, setShowShareOptions }) {
   const [followings, setShowFollowings] = useRecoilState(followingsState);
   return (
-    <div
+    <section
       className="overlay"
       onClick={(e) => {
         if (e.target.className != "overlay") return;
@@ -26,6 +26,6 @@ export default function ShareOptions({ handleSharePost, setShowShareOptions }) {
           ))}
         </div>
       </div>
-    </div>
+    </section>
   );
 }

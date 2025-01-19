@@ -29,7 +29,7 @@ export default function UserFollowers({ user }) {
     else fetchUserFollowers();
   }, [user]);
   return (
-    <div>
+    <section>
       {userFollowers?.map((user, id) => (
         <UserProfileCard
           user={user?.user}
@@ -38,6 +38,6 @@ export default function UserFollowers({ user }) {
         />
       ))}
       {userFollowers?.length == 0 && <Empty description="No followers" />}
-    </div>
+    </section>
   );
 }

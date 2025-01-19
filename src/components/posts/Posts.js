@@ -26,11 +26,11 @@ export default function Posts() {
     fetchPosts();
   }, [user]);
   return (
-    <div className="posts">
+    <main className="posts">
       {posts?.map((post, id) => (
         <PostCard post={post} key={id} />
       ))}
       {posts?.length == 0 && <Empty description="No posts" />}
-    </div>
+    </main>
   );
 }

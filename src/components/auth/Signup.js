@@ -45,7 +45,7 @@ export default function Signup({ setShowItem }) {
   };
 
   return (
-    <div className="signin-page">
+    <main className="signin-page">
       <div className="signin-form">
         {contextHolder}
         <Logo />
@@ -111,6 +111,6 @@ export default function Signup({ setShowItem }) {
           </Button>
         </p>
       </div>
-    </div>
+    </main>
   );
 }

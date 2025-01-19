@@ -163,7 +163,7 @@ const Navbar = () => {
     setShowItem();
   }, [location]);
   return (
-    <>
+    <nav>
       <Menu
         className="menu large-screen-menu"
         defaultSelectedKeys={["1"]}
@@ -190,7 +190,7 @@ const Navbar = () => {
       ) : (
         showItem === "more" && <MoreItems />
       )}
-    </>
+    </nav>
   );
 };
 export default Navbar;

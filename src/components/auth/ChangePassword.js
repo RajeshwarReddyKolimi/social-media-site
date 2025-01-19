@@ -3,6 +3,7 @@ import React from "react";
 import { useNavigate } from "react-router";
 import useAuth from "../../hooks/useAuth";
 import useNotify from "../../hooks/useNotify";
+import "./index.css";
 
 export default function ChangePassword() {
   const { handleChangePassword } = useAuth();
@@ -10,16 +11,24 @@ export default function ChangePassword() {
   const { notify, contextHolder } = useNotify();
   const changePassword = async (values) => {
     const { data, error } = await handleChangePassword(values);
-    if (!error) navigate("/", { replace: true });
-    else
+    if (!error) {
+      notify({
+        type: "success",
+        message: "Password Change Success",
+        description: "Password successfully changed",
+      });
+      setTimeout(() => {
+        navigate("/", { replace: true });
+      }, 3000);
+    } else
       notify({
         type: "error",
-        message: "Password change Error",
-        description: error?.status,
+        message: "Password Change Error",
+        description: error?.code,
       });
   };
   return (
-    <div className="signin-page">
+    <main className="signin-page">
       {contextHolder}
       <div className="change-password signin-form">
         <h1>Change password</h1>
@@ -43,7 +52,10 @@ export default function ChangePassword() {
               },
             ]}
           >
-            <Input.Password placeholder="Enter new password" />
+            <Input.Password
+              placeholder="Enter new password"
+              visibilityToggle={false}
+            />
           </Form.Item>
           <Form.Item>
             <Button type="primary" htmlType="submit">
@@ -52,6 +64,6 @@ export default function ChangePassword() {
           </Form.Item>
         </Form>
       </div>
-    </div>
+    </main>
   );
 }

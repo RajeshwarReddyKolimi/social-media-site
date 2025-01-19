@@ -2,27 +2,33 @@ import { Button, Form, Input } from "antd";
 import React from "react";
 import useAuth from "../../hooks/useAuth";
 import useNotify from "../../hooks/useNotify";
+import { useRecoilState } from "recoil";
+import userState from "../../atoms/userState";
+import { useNavigate } from "react-router";
 
 export default function ForgotPassword() {
+  const currentUser = useRecoilState(userState);
   const { handleInitiateChangePassword } = useAuth();
   const { notify, contextHolder } = useNotify();
+  const navigate = useNavigate();
   const initiateChangePassword = async (email) => {
     const { data, error } = await handleInitiateChangePassword(email);
     if (error)
       notify({
         type: "error",
         message: "Password Change Error",
-        description: error?.status,
+        description: error?.code,
       });
     else
       notify({
         type: "success",
         message: "Password Change",
-        description: "Email to change password has been sent",
+        description: "Link to change password has been sent to email",
       });
   };
+  if (currentUser) navigate("/");
   return (
-    <div className="signin-page">
+    <main className="signin-page">
       {contextHolder}
       <div className="change-password signin-form">
         <h1>Forgot password</h1>
@@ -55,6 +61,6 @@ export default function ForgotPassword() {
           </Form.Item>
         </Form>
       </div>
-    </div>
+    </main>
   );
 }

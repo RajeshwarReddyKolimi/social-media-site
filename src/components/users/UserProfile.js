@@ -119,7 +119,7 @@ export default function UserProfile() {
   if (error) return <NotFound />;
 
   return (
-    <div className="profile">
+    <main className="profile">
       <div className="profile-header">
         <div className="profile-dp">
           <img src={user?.image} />
@@ -225,6 +225,6 @@ export default function UserProfile() {
       ) : (
         <p>Follow to view</p>
       )}
-    </div>
+    </main>
   );
 }

@@ -8,12 +8,30 @@ import userState from "../../atoms/userState";
 import ChangeTheme from "../settings/ChangeTheme";
 import themeState from "../../atoms/themeState";
 import ChangePrivacy from "../settings/ChangePrivacy";
+import useNotify from "../../hooks/useNotify";
 
 export default function MoreItems() {
   const location = useLocation();
   const currentUser = useRecoilValue(userState);
   const theme = useRecoilValue(themeState);
   const { logout, handleInitiateChangePassword } = useAuth();
+  const { notify, contextHolder } = useNotify();
+
+  const initiateChangePassword = async (email) => {
+    const { data, error } = await handleInitiateChangePassword(email);
+    if (error)
+      notify({
+        type: "error",
+        message: "Password Change Error",
+        description: error?.code,
+      });
+    else
+      notify({
+        type: "success",
+        message: "Password Change",
+        description: "Email to change password has been sent",
+      });
+  };
   const moreItems = [
     {
       key: "0",
@@ -26,7 +44,7 @@ export default function MoreItems() {
     {
       key: "2",
       label: <button>Change Password</button>,
-      onClick: () => handleInitiateChangePassword(currentUser?.email),
+      onClick: () => initiateChangePassword(currentUser?.email),
     },
     {
       key: "3",
@@ -49,13 +67,16 @@ export default function MoreItems() {
       ? "1"
       : location.pathname === "/settings" && "2";
   return (
-    <Menu
-      className="menu more-items"
-      defaultSelectedKeys={["1"]}
-      selectedKeys={[selectedKey]}
-      theme={theme}
-      defaultOpenKeys={["sub1"]}
-      items={moreItems}
-    />
+    <nav>
+      <Menu
+        className="menu more-items"
+        defaultSelectedKeys={["1"]}
+        selectedKeys={[selectedKey]}
+        theme={theme}
+        defaultOpenKeys={["sub1"]}
+        items={moreItems}
+      />
+      {contextHolder}
+    </nav>
   );
 }

@@ -6,9 +6,9 @@ import "./index.css";
 export default function Search() {
   const [searchResults, setSearchResults] = useState([]);
   return (
-    <div className="search-container">
+    <section className="search-container">
       <SearchInput setSearchResults={setSearchResults} />
       <SearchResults searchResults={searchResults} />
-    </div>
+    </section>
   );
 }

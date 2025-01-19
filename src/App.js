@@ -24,6 +24,7 @@ import useSavedPosts from "./hooks/useSavedPosts";
 import Home from "./pages/home/Home";
 import Loader from "./utils/loader/Loader";
 import themeState from "./atoms/themeState";
+import Posts from "./components/posts/Posts";
 
 function App() {
   const currentUser = useRecoilValue(userState);
@@ -58,7 +59,7 @@ function App() {
       {loading !== 0 && <Loader />}
       <Routes>
         <Route path="/" element={<Layout />}>
-          <Route index element={<Home />} />
+          <Route index element={<Posts />} />
           <Route path="/user/:id" element={<UserProfile />} />
           <Route path="/create" element={<CreatePost />} />
           <Route path="/chat" element={<Chats />} />

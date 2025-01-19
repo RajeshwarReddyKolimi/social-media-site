@@ -86,7 +86,6 @@ export default function useAuth() {
         const response = await fetchUserDetails(signinData?.user?.id);
         setCurrentUser(response?.data);
       } else {
-        console.log(signinError);
         return { error: signinError };
       }
     } catch (e) {
@@ -112,17 +111,20 @@ export default function useAuth() {
   }
   const handleInitiateChangePassword = async (email) => {
     try {
+      setLoading((prev) => prev + 1);
       const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
         redirectTo: "http://localhost:3000/change-password",
       });
-      console.log(data, error);
-      if (data) alert("Password reset link is set to email");
+      return { data, error };
     } catch (e) {
-      console.log(e);
+      return e;
+    } finally {
+      setLoading((prev) => prev - 1);
     }
   };
   const handleChangePassword = async (values) => {
     try {
+      setLoading((prev) => prev + 1);
       if (!validatePassword(values?.password)) {
         return { error: "Invalid password" };
       }
@@ -132,10 +134,13 @@ export default function useAuth() {
       return { data, error };
     } catch (e) {
       console.log(e);
+    } finally {
+      setLoading((prev) => prev - 1);
     }
   };
   const handleChangePrivacy = async (value) => {
     try {
+      setLoading((prev) => prev + 1);
       const { data, error } = await supabase
         .from("Users")
         .update({ isPrivate: value })
@@ -146,6 +151,8 @@ export default function useAuth() {
         });
     } catch (e) {
       console.log(e);
+    } finally {
+      setLoading((prev) => prev - 1);
     }
   };
   async function logout() {
