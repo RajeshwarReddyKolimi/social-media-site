@@ -178,7 +178,7 @@ export default function UserProfile() {
             </Button>
           ))}
       </div>
-      {!isMe && isFollowing && (
+      {!isMe && (!user?.isPrivate || isFollowing) && (
         <Button
           type="text"
           onClick={fetchChatId}

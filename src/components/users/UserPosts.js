@@ -19,7 +19,6 @@ export default function UserPosts({ user, isMe }) {
           likes:Likes!postId(postId)`
         )
         .eq(`userId`, user?.id);
-      console.log(data, error);
       setUserPosts(data);
     } catch (e) {
       console.error(e);

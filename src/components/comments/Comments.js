@@ -1,54 +1,16 @@
 import { Button, Empty, Form, Input } from "antd";
 import React, { useEffect, useState } from "react";
-import { useRecoilValue, useSetRecoilState } from "recoil";
-import loadingState from "../../atoms/loadingState";
-import userState from "../../atoms/userState";
-import { supabase } from "../../config/supabase";
+import useComments from "../../hooks/useComments";
 import "./index.css";
 import UserCommentCard from "./UserCommentCard";
 
 export default function Comments({ setShowComments, post }) {
-  const currentUser = useRecoilValue(userState);
-  const setLoading = useSetRecoilState(loadingState);
   const [comments, setComments] = useState([]);
   const [form] = Form.useForm();
-
-  const fetchComments = async () => {
-    try {
-      setLoading((prev) => prev + 1);
-      const { data, error } = await supabase
-        .from("Comments")
-        .select(`*, user:userId (id, name, image)`)
-        .eq("postId", post?.id)
-        .order("created_at", { ascending: false });
-      setComments(data);
-    } catch (e) {
-      console.log(e);
-    } finally {
-      setLoading((prev) => prev - 1);
-    }
-  };
-  const handleAddComment = async (values) => {
-    try {
-      setLoading((prev) => prev + 1);
-      if (!values?.commentInput?.trim()) return;
-
-      const { data, error } = await supabase
-        .from("Comments")
-        .insert({
-          userId: currentUser?.id,
-          postId: post?.id,
-          comment: values?.commentInput,
-        })
-        .eq("postId", post?.id);
-      form.resetFields();
-      fetchComments();
-    } catch (e) {
-      console.log(e);
-    } finally {
-      setLoading((prev) => prev - 1);
-    }
-  };
+  const { fetchComments, handleAddComment } = useComments({
+    postId: post?.id,
+    setComments,
+  });
   useEffect(() => {
     fetchComments();
   }, []);
@@ -72,7 +34,12 @@ export default function Comments({ setShowComments, post }) {
         <Form
           className="comment-form"
           name="commentForm"
-          onFinish={handleAddComment}
+          onFinish={(values) =>
+            handleAddComment({
+              comment: values?.commentInput,
+              form,
+            })
+          }
           onFinishFailed={(e) => console.log(e)}
           autoComplete="off"
           form={form}
