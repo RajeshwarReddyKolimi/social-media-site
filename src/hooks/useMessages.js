@@ -53,6 +53,39 @@ export default function useMessages({ chatId, setError }) {
     }
   };
 
+  const fetchChatId = async (receiverId) => {
+    try {
+      setLoading((prev) => prev + 1);
+      if (currentUser?.id == receiverId) return;
+      const { data, error } = await supabase
+        .from("Chats")
+        .select(
+          `*,
+        user1:user1Id (id, name, image),
+        user2:user2Id (id, name, image)`
+        )
+        .or(`user1Id.eq.${currentUser?.id}, user2Id.eq.${currentUser?.id}`)
+        .or(`user1Id.eq.${receiverId}, user2Id.eq.${receiverId}`)
+        .maybeSingle();
+      if (data) return data?.id;
+      else {
+        const { data, error } = await supabase
+          .from("Chats")
+          .upsert({
+            user1Id: currentUser?.id,
+            user2Id: receiverId,
+          })
+          .select()
+          .single();
+        if (data) return data?.id;
+      }
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setLoading((prev) => prev - 1);
+    }
+  };
+
   const fetchMessages = async ({ setMessages }) => {
     try {
       setLoading((prev) => prev + 1);
@@ -99,5 +132,11 @@ export default function useMessages({ chatId, setError }) {
       setLoading((prev) => prev - 1);
     }
   };
-  return { fetchChats, fetchReceiver, fetchMessages, handleSendMessage };
+  return {
+    fetchChats,
+    fetchReceiver,
+    fetchChatId,
+    fetchMessages,
+    handleSendMessage,
+  };
 }

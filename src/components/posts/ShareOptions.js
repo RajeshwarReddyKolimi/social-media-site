@@ -4,7 +4,7 @@ import followersState from "../../atoms/followers";
 import followingsState from "../../atoms/followings";
 import UserSharePostCard from "../users/UserSharePostCard";
 
-export default function ShareOptions({ handleSharePost, setShowShareOptions }) {
+export default function ShareOptions({ postId, setShowShareOptions }) {
   const [followings, setShowFollowings] = useRecoilState(followingsState);
   return (
     <section
@@ -21,7 +21,8 @@ export default function ShareOptions({ handleSharePost, setShowShareOptions }) {
             <UserSharePostCard
               key={id}
               user={following}
-              handleSharePost={handleSharePost}
+              postId={postId}
+              setShowShareOptions={setShowShareOptions}
             />
           ))}
         </div>

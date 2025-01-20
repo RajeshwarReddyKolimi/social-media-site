@@ -4,12 +4,15 @@ import followingsState from "../atoms/followings";
 import loadingState from "../atoms/loadingState";
 import userState from "../atoms/userState";
 import { supabase } from "../config/supabase";
+import useMessages from "./useMessages";
 
 export default function usePost() {
   const setLoading = useSetRecoilState(loadingState);
   const followings = useRecoilValue(followingsState);
+  const { fetchChatId } = useMessages({});
   const [currentUser, setCurrentUser] = useRecoilState(userState);
   const navigate = useNavigate();
+
   const handleUploadImage = async (image) => {
     try {
       setLoading((prev) => prev + 1);
@@ -131,5 +134,25 @@ export default function usePost() {
       setLoading((prev) => prev - 1);
     }
   }
-  return { fetchAllPosts, createPost, deletePost, fetchPost };
+
+  const handleSharePost = async ({
+    receiverId,
+    postId,
+    setShowShareOptions,
+  }) => {
+    try {
+      const chatId = await fetchChatId(receiverId);
+      const { data, error } = await supabase.from("Messages").insert({
+        sender: currentUser?.id,
+        receiver: receiverId,
+        postId,
+        chatId,
+      });
+      setShowShareOptions(false);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  return { fetchAllPosts, createPost, deletePost, fetchPost, handleSharePost };
 }
