@@ -53,10 +53,33 @@ export default function useMessages({ chatId, setError }) {
     }
   };
 
-  const fetchChatId = async (receiverId) => {
+  const createNewChat = async (userId) => {
     try {
       setLoading((prev) => prev + 1);
-      if (currentUser?.id == receiverId) return;
+      const [user1Id, user2Id] =
+        currentUser?.id?.localeCompare(userId) < 0
+          ? [currentUser?.id, userId]
+          : [userId, currentUser?.id];
+      const { data, error } = await supabase
+        .from("Chats")
+        .upsert({
+          user1Id,
+          user2Id,
+        })
+        .select()
+        .single();
+      return data;
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setLoading((prev) => prev - 1);
+    }
+  };
+
+  const fetchChatId = async (userId) => {
+    try {
+      setLoading((prev) => prev + 1);
+      if (currentUser?.id == userId) return;
       const { data, error } = await supabase
         .from("Chats")
         .select(
@@ -65,18 +88,11 @@ export default function useMessages({ chatId, setError }) {
         user2:user2Id (id, name, image)`
         )
         .or(`user1Id.eq.${currentUser?.id}, user2Id.eq.${currentUser?.id}`)
-        .or(`user1Id.eq.${receiverId}, user2Id.eq.${receiverId}`)
+        .or(`user1Id.eq.${userId}, user2Id.eq.${userId}`)
         .maybeSingle();
       if (data) return data?.id;
       else {
-        const { data, error } = await supabase
-          .from("Chats")
-          .upsert({
-            user1Id: currentUser?.id,
-            user2Id: receiverId,
-          })
-          .select()
-          .single();
+        const data = await createNewChat(userId);
         if (data) return data?.id;
       }
     } catch (e) {

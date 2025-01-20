@@ -1,36 +1,21 @@
 import { Button, Form, Input } from "antd";
 import React from "react";
-import { supabase } from "../../config/supabase";
-import { useRecoilState, useSetRecoilState } from "recoil";
-import userState from "../../atoms/userState";
 import { MdClose } from "react-icons/md";
-import loadingState from "../../atoms/loadingState";
+import { useRecoilValue } from "recoil";
+import userState from "../../atoms/userState";
+import useAuth from "../../hooks/useAuth";
 
 export default function EditUsername({ setShowEditUsername }) {
-  const [currentUser, setCurrentUser] = useRecoilState(userState);
-  const setLoading = useSetRecoilState(loadingState);
-  const handleChangeUsername = async (values) => {
-    try {
-      setLoading((prev) => prev + 1);
-      if (!values?.username?.trim()) return;
-      const { data, error } = await supabase
-        .from("Users")
-        .update({ name: values?.username?.trim() })
-        .eq("id", currentUser?.id)
-        .select();
-      if (error) return;
-      setCurrentUser((prev) => {
-        return { ...prev, name: data?.[0]?.name };
-      });
-      setShowEditUsername(false);
-    } catch (e) {
-      console.log(e);
-    } finally {
-      setLoading((prev) => prev - 1);
-    }
-  };
+  const currentUser = useRecoilValue(userState);
+  const { handleChangeUsername } = useAuth();
   return (
-    <Form onFinish={handleChangeUsername} className="edit-username-form">
+    <Form
+      onFinish={(values) => {
+        handleChangeUsername(values);
+        setShowEditUsername(false);
+      }}
+      className="edit-username-form"
+    >
       <Form.Item name="username">
         <Input defaultValue={currentUser?.name} autoFocus />
       </Form.Item>

@@ -158,6 +158,56 @@ export default function useAuth() {
       setLoading((prev) => prev - 1);
     }
   };
+  const handleChangeUsername = async (values) => {
+    try {
+      setLoading((prev) => prev + 1);
+      if (!values?.username?.trim()) return;
+      const { data, error } = await supabase
+        .from("Users")
+        .update({ name: values?.username?.trim() })
+        .eq("id", currentUser?.id)
+        .select()
+        .maybeSingle();
+      if (error) return;
+      setCurrentUser((prev) => {
+        return { ...prev, name: data?.name };
+      });
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setLoading((prev) => prev - 1);
+    }
+  };
+  const handleChangeDp = async (values) => {
+    try {
+      setLoading((prev) => prev + 1);
+      const image = values?.file;
+      const imageName = Date.now() + image?.name;
+      const r1 = await supabase.storage
+        .from("profileImages")
+        .upload(imageName, image?.originFileObj);
+      if (r1.error) return;
+      const { data, error } = await supabase.storage
+        .from("profileImages")
+        .getPublicUrl(imageName);
+      if (error) return;
+      else {
+        const res = await supabase
+          .from("Users")
+          .update({ image: data?.publicUrl })
+          .eq("id", currentUser?.id)
+          .select()
+          .maybeSingle();
+        setCurrentUser((prev) => {
+          return { ...prev, image: res?.data?.image };
+        });
+      }
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setLoading((prev) => prev - 1);
+    }
+  };
   async function logout() {
     try {
       setLoading((prev) => prev + 1);
@@ -179,5 +229,7 @@ export default function useAuth() {
     handleInitiateChangePassword,
     handleChangePassword,
     handleChangePrivacy,
+    handleChangeUsername,
+    handleChangeDp,
   };
 }

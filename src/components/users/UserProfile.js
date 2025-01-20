@@ -15,6 +15,7 @@ import "./../profile/index.css";
 import UserFollowers from "./UserFollowers";
 import UserFollowings from "./UserFollowings";
 import UserPosts from "./UserPosts";
+import useMessages from "../../hooks/useMessages";
 
 export default function UserProfile() {
   const { handleFollow, handleUnfollow } = useFollows();
@@ -23,7 +24,7 @@ export default function UserProfile() {
   const [user, setUser] = useState();
   const { id } = useParams();
   const [currentUser, setCurrentUser] = useRecoilState(userState);
-  const { fetchUserDetails } = useAuth();
+  const { fetchUserDetails, handleChangeDp } = useAuth();
   const [showItem, setShowItem] = useState("posts");
   const [isFollowing, setIsFollowing] = useState(false);
   const [isMe, setIsMe] = useState(false);
@@ -31,74 +32,11 @@ export default function UserProfile() {
   const [fileList, setFileList] = useState([]);
   const navigate = useNavigate();
   const [error, setError] = useState();
+  const { fetchChatId } = useMessages({});
 
-  const handleChangeDp = async (values) => {
-    try {
-      setLoading((prev) => prev + 1);
-      const image = values?.file;
-      const imageName = Date.now() + image?.name;
-      const r1 = await supabase.storage
-        .from("profileImages")
-        .upload(imageName, image?.originFileObj);
-      if (r1.error) return;
-      const { data, error } = await supabase.storage
-        .from("profileImages")
-        .getPublicUrl(imageName);
-      if (error) return;
-      else {
-        const res = await supabase
-          .from("Users")
-          .update({ image: data?.publicUrl })
-          .eq("id", currentUser?.id)
-          .select()
-          .maybeSingle();
-        setCurrentUser((prev) => {
-          return { ...prev, image: res?.data?.image };
-        });
-      }
-    } catch (e) {
-      console.log(e);
-    } finally {
-      setLoading((prev) => prev - 1);
-    }
-  };
-
-  const fetchChatId = async () => {
-    try {
-      setLoading((prev) => prev + 1);
-      if (currentUser?.id == user?.id) return;
-      const { data, error } = await supabase
-        .from("Chats")
-        .select(
-          `*,
-        user1:user1Id (id, name, image),
-        user2:user2Id (id, name, image)`
-        )
-        .or(`user1Id.eq.${currentUser?.id}, user2Id.eq.${currentUser?.id}`)
-        .or(`user1Id.eq.${user?.id}, user2Id.eq.${user?.id}`)
-        .maybeSingle();
-      if (data) navigate(`/chat/${data?.id}`);
-      else {
-        const [user1Id, user2Id] =
-          currentUser?.id?.localeCompare(user?.id) < 0
-            ? [currentUser?.id, user?.id]
-            : [user?.id, currentUser?.id];
-        const { data, error } = await supabase
-          .from("Chats")
-          .upsert({
-            user1Id,
-            user2Id,
-          })
-          .select()
-          .single();
-        if (data) navigate(`/chat/${data?.id}`);
-        return;
-      }
-    } catch (e) {
-      console.log(e);
-    } finally {
-      setLoading((prev) => prev - 1);
-    }
+  const navigateToChat = async () => {
+    const chatId = await fetchChatId(user?.id);
+    navigate(`/chat/${chatId}`);
   };
 
   const fetchUser = async () => {
@@ -181,7 +119,7 @@ export default function UserProfile() {
       {!isMe && (!user?.isPrivate || isFollowing) && (
         <Button
           type="text"
-          onClick={fetchChatId}
+          onClick={navigateToChat}
           className="profile-message-button"
         >
           Message
