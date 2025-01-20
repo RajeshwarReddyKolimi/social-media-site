@@ -10,7 +10,7 @@ import "./index.css";
 
 export default function Signin({ setShowItem }) {
   const { signin } = useAuth();
-  const { notify, contextHolder } = useNotify();
+  const notify = useNotify();
   const handleSignin = async (values) => {
     try {
       const { email, password } = values;
@@ -37,7 +37,11 @@ export default function Signin({ setShowItem }) {
           message: "Signin Error",
           description: error?.code ?? "Invalid credentials",
         });
-        return;
+      } else {
+        notify({
+          type: "success",
+          message: "Signin Success",
+        });
       }
     } catch (e) {
       console.log(e);
@@ -47,7 +51,6 @@ export default function Signin({ setShowItem }) {
   return (
     <main className="signin-page">
       <div className="signin-form">
-        {contextHolder}
         <Logo />
         <Form
           className="form"

@@ -15,7 +15,7 @@ export default function MoreItems() {
   const currentUser = useRecoilValue(userState);
   const theme = useRecoilValue(themeState);
   const { logout, handleInitiateChangePassword } = useAuth();
-  const { notify, contextHolder } = useNotify();
+  const notify = useNotify();
 
   const initiateChangePassword = async (email) => {
     const { data, error } = await handleInitiateChangePassword(email);
@@ -76,7 +76,6 @@ export default function MoreItems() {
         defaultOpenKeys={["sub1"]}
         items={moreItems}
       />
-      {contextHolder}
     </nav>
   );
 }

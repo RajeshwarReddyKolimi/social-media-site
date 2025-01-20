@@ -1,8 +1,8 @@
 import { useRecoilValue, useSetRecoilState } from "recoil";
+import loadingState from "../atoms/loadingState";
 import savedPostsState from "../atoms/savedPosts";
 import userState from "../atoms/userState";
 import { supabase } from "../config/supabase";
-import loadingState from "../atoms/loadingState";
 
 export default function useSavedPosts() {
   const setSavedPosts = useSetRecoilState(savedPostsState);
@@ -13,7 +13,7 @@ export default function useSavedPosts() {
       setLoading((prev) => prev + 1);
       if (!user?.id) return;
       const { data, error } = await supabase
-        .from("SavedPosts")
+        .from("Saves")
         .select(
           `*,
             Post:postId (
@@ -21,7 +21,7 @@ export default function useSavedPosts() {
               id,
               caption,
               image,
-              likes:LikedPosts!postId(postId)
+              likes:Likes!postId(postId)
             )
           `
         )
@@ -40,7 +40,7 @@ export default function useSavedPosts() {
 
       if (!user?.id) return;
       const { data, error } = await supabase
-        .from("SavedPosts")
+        .from("Saves")
         .insert({ postId, userId: user?.id })
         .select(
           `*,
@@ -49,7 +49,7 @@ export default function useSavedPosts() {
               id,
               caption,
               image,
-              likes:LikedPosts!postId(postId)
+              likes:Likes!postId(postId)
             )
           `
         )
@@ -67,7 +67,7 @@ export default function useSavedPosts() {
       setLoading((prev) => prev + 1);
       if (!user?.id) return;
       const { data, error } = await supabase
-        .from("SavedPosts")
+        .from("Saves")
         .delete()
         .eq("postId", postId)
         .eq("userId", user?.id)

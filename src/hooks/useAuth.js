@@ -63,12 +63,14 @@ export default function useAuth() {
         const detailsAdded = await putUserDetails({
           id: signupData?.user?.id,
           name: values?.name,
-          image: "",
+          image:
+            "https://epiefagdengdqjzqxtbz.supabase.co/storage/v1/object/public/profileImages/user.png",
           email: values?.email,
         });
         if (detailsAdded?.error) return { error: detailsAdded?.error };
         const response = await fetchUserDetails(signupData?.user?.id);
         setCurrentUser(response?.data);
+        return { data: signupData };
       }
     } catch (e) {
       console.error(e);
@@ -85,6 +87,7 @@ export default function useAuth() {
       if (signinData?.user) {
         const response = await fetchUserDetails(signinData?.user?.id);
         setCurrentUser(response?.data);
+        return { data: signinData };
       } else {
         return { error: signinError };
       }

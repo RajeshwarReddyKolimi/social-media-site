@@ -1,11 +1,9 @@
+import { useNavigate } from "react-router";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import followingsState from "../atoms/followings";
 import loadingState from "../atoms/loadingState";
 import userState from "../atoms/userState";
 import { supabase } from "../config/supabase";
-import followersState from "../atoms/followers";
-import followingsState from "../atoms/followings";
-import { GiConsoleController } from "react-icons/gi";
-import { useNavigate } from "react-router";
 
 export default function usePost() {
   const setLoading = useSetRecoilState(loadingState);
@@ -73,7 +71,7 @@ export default function usePost() {
             name,
             image
           ),
-          likes:LikedPosts!postId(postId)`
+          likes:Likes!postId(postId)`
         )
         .in("userId", followerIds)
         .order("created_at", { ascending: false });
@@ -91,9 +89,7 @@ export default function usePost() {
       if (!currentUser?.id) return;
       const { data, error } = await supabase
         .from("Posts")
-        .select(
-          `*, user:userId(id, name, image), likes:LikedPosts!postId(postId)`
-        )
+        .select(`*, user:userId(id, name, image), likes:Likes!postId(postId)`)
         .eq("id", id)
         .maybeSingle();
       if (!data) {

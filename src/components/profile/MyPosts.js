@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
-import PostCard from "../posts/PostCard";
-import { supabase } from "../../config/supabase";
-import { useRecoilValue, useSetRecoilState } from "recoil";
-import userState from "../../atoms/userState";
-import loadingState from "../../atoms/loadingState";
 import { Empty } from "antd";
+import React, { useEffect, useState } from "react";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import loadingState from "../../atoms/loadingState";
+import userState from "../../atoms/userState";
+import { supabase } from "../../config/supabase";
+import PostCard from "../posts/PostCard";
 
 export default function MyPosts() {
   const [myPosts, setMyPosts] = useState();
@@ -18,7 +18,7 @@ export default function MyPosts() {
         .select(
           `*,
           user:userId (id, name, image),
-          likes:LikedPosts!postId(postId)`
+          likes:Likes!postId(postId)`
         )
         .eq("userId", user?.id)
         .order("created_at", { ascending: false });

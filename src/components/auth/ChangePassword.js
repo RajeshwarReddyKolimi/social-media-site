@@ -8,7 +8,7 @@ import "./index.css";
 export default function ChangePassword() {
   const { handleChangePassword } = useAuth();
   const navigate = useNavigate();
-  const { notify, contextHolder } = useNotify();
+  const notify = useNotify();
   const changePassword = async (values) => {
     const { data, error } = await handleChangePassword(values);
     if (!error) {
@@ -17,9 +17,7 @@ export default function ChangePassword() {
         message: "Password Change Success",
         description: "Password successfully changed",
       });
-      setTimeout(() => {
-        navigate("/", { replace: true });
-      }, 3000);
+      navigate("/", { replace: true });
     } else
       notify({
         type: "error",
@@ -29,7 +27,6 @@ export default function ChangePassword() {
   };
   return (
     <main className="signin-page">
-      {contextHolder}
       <div className="change-password signin-form">
         <h1>Change password</h1>
         <Form

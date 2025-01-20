@@ -9,7 +9,7 @@ import "./index.css";
 
 export default function Signup({ setShowItem }) {
   const { signup } = useAuth();
-  const { notify, contextHolder } = useNotify();
+  const notify = useNotify();
 
   const handleSignup = async (values) => {
     try {
@@ -31,13 +31,18 @@ export default function Signup({ setShowItem }) {
         return;
       }
       const { data, error } = await signup(values);
+      console.log(data, error);
       if (error) {
         notify({
           type: "error",
           message: "Signup Error",
-          description: error?.code ?? "Invalid credentials",
+          description: error?.message ?? "Invalid credentials",
         });
-        return;
+      } else {
+        notify({
+          type: "success",
+          message: "Signup Success",
+        });
       }
     } catch (e) {
       console.log(e);
@@ -47,7 +52,6 @@ export default function Signup({ setShowItem }) {
   return (
     <main className="signin-page">
       <div className="signin-form">
-        {contextHolder}
         <Logo />
         <Form
           className="form"

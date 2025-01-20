@@ -1,8 +1,8 @@
-import { notification } from "antd";
-import React from "react";
+import { useRecoilValue } from "recoil";
+import notifyState from "../atoms/notifyApi";
 
 export default function useNotify() {
-  const [notifyApi, contextHolder] = notification.useNotification();
+  const notifyApi = useRecoilValue(notifyState);
   const notify = ({ type, message, description }) => {
     notifyApi.open({
       type,
@@ -13,5 +13,5 @@ export default function useNotify() {
     });
   };
 
-  return { notify, contextHolder };
+  return notify;
 }

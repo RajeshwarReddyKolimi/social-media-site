@@ -13,7 +13,7 @@ export default function useLikedPosts() {
       setLoading((prev) => prev + 1);
       if (!user?.id) return;
       const { data, error } = await supabase
-        .from("LikedPosts")
+        .from("Likes")
         .select(
           `*,
             Post:postId (
@@ -21,7 +21,7 @@ export default function useLikedPosts() {
               id,
               caption,
               image,
-              likes:LikedPosts!postId(postId)
+              likes:Likes!postId(postId)
             )
           `
         )
@@ -39,7 +39,7 @@ export default function useLikedPosts() {
       setLoading((prev) => prev + 1);
       if (!user?.id) return;
       const { data, error } = await supabase
-        .from("LikedPosts")
+        .from("Likes")
         .insert({ postId, userId: user?.id })
         .select(
           `*,
@@ -48,7 +48,7 @@ export default function useLikedPosts() {
               id,
               caption,
               image,
-              likes:LikedPosts!postId(postId)
+              likes:Likes!postId(postId)
             )
           `
         )
@@ -66,7 +66,7 @@ export default function useLikedPosts() {
       setLoading((prev) => prev + 1);
       if (!user?.id) return;
       const { data, error } = await supabase
-        .from("LikedPosts")
+        .from("Likes")
         .delete()
         .eq("postId", postId)
         .eq("userId", user?.id)

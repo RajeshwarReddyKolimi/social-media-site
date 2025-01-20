@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import PostCard from "../posts/PostCard";
-import { supabase } from "../../config/supabase";
 import { useSetRecoilState } from "recoil";
 import loadingState from "../../atoms/loadingState";
+import { supabase } from "../../config/supabase";
+import PostCard from "../posts/PostCard";
 
 export default function UserPosts({ user, isMe }) {
   const [userPosts, setUserPosts] = useState([]);
@@ -16,9 +16,10 @@ export default function UserPosts({ user, isMe }) {
         .select(
           `*,
           user:userId (id, name, image),
-          likes:LikedPosts!postId(postId)`
+          likes:Likes!postId(postId)`
         )
         .eq(`userId`, user?.id);
+      console.log(data, error);
       setUserPosts(data);
     } catch (e) {
       console.error(e);
@@ -29,6 +30,7 @@ export default function UserPosts({ user, isMe }) {
   useEffect(() => {
     fetchUserPosts();
   }, [user?.id]);
+
   return (
     <section className="posts">
       {userPosts?.map((post, id) => (

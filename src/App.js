@@ -1,8 +1,11 @@
+import { notification } from "antd";
 import { useEffect, useState } from "react";
 import { BrowserRouter, Route, Routes } from "react-router";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import "./App.css";
 import loadingState from "./atoms/loadingState";
+import notifyApiState from "./atoms/notifyApi";
+import themeState from "./atoms/themeState";
 import userState from "./atoms/userState";
 import ChangePassword from "./components/auth/ChangePassword";
 import ForgotPassword from "./components/auth/ForgotPassword";
@@ -14,6 +17,7 @@ import Layout from "./components/navbar/Layout";
 import NotFound from "./components/navbar/NotFound";
 import CreatePost from "./components/posts/CreatePost";
 import PostPage from "./components/posts/PostPage";
+import Posts from "./components/posts/Posts";
 import LikedPosts from "./components/profile/LikedPosts";
 import SavedPosts from "./components/profile/SavedPosts";
 import UserProfile from "./components/users/UserProfile";
@@ -21,10 +25,7 @@ import useAuth from "./hooks/useAuth";
 import useFollows from "./hooks/useFollows";
 import useLikedPosts from "./hooks/useLikedPosts";
 import useSavedPosts from "./hooks/useSavedPosts";
-import Home from "./pages/home/Home";
 import Loader from "./utils/loader/Loader";
-import themeState from "./atoms/themeState";
-import Posts from "./components/posts/Posts";
 
 function App() {
   const currentUser = useRecoilValue(userState);
@@ -35,6 +36,8 @@ function App() {
   const { fetchFollowings, fetchFollowers } = useFollows();
   const { getCurrentUser } = useAuth();
   const [userLoading, setUserLoading] = useState(true);
+  const [notifyApi, contextHolder] = notification.useNotification();
+  const setNotifyApi = useSetRecoilState(notifyApiState);
 
   useEffect(() => {
     if (theme === "dark") document?.body?.classList?.remove("light-theme");
@@ -54,11 +57,14 @@ function App() {
 
   useEffect(() => {
     setTheme(localStorage?.getItem("theme") || "dark");
+    setNotifyApi(notifyApi);
   }, []);
+
   return (
     <BrowserRouter>
       {loading !== 0 && <Loader />}
       {userLoading && <Loader userLoading />}
+      {contextHolder}
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Posts />} />
