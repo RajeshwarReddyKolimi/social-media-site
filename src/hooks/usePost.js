@@ -85,30 +85,22 @@ export default function usePost() {
     }
   }
 
-  async function fetchPost({ id, setPost, setError }) {
+  async function fetchPost(postId) {
     try {
-      setLoading((prev) => prev + 1);
       if (!currentUser?.id) return;
       const { data, error } = await supabase
         .from("Posts")
         .select(`*, user:userId(id, name, image), likes:Likes!postId(postId)`)
-        .eq("id", id)
+        .eq("id", postId)
         .maybeSingle();
-      if (!data) {
-        setError("Invalid url");
-        return;
-      }
-      setPost(data);
+      return data;
     } catch (e) {
       console.error(e);
-    } finally {
-      setLoading((prev) => prev - 1);
     }
   }
 
   async function deletePost(postId) {
     try {
-      // setLoading((prev) => prev + 1);
       if (!currentUser?.id) return;
       const { data, error } = await supabase
         .from("Posts")
@@ -130,8 +122,6 @@ export default function usePost() {
       return postId;
     } catch (e) {
       console.error(e);
-    } finally {
-      // setLoading((prev) => prev - 1);
     }
   }
 
