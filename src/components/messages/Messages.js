@@ -9,30 +9,60 @@ import NotFound from "../navbar/NotFound";
 import UserSearchCard from "../users/UserSearchCard";
 import Message from "./Message";
 import MessagePost from "./MessagePost";
+import {
+  QueryClient,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "react-query";
+import Loader from "../../utils/loader/Loader";
 
 export default function Messages() {
   const currentUser = useRecoilValue(userState);
   const { id: chatId } = useParams();
-  const [messages, setMessages] = useState([]);
   const [error, setError] = useState();
   const [form] = Form.useForm();
   const messagesEndRef = useRef(null);
-  const [receiver, setReceiver] = useState();
+  const queryClient = useQueryClient();
   const { fetchMessages, fetchReceiver, handleSendMessage } = useMessages({
     chatId,
     setError,
   });
 
+  const {
+    data: messages,
+    error: messagesError,
+    isLoading,
+  } = useQuery({
+    queryKey: ["messages", currentUser?.id, chatId],
+    queryFn: fetchMessages,
+    staleTime: 1000 * 60 * 1,
+  });
+
+  const {
+    data: receiver,
+    error: receiverError,
+    isLoading: isReceiverLoading,
+  } = useQuery({
+    queryKey: ["receiver", currentUser?.id, chatId],
+    queryFn: fetchReceiver,
+    staleTime: 1000 * 60 * 1,
+  });
+
+  const sendMessageMutation = useMutation({
+    mutationFn: (values) =>
+      handleSendMessage({ message: values?.message, receiverId: receiver?.id }),
+    onSuccess: () => {
+      form.resetFields();
+    },
+    onError: (error) => {
+      console.log("Error sending message", error.message);
+    },
+  });
+
   useEffect(() => {
     messagesEndRef?.current?.scrollIntoView();
   }, [messages]);
-
-  useEffect(() => {
-    if (chatId) {
-      fetchReceiver({ setReceiver });
-      fetchMessages({ setMessages });
-    }
-  }, [chatId, currentUser]);
 
   useEffect(() => {
     const subscription = supabase
@@ -45,7 +75,15 @@ export default function Messages() {
             payload?.new?.receiver === currentUser?.id ||
             payload?.new?.sender === currentUser?.id
           ) {
-            setMessages((prev) => [...prev, payload?.new]);
+            queryClient.invalidateQueries([
+              "messages",
+              currentUser?.id,
+              chatId,
+            ]);
+            queryClient.setQueryData(
+              ["messages", currentUser?.id, chatId],
+              (prev) => [...prev, payload?.new]
+            );
             messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
           }
         }
@@ -61,6 +99,7 @@ export default function Messages() {
 
   return (
     <div className="messages-page">
+      {(isLoading || isReceiverLoading) && <Loader />}
       <div className="messages-container">
         <UserSearchCard user={receiver} />
         <div className="messages">
@@ -84,13 +123,7 @@ export default function Messages() {
         </div>
         <Form
           className="message-input-form"
-          onFinish={(values) =>
-            handleSendMessage({
-              message: values?.message,
-              receiverId: receiver?.id,
-              form,
-            })
-          }
+          onFinish={sendMessageMutation.mutate}
           form={form}
         >
           <Form.Item name="message">

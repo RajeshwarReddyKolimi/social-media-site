@@ -1,18 +1,17 @@
 import { Empty } from "antd";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
+import { useQuery } from "react-query";
 import { useRecoilValue } from "recoil";
 import userState from "../../atoms/userState";
 import { supabase } from "../../config/supabase";
 import useMessages from "../../hooks/useMessages";
+import Loader from "../../utils/loader/Loader";
 import UserChatCard from "../users/UserChatCard";
 import "./index.css";
-import { useQuery, useQueryClient } from "react-query";
-import Loader from "../../utils/loader/Loader";
 
 export default function Chats() {
   const { fetchChats } = useMessages({});
   const currentUser = useRecoilValue(userState);
-  const queryClient = useQueryClient();
 
   const {
     data: chats,

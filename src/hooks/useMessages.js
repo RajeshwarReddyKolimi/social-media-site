@@ -28,9 +28,8 @@ export default function useMessages({ chatId, setError }) {
     }
   };
 
-  const fetchReceiver = async ({ setReceiver }) => {
+  const fetchReceiver = async () => {
     try {
-      setLoading((prev) => prev + 1);
       const { data, error } = await supabase
         .from("Chats")
         .select(
@@ -42,11 +41,9 @@ export default function useMessages({ chatId, setError }) {
         .maybeSingle();
       if (currentUser?.id != data?.user1Id && currentUser?.id != data?.user2Id)
         setError("Invalid Url");
-      setReceiver(currentUser?.id == data?.user1Id ? data?.user2 : data?.user1);
+      return currentUser?.id == data?.user1Id ? data?.user2 : data?.user1;
     } catch (e) {
       console.log(e);
-    } finally {
-      setLoading((prev) => prev - 1);
     }
   };
 
@@ -99,9 +96,8 @@ export default function useMessages({ chatId, setError }) {
     }
   };
 
-  const fetchMessages = async ({ setMessages }) => {
+  const fetchMessages = async () => {
     try {
-      setLoading((prev) => prev + 1);
       const { data, error } = await supabase
         .from("Messages")
         .select(
@@ -114,18 +110,15 @@ export default function useMessages({ chatId, setError }) {
         .eq("chatId", chatId)
         .or(`sender.eq.${currentUser?.id}, receiver.eq.${currentUser?.id}`);
       if (error) setError("Invalid Url");
-      setMessages(data);
+      return data;
     } catch (e) {
       setError("Invalid Url");
       console.log(e);
-    } finally {
-      setLoading((prev) => prev - 1);
     }
   };
 
-  const handleSendMessage = async ({ message, receiverId, form }) => {
+  const handleSendMessage = async ({ message, receiverId }) => {
     try {
-      setLoading((prev) => prev + 1);
       if (!message?.trim()) return;
       if (!chatId) return;
       const { data, error } = await supabase.from("Messages").insert({
@@ -134,15 +127,9 @@ export default function useMessages({ chatId, setError }) {
         text: message?.trim(),
         chatId: chatId,
       });
-      if (error) {
-        console.log(error);
-      } else {
-        form.resetFields();
-      }
+      return data;
     } catch (e) {
       console.log(e);
-    } finally {
-      setLoading((prev) => prev - 1);
     }
   };
   return {
