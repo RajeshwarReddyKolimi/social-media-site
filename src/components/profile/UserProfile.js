@@ -1,26 +1,23 @@
-import { Button, Upload } from "antd";
+import { Button, Image, Upload } from "antd";
 import React, { useEffect, useState } from "react";
 import { MdEdit } from "react-icons/md";
 import { useNavigate, useParams } from "react-router";
-import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import followingsState from "../../atoms/followings";
-import loadingState from "../../atoms/loadingState";
 import userState from "../../atoms/userState";
-import { supabase } from "../../config/supabase";
 import useAuth from "../../hooks/useAuth";
 import useFollows from "../../hooks/useFollows";
+import useMessages from "../../hooks/useMessages";
 import NotFound from "../navbar/NotFound";
 import EditUsername from "../profile/EditUsername";
 import "./../profile/index.css";
-import UserFollowers from "./UserFollowers";
-import UserFollowings from "./UserFollowings";
-import UserPosts from "./UserPosts";
-import useMessages from "../../hooks/useMessages";
+import UserFollowers from "../users/UserFollowers";
+import UserFollowings from "../users/UserFollowings";
+import UserPosts from "../users/UserPosts";
 
 export default function UserProfile() {
   const { handleFollow, handleUnfollow } = useFollows();
   const followings = useRecoilValue(followingsState);
-  const setLoading = useSetRecoilState(loadingState);
   const [user, setUser] = useState();
   const { id } = useParams();
   const [currentUser, setCurrentUser] = useRecoilState(userState);
@@ -62,7 +59,7 @@ export default function UserProfile() {
     <main className="profile">
       <div className="profile-header">
         <div className="profile-dp">
-          <img src={user?.image} />
+          <Image src={user?.image} />
           {isMe && (
             <Upload
               className="profile-dp-edit"

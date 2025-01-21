@@ -43,13 +43,21 @@ export default function usePost() {
           image,
           caption: values?.caption,
         })
-        .select()
+        .select(
+          `*,
+          user:userId (
+            id,
+            name,
+            image
+          ),
+          likes:Likes!postId(postId)`
+        )
         .maybeSingle();
       setCurrentUser((prev) => {
         return { ...prev, posts: [...prev?.posts, data] };
       });
-
       if (!error) navigate("/");
+      return data;
     } catch (e) {
       console.log(e);
     } finally {
@@ -59,7 +67,6 @@ export default function usePost() {
 
   async function fetchAllPosts() {
     try {
-      setLoading((prev) => prev + 1);
       const followerIds = [
         ...(followings?.map((follow) => follow.following) || []),
         currentUser?.id,
@@ -81,8 +88,6 @@ export default function usePost() {
       return data;
     } catch (e) {
       console.error(e);
-    } finally {
-      setLoading((prev) => prev - 1);
     }
   }
 
@@ -107,9 +112,9 @@ export default function usePost() {
     }
   }
 
-  async function deletePost({ postId }) {
+  async function deletePost(postId) {
     try {
-      setLoading((prev) => prev + 1);
+      // setLoading((prev) => prev + 1);
       if (!currentUser?.id) return;
       const { data, error } = await supabase
         .from("Posts")
@@ -128,10 +133,11 @@ export default function usePost() {
         "/storage/v1/object/public/postImages/"
       )?.[1];
       const res = await supabase.storage.from("postImages").remove([imagePath]);
+      return postId;
     } catch (e) {
       console.error(e);
     } finally {
-      setLoading((prev) => prev - 1);
+      // setLoading((prev) => prev - 1);
     }
   }
 

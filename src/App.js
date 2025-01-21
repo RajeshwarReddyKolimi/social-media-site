@@ -20,16 +20,21 @@ import PostPage from "./components/posts/PostPage";
 import Posts from "./components/posts/Posts";
 import LikedPosts from "./components/profile/LikedPosts";
 import SavedPosts from "./components/profile/SavedPosts";
-import UserProfile from "./components/users/UserProfile";
 import useAuth from "./hooks/useAuth";
 import useFollows from "./hooks/useFollows";
 import useLikedPosts from "./hooks/useLikedPosts";
 import useSavedPosts from "./hooks/useSavedPosts";
 import Loader from "./utils/loader/Loader";
+import UserProfile from "./components/profile/UserProfile";
+import likedPostsState from "./atoms/likedPosts";
+import { useQuery } from "react-query";
+import savedPostsState from "./atoms/savedPosts";
 
 function App() {
   const currentUser = useRecoilValue(userState);
   const loading = useRecoilValue(loadingState);
+  const setLikedPosts = useSetRecoilState(likedPostsState);
+  const setSavedPosts = useSetRecoilState(savedPostsState);
   const [theme, setTheme] = useRecoilState(themeState);
   const { fetchSavedPosts } = useSavedPosts();
   const { fetchLikedPosts } = useLikedPosts();
@@ -38,6 +43,32 @@ function App() {
   const [userLoading, setUserLoading] = useState(true);
   const [notifyApi, contextHolder] = notification.useNotification();
   const setNotifyApi = useSetRecoilState(notifyApiState);
+
+  const {
+    data: likedPosts,
+    error: likedPostsError,
+    isLoading: isLikedPostsLoading,
+  } = useQuery({
+    queryKey: ["likedPosts", currentUser?.id],
+    queryFn: fetchLikedPosts,
+    staleTime: 1000 * 60,
+    onSuccess: (data) => {
+      setLikedPosts(data);
+    },
+  });
+
+  const {
+    data: savedPosts,
+    error: savedPostsError,
+    isLoading: isSavedPostsLoading,
+  } = useQuery({
+    queryKey: ["savedPosts", currentUser?.id],
+    queryFn: fetchSavedPosts,
+    staleTime: 1000 * 60,
+    onSuccess: (data) => {
+      setSavedPosts(data);
+    },
+  });
 
   useEffect(() => {
     if (theme === "dark") document?.body?.classList?.remove("light-theme");
@@ -62,7 +93,9 @@ function App() {
 
   return (
     <BrowserRouter>
-      {loading !== 0 && <Loader />}
+      {loading !== 0 ||
+        isLikedPostsLoading ||
+        (isSavedPostsLoading && <Loader />)}
       {userLoading && <Loader userLoading />}
       {contextHolder}
       <Routes>

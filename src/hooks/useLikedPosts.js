@@ -10,7 +10,6 @@ export default function useLikedPosts() {
   const setLoading = useSetRecoilState(loadingState);
   const fetchLikedPosts = async () => {
     try {
-      setLoading((prev) => prev + 1);
       if (!user?.id) return;
       const { data, error } = await supabase
         .from("Likes")
@@ -26,17 +25,14 @@ export default function useLikedPosts() {
           `
         )
         .order("created_at", { ascending: false });
-      setLikedPosts(data);
+      return data;
     } catch (e) {
       console.log(e);
-    } finally {
-      setLoading((prev) => prev - 1);
     }
   };
 
-  const addToLikedPosts = async ({ postId }) => {
+  const addToLikedPosts = async (postId) => {
     try {
-      setLoading((prev) => prev + 1);
       if (!user?.id) return;
       const { data, error } = await supabase
         .from("Likes")
@@ -56,14 +52,11 @@ export default function useLikedPosts() {
       setLikedPosts((prev) => [data, ...prev]);
     } catch (e) {
       console.log(e);
-    } finally {
-      setLoading((prev) => prev - 1);
     }
   };
 
-  const removeFromLikedPosts = async ({ postId }) => {
+  const removeFromLikedPosts = async (postId) => {
     try {
-      setLoading((prev) => prev + 1);
       if (!user?.id) return;
       const { data, error } = await supabase
         .from("Likes")
@@ -71,11 +64,9 @@ export default function useLikedPosts() {
         .eq("postId", postId)
         .eq("userId", user?.id)
         .select();
-      setLikedPosts((prev) => prev?.filter((post) => post?.postId !== postId));
+      return postId;
     } catch (e) {
       console.log(e);
-    } finally {
-      setLoading((prev) => prev - 1);
     }
   };
 

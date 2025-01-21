@@ -2,17 +2,35 @@ import { UploadOutlined } from "@ant-design/icons";
 import { Button, Form, Input, Upload } from "antd";
 import React, { useState } from "react";
 import usePost from "../../hooks/usePost";
+import { useMutation, useQueryClient } from "react-query";
 
 export default function CreatePost() {
   const [fileList, setFileList] = useState([]);
   const { createPost } = usePost();
+  const queryClient = useQueryClient();
+
+  const createPostMutation = useMutation({
+    mutationFn: createPost,
+    onSuccess: (post) => {
+      console.log(post);
+      queryClient.invalidateQueries(["userPosts", post?.userId]);
+      queryClient.setQueryData(["userPosts", post?.userId], (prev) => {
+        console.log(prev);
+        return [post, ...prev];
+      });
+    },
+    onError: (error) => {
+      console.error("Error deleting post:", error.message);
+    },
+  });
+
   return (
     <div className="create-post-page">
       <h1>Create new post</h1>
       <Form
         className="create-post-form"
         layout="horizontal"
-        onFinish={createPost}
+        onFinish={createPostMutation.mutate}
         onFinishFailed={(e) => console.log("Form submission failed:", e)}
       >
         <Form.Item

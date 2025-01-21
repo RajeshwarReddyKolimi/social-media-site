@@ -10,7 +10,6 @@ export default function useSavedPosts() {
   const user = useRecoilValue(userState);
   const fetchSavedPosts = async () => {
     try {
-      setLoading((prev) => prev + 1);
       if (!user?.id) return;
       const { data, error } = await supabase
         .from("Saves")
@@ -26,18 +25,14 @@ export default function useSavedPosts() {
           `
         )
         .order("created_at", { ascending: false });
-      setSavedPosts(data);
+      return data;
     } catch (e) {
       console.log(e);
-    } finally {
-      setLoading((prev) => prev - 1);
     }
   };
 
-  const addToSavedPosts = async ({ postId }) => {
+  const addToSavedPosts = async (postId) => {
     try {
-      setLoading((prev) => prev + 1);
-
       if (!user?.id) return;
       const { data, error } = await supabase
         .from("Saves")
@@ -54,17 +49,14 @@ export default function useSavedPosts() {
           `
         )
         .maybeSingle();
-      setSavedPosts((prev) => [data, ...prev]);
+      return data;
     } catch (e) {
       console.log(e);
-    } finally {
-      setLoading((prev) => prev - 1);
     }
   };
 
-  const removeFromSavedPosts = async ({ postId }) => {
+  const removeFromSavedPosts = async (postId) => {
     try {
-      setLoading((prev) => prev + 1);
       if (!user?.id) return;
       const { data, error } = await supabase
         .from("Saves")
@@ -72,11 +64,9 @@ export default function useSavedPosts() {
         .eq("postId", postId)
         .eq("userId", user?.id)
         .select();
-      setSavedPosts((prev) => prev?.filter((post) => post?.postId !== postId));
+      return postId;
     } catch (e) {
       console.log(e);
-    } finally {
-      setLoading((prev) => prev - 1);
     }
   };
 

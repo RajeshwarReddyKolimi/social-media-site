@@ -1,32 +1,37 @@
-import React, { useEffect, useState } from "react";
+import { Empty } from "antd";
+import React from "react";
+import { useQuery } from "react-query";
+import { useRecoilValue } from "recoil";
+import userState from "../../atoms/userState";
+import usePost from "../../hooks/usePost";
 import PostCard from "./PostCard";
 import "./index.css";
-import usePost from "../../hooks/usePost";
-import { useRecoilValue, useSetRecoilState } from "recoil";
-import userState from "../../atoms/userState";
-import loadingState from "../../atoms/loadingState";
-import { Empty } from "antd";
+import Loader from "../../utils/loader/Loader";
 export default function Posts() {
-  const [posts, setPosts] = useState([]);
-  const setLoading = useSetRecoilState(loadingState);
   const user = useRecoilValue(userState);
-  const { fetchAllPosts, createAPost } = usePost();
+  const { fetchAllPosts } = usePost();
   async function fetchPosts() {
     try {
-      setLoading((prev) => prev + 1);
-      const response = await fetchAllPosts();
-      setPosts(response);
+      const data = await fetchAllPosts();
+      return data;
     } catch (e) {
       console.log(e);
-    } finally {
-      setLoading((prev) => prev - 1);
     }
   }
-  useEffect(() => {
-    fetchPosts();
-  }, [user]);
+
+  const {
+    data: posts,
+    error,
+    isLoading,
+  } = useQuery({
+    queryKey: ["homePosts", user?.id],
+    queryFn: fetchPosts,
+    staleTime: 1000 * 60,
+  });
+
   return (
     <main className="posts">
+      {isLoading && <Loader />}
       {posts?.map((post, id) => (
         <PostCard post={post} key={id} />
       ))}

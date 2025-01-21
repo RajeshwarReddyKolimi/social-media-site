@@ -1,15 +1,12 @@
-import React, { useEffect, useState } from "react";
-import { useSetRecoilState } from "recoil";
-import loadingState from "../../atoms/loadingState";
+import React from "react";
+import { useQuery } from "react-query";
 import { supabase } from "../../config/supabase";
+import Loader from "../../utils/loader/Loader";
 import PostCard from "../posts/PostCard";
 
 export default function UserPosts({ user, isMe }) {
-  const [userPosts, setUserPosts] = useState([]);
-  const setLoading = useSetRecoilState(loadingState);
-  async function fetchUserPosts() {
+  const fetchUserPosts = async () => {
     try {
-      setLoading((prev) => prev + 1);
       if (!user?.id) return;
       const { data, error } = await supabase
         .from("Posts")
@@ -19,26 +16,27 @@ export default function UserPosts({ user, isMe }) {
           likes:Likes!postId(postId)`
         )
         .eq(`userId`, user?.id);
-      setUserPosts(data);
+      return data;
     } catch (e) {
       console.error(e);
-    } finally {
-      setLoading((prev) => prev - 1);
     }
-  }
-  useEffect(() => {
-    fetchUserPosts();
-  }, [user?.id]);
+  };
+
+  const {
+    data: userPosts,
+    error,
+    isLoading,
+  } = useQuery({
+    queryKey: ["userPosts", user?.id],
+    queryFn: fetchUserPosts,
+    staleTime: 1000 * 60,
+  });
 
   return (
     <section className="posts">
+      {isLoading && <Loader />}
       {userPosts?.map((post, id) => (
-        <PostCard
-          key={id}
-          post={post}
-          isMe={isMe}
-          setUserPosts={setUserPosts}
-        />
+        <PostCard key={id} post={post} isMe={isMe} setUserPosts={() => {}} />
       ))}
     </section>
   );
