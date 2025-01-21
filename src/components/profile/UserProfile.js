@@ -14,7 +14,7 @@ import "./../profile/index.css";
 import UserFollowers from "../users/UserFollowers";
 import UserFollowings from "../users/UserFollowings";
 import UserPosts from "../users/UserPosts";
-import { useMutation, useQueryClient } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import Loader from "../../utils/loader/Loader";
 
 export default function UserProfile() {
@@ -33,11 +33,20 @@ export default function UserProfile() {
   const [error, setError] = useState();
   const { fetchChatId } = useMessages({});
   const queryClient = useQueryClient();
+  const [shouldGetChatId, setShouldGetChatId] = useState(false);
 
-  const navigateToChat = async () => {
-    const chatId = await fetchChatId(user?.id);
-    navigate(`/chat/${chatId}`);
-  };
+  const {
+    data: chatId,
+    isLoading: chatIdLoading,
+    error: chatIdError,
+  } = useQuery({
+    queryKey: ["chatId", currentUser?.id, user?.id],
+    queryFn: () => fetchChatId(user?.id),
+    enabled: shouldGetChatId,
+    onSuccess: (chatId) => {
+      navigate(`/chat/${chatId}`);
+    },
+  });
 
   const fetchUser = async () => {
     const { data, error } = await fetchUserDetails(id);
@@ -120,7 +129,9 @@ export default function UserProfile() {
 
   return (
     <main className="profile">
-      {(followMutation?.isLoading || unfollowMutation?.isLoading) && <Loader />}
+      {(followMutation?.isLoading ||
+        unfollowMutation?.isLoading ||
+        chatIdLoading) && <Loader />}
       <div className="profile-header">
         <div className="profile-dp">
           <Image src={user?.image} />
@@ -176,7 +187,7 @@ export default function UserProfile() {
       {!isMe && (!user?.isPrivate || isFollowing) && (
         <Button
           type="text"
-          onClick={navigateToChat}
+          onClick={() => setShouldGetChatId(true)}
           className="profile-message-button"
         >
           Message
