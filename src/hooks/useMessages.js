@@ -132,6 +132,7 @@ export default function useMessages({ chatId, setError }) {
       console.log(e);
     }
   };
+
   return {
     fetchChats,
     fetchReceiver,
