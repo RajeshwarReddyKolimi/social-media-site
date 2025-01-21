@@ -6,16 +6,24 @@ import { supabase } from "../../config/supabase";
 import useMessages from "../../hooks/useMessages";
 import UserChatCard from "../users/UserChatCard";
 import "./index.css";
+import { useQuery, useQueryClient } from "react-query";
+import Loader from "../../utils/loader/Loader";
 
 export default function Chats() {
-  const [chats, setChats] = useState([]);
   const { fetchChats } = useMessages({});
   const currentUser = useRecoilValue(userState);
+  const queryClient = useQueryClient();
 
-  useEffect(() => {
-    if (currentUser) fetchChats({ setChats });
-    else setChats([]);
-  }, [currentUser]);
+  const {
+    data: chats,
+    error,
+    refetch,
+    isLoading,
+  } = useQuery({
+    queryKey: ["chats", currentUser?.id],
+    queryFn: fetchChats,
+    staleTime: 1000 * 60 * 1,
+  });
 
   useEffect(() => {
     const subscription = supabase
@@ -28,7 +36,7 @@ export default function Chats() {
             payload?.new?.receiver === currentUser?.id ||
             payload?.new?.sender === currentUser?.id
           ) {
-            fetchChats();
+            refetch();
           }
         }
       )
@@ -38,8 +46,10 @@ export default function Chats() {
       subscription.unsubscribe();
     };
   }, [currentUser?.id]);
+
   return (
     <div className="chat-list">
+      {isLoading && <Loader />}
       {chats?.map((chat, id) => (
         <UserChatCard
           key={id}

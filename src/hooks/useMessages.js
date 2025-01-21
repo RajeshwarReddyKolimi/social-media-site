@@ -9,9 +9,8 @@ export default function useMessages({ chatId, setError }) {
   const currentUser = useRecoilValue(userState);
   const setLoading = useSetRecoilState(loadingState);
 
-  const fetchChats = async ({ setChats }) => {
+  const fetchChats = async () => {
     try {
-      setLoading((prev) => prev + 1);
       const { data, error } = await supabase
         .from("Chats")
         .select(
@@ -23,11 +22,9 @@ export default function useMessages({ chatId, setError }) {
         )
         .or(`user1Id.eq.${currentUser?.id}, user2Id.eq.${currentUser?.id}`)
         .order("lastUpdatedAt", { ascending: false });
-      setChats(data);
+      return data;
     } catch (e) {
       console.log(e);
-    } finally {
-      setLoading((prev) => prev - 1);
     }
   };
 
