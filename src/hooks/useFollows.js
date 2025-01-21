@@ -12,7 +12,6 @@ export default function useFollows() {
   const currentUser = useRecoilValue(userState);
   const fetchFollowers = async (userId) => {
     try {
-      setLoading((prev) => prev + 1);
       if (!currentUser?.id) return;
       const { data, error } = await supabase
         .from("Follows")
@@ -24,18 +23,14 @@ export default function useFollows() {
         )
         .eq("following", userId)
         .order("created_at", { ascending: false });
-      if (currentUser?.id == userId) setFollowers(data);
-      else return data;
+      return data;
     } catch (e) {
       console.log(e);
-    } finally {
-      setLoading((prev) => prev - 1);
     }
   };
 
   const fetchFollowings = async (userId) => {
     try {
-      setLoading((prev) => prev + 1);
       if (!currentUser?.id) return;
 
       const { data, error } = await supabase
@@ -48,18 +43,14 @@ export default function useFollows() {
         )
         .eq("follower", userId)
         .order("created_at", { ascending: false });
-      if (currentUser?.id == userId) setFollowings(data);
-      else return data;
+      return data;
     } catch (e) {
       console.log(e);
-    } finally {
-      setLoading((prev) => prev - 1);
     }
   };
 
-  const handleFollow = async ({ userId, setUser }) => {
+  const handleFollow = async (userId) => {
     try {
-      setLoading((prev) => prev + 1);
       if (!currentUser?.id) return;
       const { data, error } = await supabase
         .from("Follows")
@@ -70,23 +61,14 @@ export default function useFollows() {
           `
         )
         .maybeSingle();
-      setFollowings((prev) => [data, ...prev]);
-      setUser((prev) => {
-        return {
-          ...prev,
-          followers: [...prev?.followers, { following: data?.following }],
-        };
-      });
+      return data;
     } catch (e) {
       console.log(e);
-    } finally {
-      setLoading((prev) => prev - 1);
     }
   };
 
-  const handleUnfollow = async ({ userId, setUser }) => {
+  const handleUnfollow = async (userId) => {
     try {
-      setLoading((prev) => prev + 1);
       if (!currentUser?.id) return;
       const { data, error } = await supabase
         .from("Follows")
@@ -99,19 +81,9 @@ export default function useFollows() {
           `
         )
         .maybeSingle();
-      setFollowings((prev) => prev.filter((user) => user?.following != userId));
-      setUser((prev) => {
-        return {
-          ...prev,
-          followers: prev?.followers?.filter(
-            (follower) => follower?.following !== data?.following
-          ),
-        };
-      });
+      return data;
     } catch (e) {
       console.log(e);
-    } finally {
-      setLoading((prev) => prev - 1);
     }
   };
 

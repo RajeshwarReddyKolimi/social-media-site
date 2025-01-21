@@ -6,30 +6,39 @@ import useFollows from "../../hooks/useFollows";
 import UserProfileCard from "./UserProfileCard";
 import loadingState from "../../atoms/loadingState";
 import { Empty } from "antd";
+import { useQuery } from "react-query";
+import Loader from "../../utils/loader/Loader";
 
 export default function UserFollowers({ user }) {
-  const [userFollowers, setUserFollowers] = useState([]);
   const setLoading = useSetRecoilState(loadingState);
   const currentUser = useRecoilValue(userState);
   const { fetchFollowers } = useFollows();
   const followers = useRecoilValue(followersState);
   const fetchUserFollowers = async () => {
     try {
-      setLoading((prev) => prev + 1);
       const data = await fetchFollowers(user?.id);
-      setUserFollowers(data);
+      return data;
     } catch (e) {
       console.log(e);
-    } finally {
-      setLoading((prev) => prev - 1);
     }
   };
-  useEffect(() => {
-    if (user?.id == currentUser?.id) setUserFollowers(followers);
-    else fetchUserFollowers();
-  }, [user]);
+  const {
+    data: userFollowers,
+    error: userFollowersError,
+    isLoading: isUserFollowersLoading,
+  } = useQuery({
+    queryKey: ["userFollowers", user?.id],
+    queryFn: () => {
+      if (user?.id == currentUser?.id) return followers;
+      return fetchUserFollowers(currentUser?.id);
+    },
+    staleTime: 1000 * 60,
+  });
+
   return (
     <section>
+      {isUserFollowersLoading && <Loader />}
+
       {userFollowers?.map((user, id) => (
         <UserProfileCard
           user={user?.user}

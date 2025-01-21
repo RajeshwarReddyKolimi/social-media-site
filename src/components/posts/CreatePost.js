@@ -12,15 +12,13 @@ export default function CreatePost() {
   const createPostMutation = useMutation({
     mutationFn: createPost,
     onSuccess: (post) => {
-      console.log(post);
       queryClient.invalidateQueries(["userPosts", post?.userId]);
       queryClient.setQueryData(["userPosts", post?.userId], (prev) => {
-        console.log(prev);
         return [post, ...prev];
       });
     },
     onError: (error) => {
-      console.error("Error deleting post:", error.message);
+      console.error("Error creating post:", error.message);
     },
   });
 

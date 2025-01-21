@@ -57,6 +57,10 @@ export default function Post({ post, isMe }) {
     onSuccess: (post) => {
       queryClient.invalidateQueries(["savedPosts", currentUser?.id]);
       setSavedPosts((prev) => [post, ...prev]);
+      queryClient.setQueryData(
+        ["savedPosts", currentUser?.id],
+        (prev) => (prev) => [post, ...prev]
+      );
     },
     onError: (error) => {
       console.log("Error liking post:", error.message);
@@ -67,6 +71,9 @@ export default function Post({ post, isMe }) {
     mutationFn: () => removeFromSavedPosts(post?.id),
     onSuccess: (postId) => {
       queryClient.invalidateQueries(["savedPosts", currentUser?.id]);
+      queryClient.setQueryData(["savedPosts", currentUser?.id], (prev) => {
+        return prev.filter((oldPost) => oldPost.id !== postId);
+      });
       setSavedPosts((prev) => prev?.filter((post) => post?.postId !== postId));
     },
     onError: (error) => {

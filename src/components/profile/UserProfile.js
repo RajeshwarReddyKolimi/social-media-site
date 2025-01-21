@@ -14,10 +14,12 @@ import "./../profile/index.css";
 import UserFollowers from "../users/UserFollowers";
 import UserFollowings from "../users/UserFollowings";
 import UserPosts from "../users/UserPosts";
+import { useMutation, useQueryClient } from "react-query";
+import Loader from "../../utils/loader/Loader";
 
 export default function UserProfile() {
   const { handleFollow, handleUnfollow } = useFollows();
-  const followings = useRecoilValue(followingsState);
+  const [followings, setFollowings] = useRecoilState(followingsState);
   const [user, setUser] = useState();
   const { id } = useParams();
   const [currentUser, setCurrentUser] = useRecoilState(userState);
@@ -30,6 +32,7 @@ export default function UserProfile() {
   const navigate = useNavigate();
   const [error, setError] = useState();
   const { fetchChatId } = useMessages({});
+  const queryClient = useQueryClient();
 
   const navigateToChat = async () => {
     const chatId = await fetchChatId(user?.id);
@@ -42,6 +45,63 @@ export default function UserProfile() {
     setUser(data);
   };
 
+  const followMutation = useMutation({
+    mutationFn: () => handleFollow(user?.id),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries(["followings", currentUser?.id]);
+      queryClient.setQueryData(["followings", currentUser?.id], (prev) => [
+        data,
+        ...prev,
+      ]);
+      setFollowings((prev) => [data, ...prev]);
+      setCurrentUser((prev) => {
+        return {
+          ...prev,
+          followings: [...prev?.followings, { following: data?.following }],
+        };
+      });
+      setUser((prev) => {
+        return {
+          ...prev,
+          followers: [...prev?.followers, { following: data?.following }],
+        };
+      });
+    },
+    onError: (error) => {
+      console.log("Error following user:", error.message);
+    },
+  });
+
+  const unfollowMutation = useMutation({
+    mutationFn: () => handleUnfollow(user?.id),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries(["followings", currentUser?.id]);
+      queryClient.setQueryData(["followings", currentUser?.id], (prev) => {
+        return prev.filter((f) => f.id !== data?.id);
+      });
+      setFollowings((prev) => prev?.filter((f) => f.id !== data?.id));
+      setCurrentUser((prev) => {
+        return {
+          ...prev,
+          followings: prev?.followings?.filter(
+            (follower) => follower?.following !== data?.following
+          ),
+        };
+      });
+      setUser((prev) => {
+        return {
+          ...prev,
+          followers: prev?.followers?.filter(
+            (follower) => follower?.following !== data?.following
+          ),
+        };
+      });
+    },
+    onError: (error) => {
+      console.log("Error unfollowing user:", error.message);
+    },
+  });
+
   useEffect(() => {
     setIsFollowing(!!followings?.find((fuser) => fuser?.following === id));
   }, [followings, id]);
@@ -50,13 +110,17 @@ export default function UserProfile() {
     setIsMe(currentUser?.id == id);
     if (currentUser?.id != id) fetchUser();
     else setUser(currentUser);
-    setShowItem("posts");
   }, [id, currentUser]);
+
+  useEffect(() => {
+    setShowItem("posts");
+  }, [id, currentUser?.id]);
 
   if (error) return <NotFound />;
 
   return (
     <main className="profile">
+      {(followMutation?.isLoading || unfollowMutation?.isLoading) && <Loader />}
       <div className="profile-header">
         <div className="profile-dp">
           <Image src={user?.image} />
@@ -95,9 +159,7 @@ export default function UserProfile() {
             <Button
               type="text"
               className="follow-button"
-              onClick={(e) => {
-                handleUnfollow({ userId: user?.id, setUser });
-              }}
+              onClick={unfollowMutation.mutate}
             >
               Unfollow
             </Button>
@@ -105,9 +167,7 @@ export default function UserProfile() {
             <Button
               type="text"
               className="follow-button"
-              onClick={(e) => {
-                handleFollow({ userId: user?.id, setUser });
-              }}
+              onClick={followMutation.mutate}
             >
               Follow
             </Button>

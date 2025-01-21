@@ -1,22 +1,23 @@
 import { Switch } from "antd";
 import React from "react";
-import { useRecoilState, useRecoilValue } from "recoil";
-import userState from "../../atoms/userState";
+import { useRecoilState } from "recoil";
+import themeState from "../../atoms/themeState";
 import "./index.css";
-import useAuth from "../../hooks/useAuth";
 
 export default function ChangeTheme() {
-  const currentUser = useRecoilValue(userState);
-  const { handleChangePrivacy } = useAuth();
+  const [theme, setTheme] = useRecoilState(themeState);
   return (
     <div className="change-theme">
-      <span>Private Account</span>
+      <span>Light Theme</span>
       <Switch
         style={{
           border: "1px solid var(--border-color-1)",
         }}
-        defaultChecked={currentUser?.isPrivate}
-        onChange={handleChangePrivacy}
+        defaultChecked={theme === "light"}
+        onChange={(e) => {
+          setTheme(e ? "light" : "dark");
+          localStorage.setItem("theme", e ? "light" : "dark");
+        }}
       />
     </div>
   );

@@ -15,7 +15,6 @@ export default function usePost() {
 
   const handleUploadImage = async (image) => {
     try {
-      setLoading((prev) => prev + 1);
       const imageName = Date.now() + image?.name.replace(/\s+/g, "_");
       const r1 = await supabase.storage
         .from("postImages")
@@ -27,14 +26,11 @@ export default function usePost() {
       if (!error) return data?.publicUrl;
     } catch (e) {
       console.log(e);
-    } finally {
-      setLoading((prev) => prev - 1);
     }
   };
 
   const createPost = async (values) => {
     try {
-      setLoading((prev) => prev + 1);
       const image = await handleUploadImage(values?.fileList?.[0]);
       const { data, error } = await supabase
         .from("Posts")
@@ -60,8 +56,6 @@ export default function usePost() {
       return data;
     } catch (e) {
       console.log(e);
-    } finally {
-      setLoading((prev) => prev - 1);
     }
   };
 

@@ -29,12 +29,16 @@ import UserProfile from "./components/profile/UserProfile";
 import likedPostsState from "./atoms/likedPosts";
 import { useQuery } from "react-query";
 import savedPostsState from "./atoms/savedPosts";
+import followersState from "./atoms/followers";
+import followingsState from "./atoms/followings";
 
 function App() {
   const currentUser = useRecoilValue(userState);
   const loading = useRecoilValue(loadingState);
   const setLikedPosts = useSetRecoilState(likedPostsState);
   const setSavedPosts = useSetRecoilState(savedPostsState);
+  const setFollowers = useSetRecoilState(followersState);
+  const setFollowings = useSetRecoilState(followingsState);
   const [theme, setTheme] = useRecoilState(themeState);
   const { fetchSavedPosts } = useSavedPosts();
   const { fetchLikedPosts } = useLikedPosts();
@@ -70,6 +74,32 @@ function App() {
     },
   });
 
+  const {
+    data: followers,
+    error: followersError,
+    isLoading: isFollowersLoading,
+  } = useQuery({
+    queryKey: ["followers", currentUser?.id],
+    queryFn: () => fetchFollowers(currentUser?.id),
+    staleTime: 1000 * 60,
+    onSuccess: (data) => {
+      setFollowers(data);
+    },
+  });
+
+  const {
+    data: followings,
+    error: followingsError,
+    isLoading: isFollowingsLoading,
+  } = useQuery({
+    queryKey: ["followings", currentUser?.id],
+    queryFn: () => fetchFollowings(currentUser?.id),
+    staleTime: 1000 * 60,
+    onSuccess: (data) => {
+      setFollowings(data);
+    },
+  });
+
   useEffect(() => {
     if (theme === "dark") document?.body?.classList?.remove("light-theme");
     else document?.body?.classList?.add("light-theme");
@@ -80,8 +110,6 @@ function App() {
   }, []);
 
   useEffect(() => {
-    fetchSavedPosts();
-    fetchLikedPosts();
     fetchFollowers(currentUser?.id);
     fetchFollowings(currentUser?.id);
   }, [currentUser?.id]);
@@ -94,6 +122,8 @@ function App() {
   return (
     <BrowserRouter>
       {loading !== 0 ||
+        isFollowersLoading ||
+        isFollowingsLoading ||
         isLikedPostsLoading ||
         (isSavedPostsLoading && <Loader />)}
       {userLoading && <Loader userLoading />}
