@@ -20,7 +20,7 @@ export default function ShareOptions({ postId, setShowShareOptions }) {
           {followings?.map((following, id) => (
             <UserSharePostCard
               key={id}
-              user={following}
+              user={following?.user}
               postId={postId}
               setShowShareOptions={setShowShareOptions}
             />

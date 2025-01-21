@@ -30,16 +30,6 @@ export default function Messages() {
   });
 
   const {
-    data: messages,
-    error: messagesError,
-    isLoading,
-  } = useQuery({
-    queryKey: ["messages", currentUser?.id, chatId],
-    queryFn: fetchMessages,
-    staleTime: 1000 * 60 * 1,
-  });
-
-  const {
     data: receiver,
     error: receiverError,
     isLoading: isReceiverLoading,
@@ -47,6 +37,17 @@ export default function Messages() {
     queryKey: ["receiver", currentUser?.id, chatId],
     queryFn: fetchReceiver,
     staleTime: 1000 * 60 * 1,
+  });
+
+  const {
+    data: messages,
+    error: messagesError,
+    isLoading,
+  } = useQuery({
+    queryKey: ["messages", currentUser?.id, receiver?.id],
+    queryFn: fetchMessages,
+    staleTime: 1000 * 60 * 1,
+    enabled: !!receiver?.id,
   });
 
   const sendMessageMutation = useMutation({

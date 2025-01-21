@@ -49,7 +49,6 @@ export default function useMessages({ chatId, setError }) {
 
   const createNewChat = async (userId) => {
     try {
-      setLoading((prev) => prev + 1);
       const [user1Id, user2Id] =
         currentUser?.id?.localeCompare(userId) < 0
           ? [currentUser?.id, userId]
@@ -65,14 +64,11 @@ export default function useMessages({ chatId, setError }) {
       return data;
     } catch (e) {
       console.log(e);
-    } finally {
-      setLoading((prev) => prev - 1);
     }
   };
 
   const fetchChatId = async (userId) => {
     try {
-      setLoading((prev) => prev + 1);
       if (currentUser?.id == userId) return;
       const { data, error } = await supabase
         .from("Chats")
@@ -91,8 +87,6 @@ export default function useMessages({ chatId, setError }) {
       }
     } catch (e) {
       console.log(e);
-    } finally {
-      setLoading((prev) => prev - 1);
     }
   };
 

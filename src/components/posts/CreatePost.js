@@ -3,6 +3,7 @@ import { Button, Form, Input, Upload } from "antd";
 import React, { useState } from "react";
 import usePost from "../../hooks/usePost";
 import { useMutation, useQueryClient } from "react-query";
+import Loader from "../../utils/loader/Loader";
 
 export default function CreatePost() {
   const [fileList, setFileList] = useState([]);
@@ -24,6 +25,7 @@ export default function CreatePost() {
 
   return (
     <div className="create-post-page">
+      {createPostMutation?.isLoading && <Loader />}
       <h1>Create new post</h1>
       <Form
         className="create-post-form"

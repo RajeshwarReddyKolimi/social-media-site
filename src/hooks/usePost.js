@@ -112,9 +112,10 @@ export default function usePost() {
       setCurrentUser((prev) => {
         return {
           ...prev,
-          posts: prev?.posts?.filter((p) => p.id !== postId),
+          posts: [...prev?.posts?.filter((p) => p.id !== postId)],
         };
       });
+
       const imagePath = data?.image?.split(
         "/storage/v1/object/public/postImages/"
       )?.[1];
@@ -125,20 +126,25 @@ export default function usePost() {
     }
   }
 
-  const handleSharePost = async ({
-    receiverId,
-    postId,
-    setShowShareOptions,
-  }) => {
+  const handleSharePost = async ({ receiverId, postId }) => {
     try {
       const chatId = await fetchChatId(receiverId);
-      const { data, error } = await supabase.from("Messages").insert({
-        sender: currentUser?.id,
-        receiver: receiverId,
-        postId,
-        chatId,
-      });
-      setShowShareOptions(false);
+      const { data, error } = await supabase
+        .from("Messages")
+        .insert({
+          sender: currentUser?.id,
+          receiver: receiverId,
+          postId,
+          chatId,
+        })
+        .select(
+          `*, 
+          post: postId(id, image, caption, 
+            user: userId (id, name, image)
+          )`
+        )
+        .maybeSingle();
+      return data;
     } catch (e) {
       console.log(e);
     }

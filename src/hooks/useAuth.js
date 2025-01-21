@@ -16,7 +16,10 @@ export default function useAuth() {
       const data = await supabase
         .from("Users")
         .select(
-          `*, followers:Follows!following(following), followings:Follows!follower(follower), posts:Posts!userId(userId)`
+          `*, 
+          followers:Follows!following(*), 
+          followings:Follows!follower(*), 
+          posts:Posts!userId(*)`
         )
         .eq("id", id)
         .maybeSingle();
