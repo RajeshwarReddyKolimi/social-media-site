@@ -6,11 +6,12 @@ import useNotify from "../../hooks/useNotify";
 import validateEmail from "../../utils/anon/validateEmail";
 import validatePassword from "../../utils/anon/validatePassword";
 import "./index.css";
+import { useNavigate } from "react-router";
 
 export default function Signup({ setShowItem }) {
   const { signup } = useAuth();
   const notify = useNotify();
-
+  const navigate = useNavigate();
   const handleSignup = async (values) => {
     try {
       const { email, password } = values;
@@ -31,7 +32,6 @@ export default function Signup({ setShowItem }) {
         return;
       }
       const { data, error } = await signup(values);
-      console.log(data, error);
       if (error) {
         notify({
           type: "error",
@@ -43,6 +43,7 @@ export default function Signup({ setShowItem }) {
           type: "success",
           message: "Signup Success",
         });
+        navigate("/");
       }
     } catch (e) {
       console.log(e);

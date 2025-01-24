@@ -143,6 +143,7 @@ const Navbar = () => {
       onClick: () => setShowItem((prev) => (prev === "more" ? null : "more")),
     },
   ];
+
   const selectedKey =
     showItem === "search"
       ? "2"
@@ -152,7 +153,7 @@ const Navbar = () => {
       ? "6"
       : location.pathname === "/liked-posts"
       ? "6"
-      : location.pathname === "/chat"
+      : location.pathname === "/chat" || location.pathname?.startsWith("/chat/")
       ? "3"
       : location.pathname === "/create"
       ? "4"

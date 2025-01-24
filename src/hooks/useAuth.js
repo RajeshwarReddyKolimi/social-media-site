@@ -5,11 +5,12 @@ import userState from "../atoms/userState";
 import loadingState from "../atoms/loadingState";
 import { supabase } from "../config/supabase";
 import validatePassword from "../utils/anon/validatePassword";
-import { redirect } from "react-router";
+import { redirect, useNavigate } from "react-router";
 
 export default function useAuth() {
   const [currentUser, setCurrentUser] = useRecoilState(userState);
   const [loading, setLoading] = useRecoilState(loadingState);
+
   async function fetchUserDetails(id) {
     try {
       setLoading((prev) => prev + 1);
@@ -25,7 +26,7 @@ export default function useAuth() {
         .maybeSingle();
       return data;
     } catch (e) {
-      console.error(e);
+      console.log(e);
     } finally {
       setLoading((prev) => prev - 1);
     }
@@ -41,7 +42,7 @@ export default function useAuth() {
       });
       return data;
     } catch (e) {
-      console.error(e);
+      console.log(e);
     } finally {
       setLoading((prev) => prev - 1);
     }
@@ -76,7 +77,7 @@ export default function useAuth() {
         return { data: signupData };
       }
     } catch (e) {
-      console.error(e);
+      console.log(e);
     } finally {
       setLoading((prev) => prev - 1);
     }
@@ -95,7 +96,7 @@ export default function useAuth() {
         return { error: signinError };
       }
     } catch (e) {
-      console.error(e);
+      console.log(e);
     } finally {
       setLoading((prev) => prev - 1);
     }
@@ -110,7 +111,7 @@ export default function useAuth() {
         setCurrentUser(response?.data);
       }
     } catch (e) {
-      console.error(e);
+      console.log(e);
     } finally {
       setUserLoading(false);
     }
@@ -185,6 +186,7 @@ export default function useAuth() {
     try {
       setLoading((prev) => prev + 1);
       const image = values?.file;
+      console.log(image);
       const imageName = Date.now() + image?.name;
       const r1 = await supabase.storage
         .from("profileImages")
@@ -218,7 +220,7 @@ export default function useAuth() {
         await supabase.auth.signOut();
       setCurrentUser(null);
     } catch (e) {
-      console.error(e);
+      console.log(e);
     } finally {
       setLoading((prev) => prev - 1);
     }

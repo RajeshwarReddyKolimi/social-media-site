@@ -88,6 +88,7 @@ export default function Post({ post, isMe }) {
       queryClient.setQueryData(["userPosts", post?.userId], (prev) => {
         return prev.filter((oldPost) => oldPost.id !== postId);
       });
+      queryClient.invalidateQueries(["homePosts", currentUser?.id]);
     },
     onError: (error) => {
       console.log("Error deleting post:", error.message);

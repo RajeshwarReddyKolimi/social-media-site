@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./index.css";
 import { Button, Menu } from "antd";
-import { Link, useLocation } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import useAuth from "../../hooks/useAuth";
 import { useRecoilValue } from "recoil";
 import userState from "../../atoms/userState";
@@ -16,6 +16,7 @@ export default function MoreItems() {
   const theme = useRecoilValue(themeState);
   const { logout, handleInitiateChangePassword } = useAuth();
   const notify = useNotify();
+  const navigate = useNavigate();
 
   const initiateChangePassword = async (email) => {
     const { data, error } = await handleInitiateChangePassword(email);
@@ -57,7 +58,10 @@ export default function MoreItems() {
     {
       key: "5",
       label: <button>Logout</button>,
-      onClick: logout,
+      onClick: () => {
+        logout();
+        navigate("/");
+      },
     },
   ];
   const selectedKey =

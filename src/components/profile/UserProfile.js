@@ -16,6 +16,7 @@ import UserFollowings from "../users/UserFollowings";
 import UserPosts from "../users/UserPosts";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import Loader from "../../utils/loader/Loader";
+import ImgCrop from "antd-img-crop";
 
 export default function UserProfile() {
   const { handleFollow, handleUnfollow } = useFollows();
@@ -50,6 +51,7 @@ export default function UserProfile() {
 
   const fetchUser = async () => {
     const { data, error } = await fetchUserDetails(id);
+    if (data?.id !== id) setError("Invalid url");
     if (error) setError(error);
     setUser(data);
   };
@@ -62,6 +64,8 @@ export default function UserProfile() {
         data,
         ...prev,
       ]);
+      queryClient.invalidateQueries(["homePosts", currentUser?.id]);
+
       setFollowings((prev) => [data, ...prev]);
       setCurrentUser((prev) => {
         return {
@@ -88,6 +92,8 @@ export default function UserProfile() {
       queryClient.setQueryData(["followings", currentUser?.id], (prev) => {
         return prev.filter((f) => f.id !== data?.id);
       });
+      queryClient.invalidateQueries(["homePosts", currentUser?.id]);
+
       setFollowings((prev) => prev?.filter((f) => f.id !== data?.id));
       setCurrentUser((prev) => {
         return {

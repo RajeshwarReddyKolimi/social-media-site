@@ -118,14 +118,13 @@ function App() {
     setTheme(localStorage?.getItem("theme") || "dark");
     setNotifyApi(notifyApi);
   }, []);
-
   return (
     <BrowserRouter>
-      {loading !== 0 ||
+      {(loading !== 0 ||
         isFollowersLoading ||
         isFollowingsLoading ||
         isLikedPostsLoading ||
-        (isSavedPostsLoading && <Loader />)}
+        isSavedPostsLoading) && <Loader />}
       {userLoading && <Loader userLoading />}
       {contextHolder}
       <Routes>

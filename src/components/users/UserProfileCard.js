@@ -48,7 +48,13 @@ export default function UserProfileCard({ user, isMe }) {
       <p>{user?.name}</p>
       <div className="flex-buffer" />
       {!isFollowing && currentUser?.id !== user?.id && (
-        <Button className="follow-button" onClick={followMutation.mutate}>
+        <Button
+          className="follow-button"
+          onClick={(e) => {
+            e.preventDefault();
+            followMutation.mutate();
+          }}
+        >
           Follow
         </Button>
       )}

@@ -16,6 +16,7 @@ import {
   useQueryClient,
 } from "react-query";
 import Loader from "../../utils/loader/Loader";
+import usePost from "../../hooks/usePost";
 
 export default function Messages() {
   const currentUser = useRecoilValue(userState);
@@ -28,6 +29,7 @@ export default function Messages() {
     chatId,
     setError,
   });
+  const { fetchPost } = usePost();
 
   const {
     data: receiver,
@@ -61,6 +63,25 @@ export default function Messages() {
     },
   });
 
+  const handleReceiveMessage = async (newMessage) => {
+    const receiverId =
+      newMessage?.sender === currentUser?.id
+        ? newMessage?.receiver
+        : newMessage?.sender;
+
+    if (newMessage?.postId) {
+      const post = await fetchPost(newMessage?.postId);
+      newMessage = { ...newMessage, post };
+    }
+    queryClient.invalidateQueries(["messages", currentUser?.id, receiver]);
+    queryClient.setQueryData(
+      ["messages", currentUser?.id, receiverId],
+      (prev) => {
+        return [...(prev || []), newMessage];
+      }
+    );
+    messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+  };
   useEffect(() => {
     messagesEndRef?.current?.scrollIntoView();
   }, [messages]);
@@ -76,16 +97,7 @@ export default function Messages() {
             payload?.new?.receiver === currentUser?.id ||
             payload?.new?.sender === currentUser?.id
           ) {
-            queryClient.invalidateQueries([
-              "messages",
-              currentUser?.id,
-              chatId,
-            ]);
-            queryClient.setQueryData(
-              ["messages", currentUser?.id, chatId],
-              (prev) => [...prev, payload?.new]
-            );
-            messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+            handleReceiveMessage(payload.new);
           }
         }
       )
@@ -94,7 +106,7 @@ export default function Messages() {
     return () => {
       subscription.unsubscribe();
     };
-  }, [currentUser?.id]);
+  }, [currentUser?.id, receiver]);
 
   if (error) return <NotFound />;
 

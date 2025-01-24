@@ -3,6 +3,7 @@ import { useQuery } from "react-query";
 import { supabase } from "../../config/supabase";
 import Loader from "../../utils/loader/Loader";
 import PostCard from "../posts/PostCard";
+import { Empty } from "antd";
 
 export default function UserPosts({ user, isMe }) {
   const fetchUserPosts = async () => {
@@ -38,6 +39,7 @@ export default function UserPosts({ user, isMe }) {
       {userPosts?.map((post, id) => (
         <PostCard key={id} post={post} isMe={isMe} setUserPosts={() => {}} />
       ))}
+      {userPosts?.length == 0 && <Empty description="No posts" />}
     </section>
   );
 }

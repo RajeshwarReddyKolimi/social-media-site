@@ -24,68 +24,25 @@
   text-align: left;
 }
 
-.profile-header .ant-image {
+.profile-dp {
+  position: relative;
+}
+
+.profile-dp .ant-image {
+  display: flex;
+  align-items: center;
   width: 3.5rem;
   height: 3.5rem;
-  object-fit: cover;
   border-radius: 50%;
   border: 1px solid grey;
   background-color: white;
   overflow: hidden;
 }
 
-.ant-image-preview-img {
-  background-color: white;
-}
-.follow-button {
-  background-color: transparent;
-  color: var(--button-bg-color) !important;
-  border-color: transparent;
-}
-
-.follow-button span {
-  color: var(--button-bg-color) !important;
-}
-
-.follow-button:hover {
-  border-color: var(--button-bg-color);
-  background-color: transparent !important;
-}
-
-.profile-message-button {
-  border: 1px solid var(--theme-color);
-  padding: 0.5rem;
-  border-radius: 0.25rem;
-}
-
-.profile-message-button:hover {
-  background-color: var(--theme-color);
-  color: var(--theme-color);
-}
-
-.profile-button-container {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
+.profile-dp .ant-image img {
   width: 100%;
-  justify-content: space-around;
-}
-
-.profile-button {
-  padding: 1rem;
-  font-weight: 600;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.profile-button-selected {
-  border-bottom: 2px solid var(--theme-color);
-}
-
-.profile-dp {
-  position: relative;
+  height: 100%;
+  object-fit: cover;
 }
 
 .profile-dp-edit {
@@ -148,6 +105,61 @@
 }
 .edit-username-form :first-child {
   width: 100%;
+}
+
+.ant-image-preview-img {
+  background-color: white;
+}
+
+.ant-modal-content button:first-child span {
+  color: black;
+}
+
+.follow-button {
+  background-color: transparent;
+  color: var(--button-bg-color) !important;
+  border-color: transparent;
+}
+
+.follow-button span {
+  color: var(--button-bg-color) !important;
+}
+
+.follow-button:hover {
+  border-color: var(--button-bg-color);
+  background-color: transparent !important;
+}
+
+.profile-message-button {
+  border: 1px solid var(--theme-color);
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+}
+
+.profile-message-button:hover {
+  background-color: var(--theme-color);
+  color: var(--theme-color);
+}
+
+.profile-button-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  justify-content: space-around;
+}
+
+.profile-button {
+  padding: 1rem;
+  font-weight: 600;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.profile-button-selected {
+  border-bottom: 2px solid var(--theme-color);
 }
 
 @media screen and (min-width: 768px) {

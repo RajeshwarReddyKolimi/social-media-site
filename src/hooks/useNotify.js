@@ -6,7 +6,7 @@ export default function useNotify() {
   const notify = ({ type, message, description }) => {
     notifyApi.open({
       type,
-      duration: "10",
+      duration: 10,
       message,
       description,
       className: "notify-popup",
